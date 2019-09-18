@@ -34,7 +34,7 @@ function buildRouter(aMenu) {
         oRouter.meta.icon = item.icon
         oRouter.meta.title = item.title
         // oRouter.meta.noCache = item.noCache || false
-        oRouter.meta.noCache = false
+        oRouter.meta.noCache = true
         // oRouter.meta.breadcrumb = item.breadcrumb || true
         oRouter.children = validatenull(item.children) ? [] : buildRouter(item.children)
 

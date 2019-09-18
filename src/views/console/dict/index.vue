@@ -147,7 +147,7 @@
 import waves from '@/directive/waves' // waves directive
 import enterToNext from '@/directive/enterToNext' // enterToNext directive
 import { PostDataByName, GetDataByName, getRecuData } from '@/api/common'
-import { isIntegerZero } from '@/validator'
+import { isIntegerZero } from '@/utils/validate'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
 export default {
@@ -274,8 +274,8 @@ export default {
           this.requestParam.params[2] = this.deptform.orderby
           this.requestParam.params[3] = this.deptform.enable
           this.requestParam.params[4] = this.dictid
-          this.requestParam.params[5] = this.dataform.sort
-          this.requestParam.params[6] = this.dataform.enable
+          this.requestParam.params[5] = this.deptform.sort
+          this.requestParam.params[6] = this.deptform.enable
           PostDataByName(this.requestParam).then(() => {
             this.getList()
             this.dialogFormVisible = false
@@ -299,8 +299,8 @@ export default {
           this.requestParam.params[2] = this.deptform.orderby
           this.requestParam.params[3] = this.deptform.enable
           this.requestParam.params[4] = this.dictid
-          this.requestParam.params[5] = this.dataform.sort
-          this.requestParam.params[6] = this.dataform.enable
+          this.requestParam.params[5] = this.deptform.sort
+          this.requestParam.params[6] = this.deptform.enable
           PostDataByName(this.requestParam).then(() => {
             this.$nextTick(() => {
               this.$refs['label'].focus()

@@ -2,7 +2,14 @@
   <div class="app-container">
     <div class="filter-container">
       <!-- 搜索条件 -->
-      <el-select v-model="getdataListParm.parammaps.pastureName" clearable placeholder="牧场" class="filter-item">
+
+      <el-select
+        v-model="getdataListParm.parammaps.pastureName"
+        placeholder="牧场"
+        style="width: 140px;"
+        class="filter-item"
+        clearable
+      >
         <el-option
           v-for="item in findAllPasture"
           :key="item.id"
@@ -10,20 +17,41 @@
           :value="item.name"
         />
       </el-select>
-      <el-input
-        v-model="getdataListParm.parammaps.assetNumber"
-        placeholder="牧场设备编号"
-        style="width: 140px;"
-        class="filter-item"
-      />
-      <el-input
-        v-model="getdataListParm.parammaps.assetName"
-        placeholder="设备名称"
-        style="width: 140px;"
-        class="filter-item"
-      />
 
-      <el-select v-model="getdataListParm.parammaps.status" clearable placeholder="状态" class="filter-item">
+      <el-select
+        v-model="getdataListParm.parammaps.departName"
+        placeholder="部门"
+        style="width: 140px;"
+        class="filter-item"
+        clearable
+      >
+        <el-option
+          v-for="item in findAllDepart"
+          :key="item.id"
+          :label="item.name"
+          :value="item.name"
+        />
+      </el-select>
+      <el-input
+        v-model="getdataListParm.parammaps.formNumber"
+        placeholder="编号"
+        clearable
+        class="filter-item"
+        style="width: 130px"
+      />
+      <el-input
+        v-model="getdataListParm.parammaps.formName"
+        placeholder="表名称"
+        style="width: 140px;"
+        class="filter-item"
+      />
+      <el-select
+        v-model="getdataListParm.parammaps.formType"
+        placeholder="水类型"
+        style="width: 140px;"
+        class="filter-item"
+        clearable
+      >
         <el-option
           v-for="item in getDictByName"
           :key="item.id"
@@ -66,64 +94,74 @@
           <span>{{ scope.row.pastureName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="设备编号" prop="id" sortable="custom" align="center" width="150">
+      <el-table-column label="部门" prop="id" sortable="custom" align="center" width="150">
         <template slot-scope="scope">
-          <span>{{ scope.row.assetNumber }}</span>
+          <span>{{ scope.row.departName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="牧场设备编号" width="150px" align="center">
+      <el-table-column label="编号" width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.equipmentNumber }}</span>
+          <span>{{ scope.row.waterNumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="设备名称" width="150px" align="center">
+      <el-table-column label="表名称" width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.equipmentName }}</span>
+          <span>{{ scope.row.waterName }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="规格" min-width="110px" align="center">
+      <el-table-column label="类型" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.specification }}</span>
+          <span>{{ scope.row.useType }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="品牌" min-width="110px" align="center">
+      <el-table-column label="上次值" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.providerName }}</span>
+          <span>{{ scope.row.lastAmount }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" min-width="110px" align="center">
+      <el-table-column label="本次值" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.status }}</span>
+          <span>{{ scope.row.endAmount }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="财务编号" min-width="110px" align="center">
+      <el-table-column label="当天用水量" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.financeNumber }}</span>
+          <span>{{ scope.row.waterConsumption }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="责任人" min-width="110px" align="center">
+      <el-table-column label="单价" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.employeName }}</span>
+          <span>{{ scope.row.price }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="当天费用" min-width="110px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.sumPrice }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="记录人" min-width="110px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.putName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="日期" min-width="110px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.date }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="备注" min-width="110px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.note }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button
-            type="primary"
-            size="mini"
-            @click="handleUpdate(row)"
-          >卡片</el-button>
-          <el-button
             type="success"
             size="mini"
             @click="handleUpdate(row)"
           >编辑</el-button>
-          <el-button
-            type="danger"
-            size="mini"
-            @click="handleDelete(row)"
-          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -147,92 +185,106 @@
         :model="temp"
         label-position="right"
         label-width="100px"
-        style="width: 800px; margin-left:50px;"
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="资产编号" prop="assetNumber">
-              <el-input
-                ref="assetNumber"
-                v-model="temp.assetNumber"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="设备名称" prop="equipmentName">
-              <el-input
-                ref="equipmentName"
-                v-model="temp.equipmentName"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="状态" prop="status">
-              <el-select v-model="temp.status" placeholder="状态" class="filter-item">
-                <el-option
-                  v-for="item in getDictByName"
-                  :key="item.id"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="规格" prop="specification">
-              <el-input
-                ref="specification"
-                v-model="temp.specification"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="品牌" prop="providerId">
+            <el-form-item label="水表编号：" prop="formNumber">
               <el-autocomplete
-                v-model="state1"
-                value-key="name"
+                ref="formNumber"
+                v-model="temp.formNumber"
+                value-key="formNumber"
                 class="inline-input"
-                :fetch-suggestions="providerSearch"
+                :fetch-suggestions="formNumberSearch"
                 placeholder="请输入内容"
-                @select="handleSelect"
+                :disabled="dialogStatus==='update'"
+                @select="handleformNumberSelect"
               />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="用途" prop="purpose">
-              <el-input ref="purpose" v-model="temp.purpose" />
+            <el-form-item label="水表名称：" prop="formName">
+              <el-autocomplete
+                ref="formName"
+                v-model="temp.formName"
+                value-key="formName"
+                class="inline-input"
+                :fetch-suggestions="formNameSearch"
+                placeholder="请输入内容"
+                :disabled="dialogStatus==='update'"
+                @select="handleformNameSelect"
+              />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
+
           <el-col :span="8">
-            <el-form-item label="牧场" prop="pastureId">
-              <el-select v-model="temp.pastureId" placeholder="牧场" class="filter-item">
-                <el-option
-                  v-for="item in findAllPasture"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="部门" prop="departmentId">
-              <el-select v-model="temp.departmentId" placeholder="部门" class="filter-item">
-                <el-option
-                  v-for="item in findAllDepart"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
+            <el-form-item label="上次值(m³)：" prop="aAmount">
+              <el-input
+                ref="aAmount"
+                v-model="temp.aAmount"
+                :disabled="dialogStatus==='update'"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="负责人" prop="employeId">
+            <el-form-item label="水类型：">
+              <span>{{ temp.useType }}</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="牧场：">
+              <span>{{ temp.pastureName }}</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="部门：">
+              <span>{{ temp.departName }}</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="责任人：">
+              <span>{{ temp.employeName1 }}</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="当前值(m³)：" prop="endAmount">
+              <el-input
+                ref="endAmount"
+                v-model="temp.endAmount"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="单价(元)：" prop="price1">
+              <el-input
+                ref="price"
+                v-model="temp.price1"
+                :disabled="dialogStatus==='update'"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="备注：" prop="note">
+              <el-input
+                ref="note"
+                v-model="temp.note"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="当前时间：" prop="DATE">
+              <el-date-picker
+                v-model="temp.DATE"
+                type="date"
+                placeholder="当前时间"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                disabled
+                style="width:170px;"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="负责人：" prop="employeId">
               <el-select v-model="temp.employeId" placeholder="负责人" class="filter-item">
                 <el-option
                   v-for="item in findAllEmploye"
@@ -241,100 +293,6 @@
                   :value="item.id"
                 />
               </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="购置日期" prop="purchaseDate">
-              <el-date-picker
-                v-model="temp.purchaseDate"
-                type="date"
-                placeholder="选择日期"
-                style="width:170px;"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-              />
-              <!-- <el-input ref="deptname" v-model="temp.purchaseDate" @keyup.enter.native="deptenter" /> -->
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="入场日期" prop="entranceDate">
-              <el-date-picker
-                v-model="temp.entranceDate"
-                type="date"
-                placeholder="选择日期"
-                style="width:170px;"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="牧场设备编号" prop="equipmentNumber">
-              <el-input
-                ref="equipmentNumber"
-                v-model="temp.equipmentNumber"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="年保养费用" prop="yearUpkeepCost">
-              <el-input
-                ref="yearUpkeepCost"
-                v-model="temp.yearUpkeepCost"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="年维修费用" prop="yearMaintainDost">
-              <el-input
-                ref="yearMaintainDost"
-                v-model="temp.yearMaintainDost"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="原值" prop="yuanzhi">
-              <el-input ref="yuanzhi" v-model="temp.yuanzhi" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="设备类别" prop="typeName">
-              <el-select v-model="temp.assTypeId" placeholder="设备类别" class="filter-item">
-                <el-option
-                  v-for="item in findAllAssetType"
-                  :key="item.id"
-                  :label="item.typeName"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="财务编号" prop="financeNumber">
-              <el-input
-                ref="financeNumber"
-                v-model="temp.financeNumber"
-                @keyup.enter.native="deptenter"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="录入时间" prop="inputDatetime">
-              <el-date-picker
-                v-model="temp.inputDatetime"
-                type="date"
-                placeholder="录入时间"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                disabled
-                style="width:170px;"
-              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -357,7 +315,6 @@
 // 引入
 import { GetDataByName, GetDataByNames, PostDataByName } from '@/api/common'
 import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils/index.js'
 // eslint-disable-next-line no-unused-vars
 import { validateEMail } from '@/utils/validate.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -372,45 +329,58 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      state1: '',
+
       requestParam: {
-        name: 'insertAsset',
+        name: 'insertWater',
         offset: 0,
         pagecount: 0,
         parammaps: {}
       },
       // 1-2:table&搜索传参
       getdataListParm: {
-        name: 'getAssetList',
+        name: 'getWaterList',
         page: 1,
         offset: 1,
         pagecount: 10,
         returntype: 'Map',
         parammaps: {
-          assetNumber: '',
-          assetName: '',
+          formName: '',
+          formNumber: '',
+          formType: '',
           pastureName: '',
-          status: ''
+          departName: ''
         }
       },
       // 2-3：下拉框请求后数据加入[]
-      findAllProvider: [],
+      getDictByName: [],
       findAllAssetType: [],
       findAllPasture: [],
       findAllDepart: [],
       findAllEmploye: [],
-      getDictByName: [],
       // 2-1.请求下拉框接口
       requestParams: [
-        { name: 'findAllProvider', offset: 0, pagecount: 0, params: [] },
+        { name: 'getDictByName', offset: 0, pagecount: 0, params: ['水表类型'] },
         { name: 'findAllAssetType', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllPasture', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllDepart', offset: 0, pagecount: 0, params: [] },
-        { name: 'findAllEmploye', offset: 0, pagecount: 0, params: [] },
-        { name: 'getDictByName', offset: 0, pagecount: 0, params: ['资产状态'] }
+        { name: 'findAllEmploye', offset: 0, pagecount: 0, params: [] }
       ],
+      requestFilterParams: {
+        name: 'getWaterList',
+        page: 1,
+        offset: 1,
+        pagecount: 10,
+        returntype: 'Map',
+        parammaps: { }
+      },
 
-      temp: {
+      temp: { pastureName: '',
+        useType: '',
+        departName: '',
+        aAmount: '',
+        employeName1: '',
+        formName: '',
+        formNumber: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -427,7 +397,8 @@ export default {
         ],
         equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
       },
-      rowStyle: { maxHeight: 10 + 'px', height: 10 + 'px' },
+      MeasureListbyfilter: [],
+      rowStyle: { maxHeight: 40 + 'px', height: 30 + 'px' },
       cellStyle: { padding: 0 + 'px' }
     }
   },
@@ -437,22 +408,64 @@ export default {
   },
 
   methods: {
-    // 供应商模糊查询
-    providerSearch(queryString, cb) {
-      var returnList = this.findAllProvider
-      var results = queryString ? returnList.filter(this.createFilter(queryString)) : returnList
-      // 调用 callback 返回建议列表的数据
-      cb(results)
+    formNumberSearch(queryString, cb) {
+      this.requestFilterParams.name = 'getMeasureListbyfilter'
+      this.requestFilterParams.parammaps['formType'] = '水表'
+      this.requestFilterParams.parammaps['formNumber'] = queryString
+      this.requestFilterParams.parammaps['formName'] = ''
+      GetDataByName(this.requestFilterParams).then(response => {
+        // for (var i = 0; i < response.data.list.length; i++) {
+        //   response.data.list[i].value = response.data.list[i].formNumber
+        // }
+        cb(response.data.list)
+      })
     },
-    createFilter(queryString) {
-      return returnValue => {
-        return (
-          returnValue.name.toLowerCase().indexOf(queryString.toLowerCase()) >= 0
-        )
-      }
+    formNameSearch(queryString, cb) {
+      this.requestFilterParams.name = 'getMeasureListbyfilter'
+      this.requestFilterParams.parammaps['formType'] = '水表'
+      this.requestFilterParams.parammaps['formNumber'] = ''
+      this.requestFilterParams.parammaps['formName'] = queryString
+      GetDataByName(this.requestFilterParams).then(response => {
+        // for (var i = 0; i < response.data.list.length; i++) {
+        //   response.data.list[i].value = response.data.list[i].formName
+        // }
+        cb(response.data.list)
+      })
     },
-    handleSelect(item) {
-      console.log(item)
+    handleformNumberSelect() {
+      this.requestFilterParams.name = 'findByNMeasureWater'
+      this.requestFilterParams.parammaps['formNumber'] = this.temp.formNumber
+      this.requestFilterParams.parammaps['formName'] = ''
+      GetDataByName(this.requestFilterParams).then(response => {
+        this.$nextTick(() => {
+          if (response.data.list.length > 0) {
+            this.temp.pastureName = response.data.list[0].pastureName
+            this.temp.useType = response.data.list[0].useType
+            this.temp.departName = response.data.list[0].departName
+            this.temp.aAmount = response.data.list[0].aAmount
+            this.temp.employeName1 = response.data.list[0].employeName
+            this.temp.formName = response.data.list[0].formName
+            console.log(response.data.list[0])
+          }
+        })
+      })
+    },
+    handleformNameSelect() {
+      this.requestFilterParams.name = 'findByNMeasureWater'
+      this.requestFilterParams.parammaps['formNumber'] = ''
+      this.requestFilterParams.parammaps['formName'] = this.temp.formName
+      GetDataByName(this.requestFilterParams).then(response => {
+        this.$nextTick(() => {
+          if (response.data.list.length > 0) {
+            this.temp.pastureName = response.data.list[0].pastureName
+            this.temp.useType = response.data.list[0].useType
+            this.temp.departName = response.data.list[0].departName
+            this.temp.aAmount = response.data.list[0].aAmount
+            this.temp.employeName1 = response.data.list[0].employeName
+            this.temp.formNumber = response.data.list[0].formNumber
+          }
+        })
+      })
     },
     // 1-1: table&搜索
     getList() {
@@ -471,12 +484,11 @@ export default {
     // 2-2：下拉框
     getDownList() {
       GetDataByNames(this.requestParams).then(response => {
-        this.findAllProvider = response.data.findAllProvider.list
+        this.getDictByName = response.data.getDictByName.list
         this.findAllAssetType = response.data.findAllAssetType.list
         this.findAllPasture = response.data.findAllPasture.list
         this.findAllDepart = response.data.findAllDepart.list
         this.findAllEmploye = response.data.findAllEmploye.list
-        this.getDictByName = response.data.getDictByName.list
       })
     },
     handleFilter() {
@@ -491,10 +503,13 @@ export default {
       row.status = status
     },
     resetTemp() {
-      this.temp = {
-        // 格式化日期
-        inputDatetime: parseTime(new Date(), '{y}-{m}-{d}')
-      }
+      this.temp.pastureName = ''
+      this.temp.useType = ''
+      this.temp.departName = ''
+      this.temp.aAmount = ''
+      this.temp.employeName1 = ''
+      this.temp.formName = ''
+      this.temp.formNumber = ''
     },
     handleCreate() {
       this.resetTemp()
@@ -544,7 +559,7 @@ export default {
     updateData() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'updateAsset'
+          this.requestParam.name = 'updateWater'
           this.requestParam.parammaps = this.temp
           PostDataByName(this.requestParam).then(response => {
             console.log(response)

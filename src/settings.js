@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '科湃腾前台模板',
+  title: '现代牧业设备管理平台',
 
   /**
    * @type {boolean} true | false

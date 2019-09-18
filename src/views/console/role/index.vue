@@ -138,7 +138,7 @@
 <script>
 import TreeSelect from '@/components/TreeSelect'
 import waves from '@/directive/waves' // waves directive
-import { isIntegerZero } from '@/validator'
+import { isIntegerZero } from '@/utils/validate'
 import { PostDataByName, GetDataByName, UpdateDataRelation, getRecuData } from '@/api/common'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'

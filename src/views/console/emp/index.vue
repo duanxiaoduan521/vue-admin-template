@@ -145,7 +145,7 @@
 <script>
 import TreeSelect from '@/components/TreeSelect'
 import waves from '@/directive/waves' // waves directive
-import { isIntegerZero } from '@/validator'
+import { isIntegerZero } from '@/utils/validate'
 import enterToNext from '@/directive/enterToNext' // enterToNext directive
 import { PostDataByName, GetDataByName, getRecuData } from '@/api/common'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination

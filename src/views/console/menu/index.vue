@@ -81,7 +81,7 @@
       </el-table>
 
       <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :close-on-click-modal="false">
-        <el-form ref="deptform" :rules="rules" :model="deptform" label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
+        <el-form ref="dataForm" :rules="rules" :model="deptform" label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
           <el-form-item label="上级菜单" prop="parentid">
             <tree-select
               :height="280"
@@ -178,7 +178,7 @@
 <script>
 import TreeSelect from '@/components/TreeSelect'
 import waves from '@/directive/waves' // waves directive
-import { isIntegerZero } from '@/validator'
+import { isIntegerZero } from '@/utils/validate'
 import { PostDataByName, getRecuData } from '@/api/common'
 import { MessageBox } from 'element-ui'
 export default {
@@ -315,12 +315,12 @@ export default {
       this.parent = this.parentmenu
       this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs['deptform'].clearValidate()
+        this.$refs['dataForm'].clearValidate()
         this.$refs.name.focus()
       })
     },
     createData() {
-      this.$refs['deptform'].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.requestParam.name = 'createMenu'
           this.requestParam.params = []
@@ -349,7 +349,7 @@ export default {
       })
     },
     createData_again() {
-      this.$refs['deptform'].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.requestParam.name = 'createMenu'
           this.requestParam.params = []
@@ -401,12 +401,12 @@ export default {
       this.menutypechange()
       this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs['deptform'].clearValidate()
+        this.$refs['dataForm'].clearValidate()
         this.$refs['name'].focus()
       })
     },
     updateData() {
-      this.$refs['deptform'].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.requestParam.name = 'updateMenu'
           this.requestParam.params = []

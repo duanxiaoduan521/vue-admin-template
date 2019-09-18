@@ -1,9 +1,9 @@
 <template>
   <div class="login-container">
-    <img src="@/assets/images/logo.png" alt class="logo"/>
-    <img src="@/assets/images/login-bujian.png" alt="" class="bujian"/>
+    <img src="@/assets/images/logo.png" alt class="logo">
+    <img src="@/assets/images/login-bujian.png" alt="" class="bujian">
     <div class="login">
-      <div class="logo"></div>
+      <div class="logo" />
       <el-form
         ref="loginForm"
         :model="loginForm"
@@ -15,7 +15,7 @@
         <div class="title-container">
           <h3 class="title">设备管理系统</h3>
           <b>Equipment Management System</b>
-          <hr />
+          <hr>
         </div>
 
         <el-form-item prop="username">
@@ -65,83 +65,83 @@
 </template>
 
 <script>
-import { validUsername } from "@/utils/validate";
+import { validUsername } from '@/utils/validate'
 
 export default {
-  name: "Login",
+  name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error("请输入正确的用户名"));
+        callback(new Error('请输入正确的用户名'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error("密码不能少于6个字符"));
+        callback(new Error('密码不能少于6个字符'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       loginForm: {
-        username: "admin",
-        password: "123456"
+        username: 'admin',
+        password: '123456'
       },
       loginRules: {
         username: [
-          { required: true, trigger: "blur", validator: validateUsername }
+          { required: true, trigger: 'blur', validator: validateUsername }
         ],
         password: [
-          { required: true, trigger: "blur", validator: validatePassword }
+          { required: true, trigger: 'blur', validator: validatePassword }
         ]
       },
       loading: false,
-      passwordType: "password",
+      passwordType: 'password',
       redirect: undefined
-    };
+    }
   },
   watch: {
     $route: {
       handler: function(route) {
-        this.redirect = route.query && route.query.redirect;
+        this.redirect = route.query && route.query.redirect
       },
       immediate: true
     }
   },
   methods: {
     showPwd() {
-      if (this.passwordType === "password") {
-        this.passwordType = "";
+      if (this.passwordType === 'password') {
+        this.passwordType = ''
       } else {
-        this.passwordType = "password";
+        this.passwordType = 'password'
       }
       this.$nextTick(() => {
-        this.$refs.password.focus();
-      });
+        this.$refs.password.focus()
+      })
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.$store
-            .dispatch("user/login", this.loginForm)
+            .dispatch('user/login', this.loginForm)
             .then(() => {
-              this.$router.push({ path: this.redirect || "/" });
-              this.loading = false;
+              this.$router.push({ path: this.redirect || '/' })
+              this.loading = false
             })
             .catch(() => {
-              this.loading = false;
-            });
+              this.loading = false
+            })
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
@@ -171,7 +171,7 @@ $cursor: #fff;
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 5px 5px 5px 15px;
-      color: #889aa4;
+      color: #000;
       height: 38px;
       caret-color: $cursor;
 
@@ -203,7 +203,8 @@ $light_gray: #000;
   min-height: 100%;
   width: 100%;
   position: relative;
-  background: url("../../assets/images/login-bg1.jpg") no-repeat;
+  background: url("../../assets/images/login-bg.jpg") no-repeat;
+  background-size:100%;
   overflow: hidden;
   .logo{
     padding: 5px;

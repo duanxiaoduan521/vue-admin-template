@@ -127,7 +127,7 @@
 <script>
 import TreeSelect from '@/components/TreeSelect'
 import waves from '@/directive/waves' // waves directive
-import { isIntegerZero } from '@/validator'
+import { isIntegerZero } from '@/utils/validate'
 import { PostDataByName, getRecuData } from '@/api/common'
 import { MessageBox } from 'element-ui'
 export default {

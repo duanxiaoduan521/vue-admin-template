@@ -163,7 +163,7 @@
 <script>
 import waves from '@/directive/waves' // waves directive
 import { PostDataByName, GetDataByName, getRecuData } from '@/api/common'
-import { isIntegerZero } from '@/validator'
+import { isIntegerZero } from '@/utils/validate'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
 export default {
