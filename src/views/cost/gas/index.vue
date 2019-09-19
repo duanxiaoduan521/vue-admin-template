@@ -47,7 +47,7 @@
       />
       <el-select
         v-model="getdataListParm.parammaps.formType"
-        placeholder="水类型"
+        placeholder="天然气类型"
         style="width: 140px;"
         class="filter-item"
         clearable
@@ -77,26 +77,16 @@
         v-waves
         class="filter-item"
         type="primary"
+        icon="el-icon-upload2"
+        @click="handleFilter"
+      >导入</el-button>
+      <el-button
+        v-waves
+        class="filter-item"
+        type="primary"
         icon="el-icon-download"
         @click="handleDownload"
       >导出</el-button>
-      <el-upload
-        style="display: inline-block;"
-        :headers="headers"
-        :data="uploadData"
-        :action="uploadExcelUrl"
-        :show-file-list="false"
-        :before-upload="beforeImportExcel"
-        :on-success="handleImportExcelSuccess"
-      >
-        <el-button
-          v-waves
-          class="filter-item"
-          type="primary"
-          icon="el-icon-upload2"
-          @click="handleFilter"
-        >导入</el-button>
-      </el-upload>
     </div>
 
     <el-table
@@ -123,18 +113,18 @@
           <span>{{ scope.row.departName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="编号" width="150px" align="center">
+      <el-table-column label="天然气表编号" width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.waterNumber }}</span>
+          <span>{{ scope.row.gasNumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="表名称" width="150px" align="center">
+      <el-table-column label="天然气表名称" width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.waterName }}</span>
+          <span>{{ scope.row.gasName }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="类型" min-width="110px" align="center">
+      <el-table-column label="天然气类型" min-width="110px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.useType }}</span>
         </template>
@@ -151,7 +141,7 @@
       </el-table-column>
       <el-table-column label="当天用水量" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.waterConsumption }}</span>
+          <span>{{ scope.row.gasConsumption }}</span>
         </template>
       </el-table-column>
       <el-table-column label="单价" min-width="110px" align="center">
@@ -181,7 +171,11 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
+          <el-button
+            type="success"
+            size="mini"
+            @click="handleUpdate(row)"
+          >编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -199,10 +193,16 @@
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
     >
-      <el-form ref="temp" :rules="rules" :model="temp" label-position="right" label-width="110px">
+      <el-form
+        ref="temp"
+        :rules="rules"
+        :model="temp"
+        label-position="right"
+        label-width="120px"
+      >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="水表编号：" prop="formNumber">
+            <el-form-item label="天然气表编号：" prop="formNumber">
               <el-autocomplete
                 ref="formNumber"
                 v-model="temp.formNumber"
@@ -216,7 +216,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="水表名称：" prop="formName">
+            <el-form-item label="天然气表名称：" prop="formName">
               <el-autocomplete
                 ref="formName"
                 v-model="temp.formName"
@@ -232,11 +232,15 @@
 
           <el-col :span="8">
             <el-form-item label="上次值(m³)：" prop="aAmount">
-              <el-input ref="aAmount" v-model="temp.aAmount" disabled />
+              <el-input
+                ref="aAmount"
+                v-model="temp.aAmount"
+                disabled
+              />
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="水类型：">
+            <el-form-item label="天然气类型：">
               <span>{{ temp.useType }}</span>
             </el-form-item>
           </el-col>
@@ -257,17 +261,27 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="当前值(m³)：" prop="endAmount">
-              <el-input ref="endAmount" v-model="temp.endAmount" />
+              <el-input
+                ref="endAmount"
+                v-model="temp.endAmount"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="单价(元)：" prop="price1">
-              <el-input ref="price" v-model="temp.price1" :disabled="dialogStatus==='update'" />
+              <el-input
+                ref="price"
+                v-model="temp.price1"
+                :disabled="dialogStatus==='update'"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="备注：" prop="note">
-              <el-input ref="note" v-model="temp.note" />
+              <el-input
+                ref="note"
+                v-model="temp.note"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -315,16 +329,14 @@
 // 引入
 require('script-loader!file-saver')
 import { GetDataByName, GetDataByNames, PostDataByName } from '@/api/common'
-// import {  DownloadExcel, GetDataByNameXlsx } from '@/api/common'
 import waves from '@/directive/waves' // waves directive
 // eslint-disable-next-line no-unused-vars
-// import { isIntegerZero } from '@/utils/validate.js'
+import { validateEMail } from '@/utils/validate.js'
 import { parseTime } from '@/utils/index.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
-import { getToken } from '@/utils/auth'
 export default {
-  name: 'Water',
+  name: 'Basics',
   components: { Pagination },
   directives: { waves },
   data() {
@@ -335,14 +347,14 @@ export default {
       listLoading: true,
 
       requestParam: {
-        name: 'insertWater',
+        name: 'insertGas',
         offset: 0,
         pagecount: 0,
         parammaps: {}
       },
       // 1-2:table&搜索传参
       getdataListParm: {
-        name: 'getWaterList',
+        name: 'getGasList',
         page: 1,
         offset: 1,
         pagecount: 10,
@@ -363,12 +375,7 @@ export default {
       findAllEmploye: [],
       // 2-1.请求下拉框接口
       requestParams: [
-        {
-          name: 'getDictByName',
-          offset: 0,
-          pagecount: 0,
-          params: ['水表类型']
-        },
+        { name: 'getDictByName', offset: 0, pagecount: 0, params: ['天然气表类型'] },
         { name: 'findAllAssetType', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllPasture', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllDepart', offset: 0, pagecount: 0, params: [] },
@@ -380,11 +387,10 @@ export default {
         offset: 1,
         pagecount: 10,
         returntype: 'Map',
-        parammaps: {}
+        parammaps: { }
       },
 
-      temp: {
-        pastureName: '',
+      temp: { pastureName: '',
         useType: '',
         departName: '',
         aAmount: '',
@@ -401,52 +407,15 @@ export default {
       dialogPvVisible: false,
       // 校验规则
       rules: {
-        endAmount: [{ type: 'number', required: true, validator: (rule, value, callback) => {
-          if (!value) {
-            callback(new Error('不能为空'))
-          }
-          if (value < 0) {
-            callback(new Error('必须大于0'))
-          } else if (value < this.temp.aAmount) {
-            callback(new Error('必须大于上次值'))
-          }
-          setTimeout(() => {
-            const re = /^\d+$/ // /^[0-9]*[1-9][0-9]*$/
-            const rsCheck = re.test(value)
-            if (!rsCheck) {
-              callback(new Error('请输入整数'))
-            } else {
-              callback()
-            }
-          }, 0)
-        }, trigger: 'blur' }],
+        assetNumber: [{ required: true, message: '必填', trigger: 'blur' }
+        // 引入自定义校验并使用
+          // { validator: validateEMail, trigger: 'blur' }
+        ],
         equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
       },
       MeasureListbyfilter: [],
-      rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
+      rowStyle: { maxHeight: 40 + 'px', height: 30 + 'px' },
       cellStyle: { padding: 0 + 'px' }
-    }
-  },
-
-  computed: {
-    // 设置请求头
-    headers() {
-      return {
-        // 设置token
-        token: getToken()
-      }
-    },
-    uploadData() {
-      return {
-        name: 'insertWatersMeasure',
-        importParams: '编号,牧场,表名称,表编号,本次值,上次值,单价,录入人,备注,jwt_username',
-        sheetname: 'SheetJS'
-      }
-    },
-    // 设置上传地址
-    uploadExcelUrl() {
-      // process.env.VUE_APP_BASE_API是服务器的路径，也是axios的基本路径
-      return process.env.VUE_APP_BASE_API + 'authdata/ImportExcel'
     }
   },
   created() {
@@ -455,110 +424,29 @@ export default {
   },
 
   methods: {
-    isIntegerZero_(rule, value, callback) {
-      if (value === '' || value === undefined || value === null) {
-        return callback(new Error('输入不可以为空'))
-      }
-      if (value.length === 0) {
-        return callback(new Error('输入不可以为空'))
-      }
-      setTimeout(() => {
-        const re = /^\d+$/ // /^[0-9]*[1-9][0-9]*$/
-        const rsCheck = re.test(value)
-        if (!rsCheck) {
-          callback(new Error('请输入整数'))
-        } else {
-          callback()
-        }
-      }, 0)
-    },
     handleDownload() {
-      /*       this.requestParam.name = 'meteringOutfit'
-      this.requestParam.returntype = 'xlsx'
-      this.requestParam.parammaps.formType = '水表'
-      GetDataByNameXlsx(this.requestParam).then(response => {
-        this.$nextTick(() => {
-          DownloadExcel(response, this.requestParam.parammaps.formType)
-        }) */
       this.requestParam.name = 'meteringOutfit'
-      this.requestParam.parammaps.formType = '水表'
+      //  this.requestParam.returntype = 'xlsx'
+      this.requestParam.parammaps.formType = '天然气表'
       GetDataByName(this.requestParam).then(response => {
-        this.$nextTick(() => {
           import('@/vendor/Export2Excel').then(excel => {
-            const list1 = response.data.list
-            const tHeader = [
-              '编号', '牧场', '表名称', '表编号', '上次值', '本次值', '单价', '录入人', '备注'
-            ]
-            const filterVal = [
-              '编号', '牧场', '表名称', '表编号', '上次值', '本次值', '单价', '录入人', '备注'
-            ]
-            const data1 = this.formatJson(filterVal, list1)
+            //  const tHeader = ['Id', 'Title', 'Author', 'Readings', 'Date']
+            // const filterVal = ['id', 'title', 'author', 'pageviews', 'display_time']
+            //  const data1 = this.formatJson(filterVal, list1)
+            // const list1 = response.data.list
+            //  const data1 = this.formatJson(filterVal, list1)
             excel.export_json_to_excel({
-              header: tHeader,
-              data: data1,
-              filename: this.requestParam.parammaps.formType,
+              // data1,
+              filename: 'meteringOutfit',
               autoWidth: true,
               bookType: 'xlsx'
             })
           })
-        })
       })
-    },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v =>
-        filterVal.map(j => {
-          if (j === 'timestamp') {
-            return parseTime(v[j])
-          } else {
-            return v[j]
-          }
-        })
-      )
-    },
-    beforeImportExcel(file) {
-      /*   const isExcel =
-        file.type ===
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' */
-      const isLt2M = file.size / 1024 / 1024 < 2
-      /*  if (!isExcel) {
-        this.$message.error(
-          '上传文件必须是Xlsx格式!建议先导出，再修改导出文件再导入！'
-        )
-      }*/
-      if (!isLt2M) {
-        this.$message.error('上传文件大小不能超过 2MB!')
-      }
-      return isLt2M
-    },
-    handleImportExcelSuccess(res, file) {
-    //  if (res.msg === 'ok') {
-      if (res.msg === 'ok') {
-        this.$message({
-          title: '成功',
-          message: '导入成功:' + res.data.success + '条!',
-          type: 'success',
-          duration: 2000
-        })
-        if (res.data.err_count > 0) {
-          this.$notify({
-            title: '失败',
-            message: '导入失败:' + res.data.err_count + '条!',
-            type: 'danger',
-            duration: 2000
-          })
-        }
-      } else {
-        this.$notify({
-          title: '失败',
-          message: '上传失败',
-          type: 'danger',
-          duration: 2000
-        })
-      }
     },
     formNumberSearch(queryString, cb) {
       this.requestFilterParams.name = 'getMeasureListbyfilter'
-      this.requestFilterParams.parammaps['formType'] = '水表'
+      this.requestFilterParams.parammaps['formType'] = '天然气表'
       this.requestFilterParams.parammaps['formNumber'] = queryString
       this.requestFilterParams.parammaps['formName'] = ''
       GetDataByName(this.requestFilterParams).then(response => {
@@ -567,7 +455,7 @@ export default {
     },
     formNameSearch(queryString, cb) {
       this.requestFilterParams.name = 'getMeasureListbyfilter'
-      this.requestFilterParams.parammaps['formType'] = '水表'
+      this.requestFilterParams.parammaps['formType'] = '天然气表'
       this.requestFilterParams.parammaps['formNumber'] = ''
       this.requestFilterParams.parammaps['formName'] = queryString
       GetDataByName(this.requestFilterParams).then(response => {
@@ -575,7 +463,7 @@ export default {
       })
     },
     handleformNumberSelect() {
-      this.requestFilterParams.name = 'findByNMeasureWater'
+      this.requestFilterParams.name = 'findByNMeasureGas'
       this.requestFilterParams.parammaps['formNumber'] = this.temp.formNumber
       this.requestFilterParams.parammaps['formName'] = ''
       GetDataByName(this.requestFilterParams).then(response => {
@@ -593,7 +481,7 @@ export default {
       })
     },
     handleformNameSelect() {
-      this.requestFilterParams.name = 'findByNMeasureWater'
+      this.requestFilterParams.name = 'findByNMeasureGas'
       this.requestFilterParams.parammaps['formNumber'] = ''
       this.requestFilterParams.parammaps['formName'] = this.temp.formName
       GetDataByName(this.requestFilterParams).then(response => {
@@ -666,7 +554,7 @@ export default {
     createData() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'insertWater'
+          this.requestParam.name = 'insertGas'
           this.requestParam.parammaps = this.temp
 
           PostDataByName(this.requestParam).then(response => {
@@ -703,7 +591,7 @@ export default {
     updateData() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'updateWater'
+          this.requestParam.name = 'updateGas'
           this.requestParam.parammaps = this.temp
           PostDataByName(this.requestParam).then(response => {
             console.log(response)
@@ -733,30 +621,27 @@ export default {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'
+      }).then(() => {
+        this.requestParam.name = 'deleteGas'
+        this.requestParam.parammaps = {}
+        this.requestParam.parammaps['id'] = row.id
+        PostDataByName(this.requestParam).then(() => {
+          this.getList()
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
-        .then(() => {
-          this.requestParam.name = 'deleteWater'
-          this.requestParam.parammaps = {}
-          this.requestParam.parammaps['id'] = row.id
-          PostDataByName(this.requestParam).then(() => {
-            this.getList()
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
     }
   }
 }
 </script>
-

@@ -15,17 +15,13 @@
           :value="item.name"
         />
       </el-select>
-      <el-input
-        v-model="getdataListParm.parammaps.stockNumber"
-        placeholder="编号"
-        style="width: 140px;"
-        class="filter-item"
-      />
-      <el-input
-        v-model="getdataListParm.parammaps.stockName"
-        placeholder="名称"
-        style="width: 140px;"
-        class="filter-item"
+      <el-date-picker
+        v-model="getdataListParm.parammaps.vintage"
+        type="year"
+        placeholder="年份"
+        style="width:170px;top:-3px;"
+        format="yyyy"
+        value-format="yyyy"
       />
       <el-button
         v-waves
@@ -34,25 +30,13 @@
         icon="el-icon-search"
         @click="handleFilter"
       >搜索</el-button>
-      <el-button
+      <!-- <el-button
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
         icon="el-icon-edit"
         @click="handleCreate"
-      >添加</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="success"
-        icon="el-icon-upload2"
-      >导入</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="info"
-        icon="el-icon-download"
-      >导出</el-button>
+      >添加</el-button> -->
     </div>
 
     <el-table
@@ -74,72 +58,109 @@
           <span>{{ scope.row.pastureName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="编号" prop="id" sortable="custom" align="center" width="150">
+      <el-table-column label="设备类型" align="center" width="150">
         <template slot-scope="scope">
-          <span>{{ scope.row.stockNumber }}</span>
+          <span>{{ scope.row.typeName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="名称" width="150px" align="center">
+      <el-table-column label="设备名称" width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.stockName }}</span>
+          <span>{{ scope.row.assetName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="备件类型" min-width="110px" align="center">
+      <el-table-column label="保养项目" width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.categoryName }}</span>
+          <span>{{ scope.row.program }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="单位" min-width="110px" align="center">
+
+      <el-table-column label="保养周期" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unit }}</span>
+          <span>{{ scope.row.time }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="当前库存" min-width="110px" align="center">
+      <el-table-column label="上次保养时间" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.repertory }}</span>
+          <span>{{ scope.row.lastUpkeepPeriod }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="最低库存" min-width="110px" align="center">
+      <el-table-column label="下次保养时间" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.minRepertory }}</span>
+          <span>{{ scope.row.nextUpkeepPeriod }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="最高库存" min-width="110px" align="center">
+      <el-table-column label="最新进度条" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.maxRepertory }}</span>
+          <span>{{ scope.row.progress }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="供应商" min-width="110px" align="center">
+      <el-table-column label="1" min-width="70%" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.provider }}</span>
+          <span>{{ scope.row.m1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="用途" min-width="110px" align="center">
+      <el-table-column label="2" min-width="70%" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.purpose }}</span>
+          <span>{{ scope.row.m2 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="日期" min-width="110px" align="center">
+      <el-table-column label="3" min-width="70%" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.date }}</span>
+          <span>{{ scope.row.m3 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="单价" min-width="110px" align="center">
+      <el-table-column label="4" min-width="70%" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.price }}</span>
+          <span>{{ scope.row.m4 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="预警信息" min-width="110px" align="center">
+      <el-table-column label="5" min-width="70%" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.employeName }}</span>
+          <span>{{ scope.row.m5 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column label="6" min-width="70%" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.m6 }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="7" min-width="70%" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.m7 }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="8" min-width="70%" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.m8 }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="9" min-width="70%" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.m9 }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="10" min-width="70%" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.m10 }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="11" min-width="70%" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.m11 }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="12" min-width="70%" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.m12 }}</span>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">卡片</el-button>
           <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row)">删除</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <!-- 分页 -->
     <pagination
@@ -165,88 +186,15 @@
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="备件编号" prop="stockNumber">
-              <el-input ref="stockNumber" v-model="temp.stockNumber" />
+            <el-form-item label="资产编号" prop="assetNumber">
+              <el-input ref="assetNumber" v-model="temp.assetNumber" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="名称" prop="sname">
-              <el-input ref="sname" v-model="temp.sname" />
+            <el-form-item label="设备名称" prop="equipmentName">
+              <el-input ref="equipmentName" v-model="temp.equipmentName" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="规格" prop="specification">
-              <el-input ref="specification" v-model="temp.specification" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="备注" prop="note">
-              <el-input ref="note" v-model="temp.note" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="供应商" prop="providerId">
-              <el-autocomplete
-                v-model="state1"
-                value-key="name"
-                class="inline-input"
-                :fetch-suggestions="providerSearch"
-                placeholder="请输入内容"
-                @select="handleSelect"
-              />
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="8">
-            <el-form-item label="单位" prop="unit">
-              <el-input ref="unit" v-model="temp.unit" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="数量" prop="amount">
-              <el-input ref="amount" v-model="temp.amount" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="单价" prop="price">
-              <el-input ref="price" v-model="temp.price" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="当前库存" prop="repertory">
-              <el-input ref="repertory" v-model="temp.repertory" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="入库时间" prop="entranceDate">
-              <el-date-picker
-                v-model="temp.entranceDate"
-                type="date"
-                placeholder="入库时间"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                style="width:170px;"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="最低库存" prop="minRepertory">
-              <el-input ref="minRepertory" v-model="temp.minRepertory" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="最高库存" prop="maxRepertory">
-              <el-input ref="maxRepertory" v-model="temp.maxRepertory" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="状态" prop="status">
               <el-select v-model="temp.status" placeholder="状态" class="filter-item">
@@ -259,6 +207,32 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="规格" prop="specification">
+              <el-input ref="specification" v-model="temp.specification" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="品牌" prop="providerId">
+              <el-autocomplete
+                v-model="state1"
+                value-key="name"
+                class="inline-input"
+                :fetch-suggestions="providerSearch"
+                placeholder="请输入内容"
+                @select="handleSelect"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="用途" prop="purpose">
+              <el-input ref="purpose" v-model="temp.purpose" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="牧场" prop="pastureId">
               <el-select v-model="temp.pastureId" placeholder="牧场" class="filter-item">
@@ -272,13 +246,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="用途" prop="purpose">
-              <el-input ref="purpose" v-model="temp.purpose" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
             <el-form-item label="部门" prop="departmentId">
               <el-select v-model="temp.departmentId" placeholder="部门" class="filter-item">
                 <el-option
@@ -291,20 +258,100 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="预警信息" prop="record">
-              <el-input ref="record" v-model="temp.record" />
+            <el-form-item label="负责人" prop="employeId">
+              <el-select v-model="temp.employeId" placeholder="负责人" class="filter-item">
+                <el-option
+                  v-for="item in findAllEmploye"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="购置日期" prop="purchaseDate">
+              <el-date-picker
+                v-model="temp.purchaseDate"
+                type="date"
+                placeholder="选择日期"
+                style="width:170px;"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+              />
+              <!-- <el-input ref="deptname" v-model="temp.purchaseDate" @keyup.enter.native="deptenter" /> -->
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="备件类型" prop="categoryName">
-              <el-select v-model="temp.categoryName" placeholder="备件类型" class="filter-item">
+            <el-form-item label="入场日期" prop="entranceDate">
+              <el-date-picker
+                v-model="temp.entranceDate"
+                type="date"
+                placeholder="选择日期"
+                style="width:170px;"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="牧场设备编号" prop="equipmentNumber">
+              <el-input ref="equipmentNumber" v-model="temp.equipmentNumber" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="年保养费用" prop="yearUpkeepCost">
+              <el-input ref="yearUpkeepCost" v-model="temp.yearUpkeepCost" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="年维修费用" prop="yearMaintainDost">
+              <el-input ref="yearMaintainDost" v-model="temp.yearMaintainDost" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="原值" prop="yuanzhi">
+              <el-input ref="yuanzhi" v-model="temp.yuanzhi" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="设备类别" prop="typeName">
+              <el-select v-model="temp.assTypeId" placeholder="设备类别" class="filter-item">
                 <el-option
-                  v-for="item in findAllCategory"
+                  v-for="item in findAllAssetType"
                   :key="item.id"
+                  :label="item.typeName"
                   :value="item.id"
-                  :label="item.categoryName"
                 />
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="财务编号" prop="financeNumber">
+              <el-input
+                ref="financeNumber"
+                v-model="temp.financeNumber"
+                @keyup.enter.native="deptenter"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="录入时间" prop="inputDatetime">
+              <el-date-picker
+                v-model="temp.inputDatetime"
+                type="date"
+                placeholder="录入时间"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                disabled
+                style="width:170px;"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -333,7 +380,7 @@ import { validateEMail } from '@/utils/validate.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
 export default {
-  name: 'Custom',
+  name: 'MilkMaintenance',
   components: { Pagination },
   directives: { waves },
   data() {
@@ -351,23 +398,15 @@ export default {
       },
       // 1-2:table&搜索传参
       getdataListParm: {
-        name: 'getStockList',
+        name: 'getMilkingPlanList',
         page: 1,
         offset: 1,
         pagecount: 10,
         returntype: 'Map',
         parammaps: {
-          stockNumber: '',
-          stockName: ''
+          pastureName: '',
+          vintage: ''
         }
-      },
-      getdataProvider: {
-        name: 'getStockList',
-        page: 1,
-        offset: 1,
-        pagecount: 10,
-        returntype: 'Map',
-        params: []
       },
       // 2-3：下拉框请求后数据加入[]
       findAllProvider: [],
@@ -376,7 +415,6 @@ export default {
       findAllDepart: [],
       findAllEmploye: [],
       getDictByName: [],
-      findAllCategory: [],
       // 2-1.请求下拉框接口
       requestParams: [
         { name: 'findAllProvider', offset: 0, pagecount: 0, params: [] },
@@ -384,13 +422,7 @@ export default {
         { name: 'findAllPasture', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllDepart', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllEmploye', offset: 0, pagecount: 0, params: [] },
-        {
-          name: 'getDictByName',
-          offset: 0,
-          pagecount: 0,
-          params: ['资产状态']
-        },
-        { name: 'findAllCategory', offset: 0, pagecount: 0, params: [] }
+        { name: 'getDictByName', offset: 0, pagecount: 0, params: ['资产状态'] }
       ],
 
       temp: {},
@@ -423,7 +455,9 @@ export default {
     // 供应商模糊查询
     providerSearch(queryString, cb) {
       var returnList = this.findAllProvider
-      var results = queryString ? returnList.filter(this.createFilter(queryString)) : returnList
+      var results = queryString
+        ? returnList.filter(this.createFilter(queryString))
+        : returnList
       // 调用 callback 返回建议列表的数据
       cb(results)
     },
@@ -460,11 +494,6 @@ export default {
         this.findAllDepart = response.data.findAllDepart.list
         this.findAllEmploye = response.data.findAllEmploye.list
         this.getDictByName = response.data.getDictByName.list
-        this.findAllCategory = response.data.findAllCategory.list
-        // for (var i = 0; i < this.findAllProvider.length; i++) {
-        //   this.findAllProvider[i].value = this.findAllProvider[i].name
-        // }
-        console.log(this.findAllCategory)
       })
     },
     handleFilter() {
@@ -495,7 +524,7 @@ export default {
     createData() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'insertStock'
+          this.requestParam.name = 'insertAsset'
           this.requestParam.parammaps = this.temp
 
           PostDataByName(this.requestParam).then(response => {
@@ -532,7 +561,7 @@ export default {
     updateData() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'updateStock'
+          this.requestParam.name = 'updateAsset'
           this.requestParam.parammaps = this.temp
           PostDataByName(this.requestParam).then(response => {
             console.log(response)
@@ -564,7 +593,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.requestParam.name = 'deleteStock'
+          this.requestParam.name = 'deleteAsset'
           this.requestParam.parammaps = {}
           this.requestParam.parammaps['id'] = row.id
           PostDataByName(this.requestParam).then(() => {

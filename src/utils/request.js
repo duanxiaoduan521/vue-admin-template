@@ -80,7 +80,11 @@ service.interceptors.response.use(
           location.reload()
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
+      if (res.code === undefined) {
+        return res
+      } else {
+        return Promise.reject(new Error(res.message || 'Error'))
+      }
     } else {
       return res
     }

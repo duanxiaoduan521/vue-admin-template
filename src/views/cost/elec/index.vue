@@ -47,7 +47,7 @@
       />
       <el-select
         v-model="getdataListParm.parammaps.formType"
-        placeholder="水类型"
+        placeholder="类型"
         style="width: 140px;"
         class="filter-item"
         clearable
@@ -73,6 +73,30 @@
         icon="el-icon-edit"
         @click="handleCreate"
       >添加</el-button>
+      <el-button
+        v-waves
+        class="filter-item"
+        type="primary"
+        icon="el-icon-download"
+        @click="handleDownload"
+      >导出</el-button>
+      <el-upload
+        style="display: inline-block;"
+        :headers="headers"
+        :data="uploadData"
+        :action="uploadExcelUrl"
+        :show-file-list="false"
+        :before-upload="beforeImportExcel"
+        :on-success="handleImportExcelSuccess"
+      >
+        <el-button
+          v-waves
+          class="filter-item"
+          type="primary"
+          icon="el-icon-upload2"
+          @click="handleFilter"
+        >导入</el-button>
+      </el-upload>
     </div>
 
     <el-table
@@ -99,14 +123,14 @@
           <span>{{ scope.row.departName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="编号" width="150px" align="center">
+      <el-table-column label="电表编号" width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.waterNumber }}</span>
+          <span>{{ scope.row.elecNumber }}</span>
         </template>
       </el-table-column>
       <el-table-column label="表名称" width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.waterName }}</span>
+          <span>{{ scope.row.elecName }}</span>
         </template>
       </el-table-column>
 
@@ -125,14 +149,19 @@
           <span>{{ scope.row.endAmount }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="当天用水量" min-width="110px" align="center">
+      <el-table-column label="当天用电量" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.waterConsumption }}</span>
+          <span>{{ scope.row.elecConsumption }}</span>
         </template>
       </el-table-column>
       <el-table-column label="单价" min-width="110px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.price }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="电率" min-width="110px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.rate }}</span>
         </template>
       </el-table-column>
       <el-table-column label="当天费用" min-width="110px" align="center">
@@ -155,18 +184,13 @@
           <span>{{ scope.row.note }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button
             type="success"
             size="mini"
             @click="handleUpdate(row)"
           >编辑</el-button>
-          <el-button
-            type="danger"
-            size="mini"
-            @click="handleDelete(row)"
-          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -189,23 +213,34 @@
         :rules="rules"
         :model="temp"
         label-position="right"
-        label-width="100px"
-        style="width: 800px; margin-left:50px;"
+        label-width="110px"
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="水表编号：" prop="formNumber">
-              <el-input
+            <el-form-item label="电表编号：" prop="formNumber">
+              <el-autocomplete
                 ref="formNumber"
                 v-model="temp.formNumber"
+                value-key="formNumber"
+                class="inline-input"
+                :fetch-suggestions="formNumberSearch"
+                placeholder="请输入内容"
+                :disabled="dialogStatus==='update'"
+                @select="handleformNumberSelect"
               />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="水表名称：" prop="formName">
-              <el-input
+            <el-form-item label="电表名称：" prop="formName">
+              <el-autocomplete
                 ref="formName"
                 v-model="temp.formName"
+                value-key="formName"
+                class="inline-input"
+                :fetch-suggestions="formNameSearch"
+                placeholder="请输入内容"
+                :disabled="dialogStatus==='update'"
+                @select="handleformNameSelect"
               />
             </el-form-item>
           </el-col>
@@ -215,25 +250,26 @@
               <el-input
                 ref="aAmount"
                 v-model="temp.aAmount"
+                disabled
               />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="水类型：">
+          <el-col :span="6">
+            <el-form-item label="类型：">
               <span>{{ temp.useType }}</span>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="牧场：">
               <span>{{ temp.pastureName }}</span>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="部门：">
               <span>{{ temp.departName }}</span>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="责任人：">
               <span>{{ temp.employeName1 }}</span>
             </el-form-item>
@@ -251,6 +287,7 @@
               <el-input
                 ref="price"
                 v-model="temp.price1"
+                :disabled="dialogStatus==='update'"
               />
             </el-form-item>
           </el-col>
@@ -271,7 +308,7 @@
                 format="yyyy-MM-dd"
                 value-format="yyyy-MM-dd"
                 disabled
-                style="width:170px;"
+                style="width:100%;"
               />
             </el-form-item>
           </el-col>
@@ -305,14 +342,18 @@
 
 <script>
 // 引入
+require('script-loader!file-saver')
 import { GetDataByName, GetDataByNames, PostDataByName } from '@/api/common'
+// import {  DownloadExcel, GetDataByNameXlsx } from '@/api/common'
 import waves from '@/directive/waves' // waves directive
 // eslint-disable-next-line no-unused-vars
-import { validateEMail } from '@/utils/validate.js'
+// import { isIntegerZero } from '@/utils/validate.js'
+import { parseTime } from '@/utils/index.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
+import { getToken } from '@/utils/auth'
 export default {
-  name: 'Basics',
+  name: 'Elec',
   components: { Pagination },
   directives: { waves },
   data() {
@@ -323,14 +364,14 @@ export default {
       listLoading: true,
 
       requestParam: {
-        name: 'insertWater',
+        name: 'insertElectricity',
         offset: 0,
         pagecount: 0,
         parammaps: {}
       },
       // 1-2:table&搜索传参
       getdataListParm: {
-        name: 'getWaterList',
+        name: 'getElecList',
         page: 1,
         offset: 1,
         pagecount: 10,
@@ -351,41 +392,28 @@ export default {
       findAllEmploye: [],
       // 2-1.请求下拉框接口
       requestParams: [
-        { name: 'getDictByName', offset: 0, pagecount: 0, params: ['水表类型'] },
+        { name: 'getDictByName', offset: 0, pagecount: 0, params: ['电表类型'] },
         { name: 'findAllAssetType', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllPasture', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllDepart', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllEmploye', offset: 0, pagecount: 0, params: [] }
       ],
-      // 状态下拉数据
-      filterstatusoptions: [
-        {
-          value: '正常',
-          label: '正常'
-        },
-        {
-          value: '闲置',
-          label: '闲置'
-        },
-        {
-          value: '封存',
-          label: '封存'
-        },
-        {
-          value: '改造',
-          label: '改造'
-        },
-        {
-          value: '报废',
-          label: '报废'
-        },
-        {
-          value: '租赁',
-          label: '租赁'
-        }
-      ],
+      requestFilterParams: {
+        name: 'getElecList',
+        page: 1,
+        offset: 1,
+        pagecount: 10,
+        returntype: 'Map',
+        parammaps: { }
+      },
 
-      temp: {
+      temp: { pastureName: '',
+        useType: '',
+        departName: '',
+        aAmount: '',
+        employeName1: '',
+        formName: '',
+        formNumber: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -396,14 +424,52 @@ export default {
       dialogPvVisible: false,
       // 校验规则
       rules: {
-        assetNumber: [{ required: true, message: '必填', trigger: 'blur' }
-        // 引入自定义校验并使用
-          // { validator: validateEMail, trigger: 'blur' }
-        ],
+        endAmount: [{ type: 'number', required: true, validator: (rule, value, callback) => {
+          if (!value) {
+            callback(new Error('不能为空'))
+          }
+          if (value < 0) {
+            callback(new Error('必须大于0'))
+          } else if (value < this.temp.aAmount) {
+            callback(new Error('必须大于上次值'))
+          }
+          setTimeout(() => {
+            const re = /^\d+$/ // /^[0-9]*[1-9][0-9]*$/
+            const rsCheck = re.test(value)
+            if (!rsCheck) {
+              callback(new Error('请输入整数'))
+            } else {
+              callback()
+            }
+          }, 0)
+        }, trigger: 'blur' }],
         equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
       },
-      rowStyle: { maxHeight: 40 + 'px', height: 30 + 'px' },
+      MeasureListbyfilter: [],
+      rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' }
+    }
+  },
+
+  computed: {
+    // 设置请求头
+    headers() {
+      return {
+        // 设置token
+        token: getToken()
+      }
+    },
+    uploadData() {
+      return {
+        name: 'insertWatersMeasure',
+        importParams: '编号,牧场,表名称,表编号,本次值,上次值,单价,录入人,备注,电率,jwt_username',
+        sheetname: 'SheetJS'
+      }
+    },
+    // 设置上传地址
+    uploadExcelUrl() {
+      // process.env.VUE_APP_BASE_API是服务器的路径，也是axios的基本路径
+      return process.env.VUE_APP_BASE_API + 'authdata/ImportExcel'
     }
   },
   created() {
@@ -412,6 +478,160 @@ export default {
   },
 
   methods: {
+    isIntegerZero_(rule, value, callback) {
+      if (value === '' || value === undefined || value === null) {
+        return callback(new Error('输入不可以为空'))
+      }
+      if (value.length === 0) {
+        return callback(new Error('输入不可以为空'))
+      }
+      setTimeout(() => {
+        const re = /^\d+$/ // /^[0-9]*[1-9][0-9]*$/
+        const rsCheck = re.test(value)
+        if (!rsCheck) {
+          callback(new Error('请输入整数'))
+        } else {
+          callback()
+        }
+      }, 0)
+    },
+    handleDownload() {
+      /*       this.requestParam.name = 'meteringOutfit'
+      this.requestParam.returntype = 'xlsx'
+      this.requestParam.parammaps.formType = '水表'
+      GetDataByNameXlsx(this.requestParam).then(response => {
+        this.$nextTick(() => {
+          DownloadExcel(response, this.requestParam.parammaps.formType)
+        }) */
+      this.requestParam.name = 'elecMeteringOutfit'
+      //  this.requestParam.parammaps.formType = '水表'
+      GetDataByName(this.requestParam).then(response => {
+        this.$nextTick(() => {
+          import('@/vendor/Export2Excel').then(excel => {
+            const list1 = response.data.list
+            const tHeader = [
+              '编号', '牧场', '表名称', '表编号', '上次值', '本次值', '单价', '电率', '录入人', '备注'
+            ]
+            const filterVal = [
+              '编号', '牧场', '表名称', '表编号', '上次值', '本次值', '单价', '电率', '录入人', '备注'
+            ]
+            const data1 = this.formatJson(filterVal, list1)
+            excel.export_json_to_excel({
+              header: tHeader,
+              data: data1,
+              filename: '水表',
+              autoWidth: true,
+              bookType: 'xlsx'
+            })
+          })
+        })
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v =>
+        filterVal.map(j => {
+          if (j === 'timestamp') {
+            return parseTime(v[j])
+          } else {
+            return v[j]
+          }
+        })
+      )
+    },
+    beforeImportExcel(file) {
+      /*   const isExcel =
+        file.type ===
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' */
+      const isLt2M = file.size / 1024 / 1024 < 2
+      /*  if (!isExcel) {
+        this.$message.error(
+          '上传文件必须是Xlsx格式!建议先导出，再修改导出文件再导入！'
+        )
+      }*/
+      if (!isLt2M) {
+        this.$message.error('上传文件大小不能超过 2MB!')
+      }
+      return isLt2M
+    },
+    handleImportExcelSuccess(res, file) {
+    //  if (res.msg === 'ok') {
+      if (res.msg === 'ok') {
+        this.$message({
+          title: '成功',
+          message: '导入成功:' + res.data.success + '条!',
+          type: 'success',
+          duration: 2000
+        })
+        if (res.data.err_count > 0) {
+          this.$notify({
+            title: '失败',
+            message: '导入失败:' + res.data.err_count + '条!',
+            type: 'danger',
+            duration: 2000
+          })
+        }
+      } else {
+        this.$notify({
+          title: '失败',
+          message: '上传失败',
+          type: 'danger',
+          duration: 2000
+        })
+      }
+    },
+    formNumberSearch(queryString, cb) {
+      this.requestFilterParams.name = 'getMeasureListbyfilter'
+      this.requestFilterParams.parammaps['formType'] = '电表'
+      this.requestFilterParams.parammaps['formNumber'] = queryString
+      this.requestFilterParams.parammaps['formName'] = ''
+      GetDataByName(this.requestFilterParams).then(response => {
+        cb(response.data.list)
+      })
+    },
+    formNameSearch(queryString, cb) {
+      this.requestFilterParams.name = 'getMeasureListbyfilter'
+      this.requestFilterParams.parammaps['formType'] = '电表'
+      this.requestFilterParams.parammaps['formNumber'] = ''
+      this.requestFilterParams.parammaps['formName'] = queryString
+      GetDataByName(this.requestFilterParams).then(response => {
+        cb(response.data.list)
+      })
+    },
+    handleformNumberSelect() {
+      this.requestFilterParams.name = 'findByNMeasureElec'
+      this.requestFilterParams.parammaps['formNumber'] = this.temp.formNumber
+      this.requestFilterParams.parammaps['formName'] = ''
+      GetDataByName(this.requestFilterParams).then(response => {
+        this.$nextTick(() => {
+          if (response.data.list.length > 0) {
+            this.temp.pastureName = response.data.list[0].pastureName
+            this.temp.useType = response.data.list[0].useType
+            this.temp.departName = response.data.list[0].departName
+            this.temp.aAmount = response.data.list[0].aAmount
+            this.temp.employeName1 = response.data.list[0].employeName
+            this.temp.formName = response.data.list[0].formName
+            console.log(response.data.list[0])
+          }
+        })
+      })
+    },
+    handleformNameSelect() {
+      this.requestFilterParams.name = 'findByNMeasureElec'
+      this.requestFilterParams.parammaps['formNumber'] = ''
+      this.requestFilterParams.parammaps['formName'] = this.temp.formName
+      GetDataByName(this.requestFilterParams).then(response => {
+        this.$nextTick(() => {
+          if (response.data.list.length > 0) {
+            this.temp.pastureName = response.data.list[0].pastureName
+            this.temp.useType = response.data.list[0].useType
+            this.temp.departName = response.data.list[0].departName
+            this.temp.aAmount = response.data.list[0].aAmount
+            this.temp.employeName1 = response.data.list[0].employeName
+            this.temp.formNumber = response.data.list[0].formNumber
+          }
+        })
+      })
+    },
     // 1-1: table&搜索
     getList() {
       this.listLoading = true
@@ -448,9 +668,15 @@ export default {
       row.status = status
     },
     resetTemp() {
-      this.temp = {
+      this.temp.pastureName = ''
+      this.temp.useType = ''
+      this.temp.departName = ''
+      this.temp.aAmount = ''
+      this.temp.employeName1 = ''
+      this.temp.formName = ''
+      this.temp.formNumber = ''
 
-      }
+      this.temp.DATE = parseTime(new Date(), '{y}-{m}-{d}')
     },
     handleCreate() {
       this.resetTemp()
@@ -463,7 +689,7 @@ export default {
     createData() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'insertAsset'
+          this.requestParam.name = 'insertElectricity'
           this.requestParam.parammaps = this.temp
 
           PostDataByName(this.requestParam).then(response => {
@@ -500,7 +726,7 @@ export default {
     updateData() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'updateAsset'
+          this.requestParam.name = 'updateElectricity'
           this.requestParam.parammaps = this.temp
           PostDataByName(this.requestParam).then(response => {
             console.log(response)
@@ -531,7 +757,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.requestParam.name = 'deleteAsset'
+        this.requestParam.name = 'deleteElectricity'
         this.requestParam.parammaps = {}
         this.requestParam.parammaps['id'] = row.id
         PostDataByName(this.requestParam).then(() => {

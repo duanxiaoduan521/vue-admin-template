@@ -274,8 +274,6 @@ export default {
           this.requestParam.params[2] = this.deptform.orderby
           this.requestParam.params[3] = this.deptform.enable
           this.requestParam.params[4] = this.dictid
-          this.requestParam.params[5] = this.deptform.sort
-          this.requestParam.params[6] = this.deptform.enable
           PostDataByName(this.requestParam).then(() => {
             this.getList()
             this.dialogFormVisible = false
@@ -299,8 +297,6 @@ export default {
           this.requestParam.params[2] = this.deptform.orderby
           this.requestParam.params[3] = this.deptform.enable
           this.requestParam.params[4] = this.dictid
-          this.requestParam.params[5] = this.deptform.sort
-          this.requestParam.params[6] = this.deptform.enable
           PostDataByName(this.requestParam).then(() => {
             this.$nextTick(() => {
               this.$refs['label'].focus()
