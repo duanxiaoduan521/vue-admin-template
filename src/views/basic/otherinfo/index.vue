@@ -1,173 +1,294 @@
 <template>
   <div class="app-container">
-    <div class="app-container">
-      <div class="filter-container">
-        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-          添加
-        </el-button>
-      </div>
-      <el-table
-        v-loading="listLoading"
-        element-loading-text="给我一点时间"
-        :data="list"
-        border
-        fit
-        highlight-current-row
-        style="width: 100%;"
-        :row-style="rowStyle"
-        :cell-style="cellStyle"
-        class="elTable"
-        row-key="id"
-        default-expand-all
-        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-      >
-        <el-table-column label="项目分类" header-align="center" min-width="150px" align="center">
-          <template slot-scope="scope">
-            <span>{{ scope.row.classname }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="项目名称" header-align="center" min-width="150px" align="center">
-          <template slot-scope="scope">
-            <span>{{ scope.row.itemname }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="顺序" min-width="80px" header-align="center" align="center">
-          <template slot-scope="scope">
-            <span>{{ scope.row.sort }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="启用" min-width="80px" header-align="center" align="center">
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.enable"
-              :active-value="1"
-              :inactive-value="0"
-              @change="handleEnableChange(scope.$index, scope.row)"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" header-align="center" align="center" width="260" class-name="small-padding fixed-width">
-          <template slot-scope="{row}">
-            <el-button type="primary" size="mini" @click="handleUpdate(row)">
-              编辑
-            </el-button>
-            <el-button v-if="row.status!='已删'" size="mini" type="danger" @click="handleDelete(row)">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination v-show="total>0" :total="total" :page.sync="getdataListParm.offset" :limit.sync="getdataListParm.pagecount" @pagination="getList" />
-
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :close-on-click-modal="false">
-        <el-form
-          ref="dataForm"
-          v-enterToNext="true"
-          :rules="rules"
-          :model="dataform"
-          label-position="left"
-          label-width="100px"
-          style="width: 600px; margin-left:50px;"
-        >
-          <el-form-item label="项目分类" prop="classname">
-            <el-input
-              ref="classname"
-              v-model="dataform.classname"
-            />
-          </el-form-item>
-          <el-form-item label="项目名称" prop="itemname">
-            <el-input
-              ref="itemname"
-              v-model="dataform.itemname"
-            />
-          </el-form-item>
-          <el-form-item label="顺序" prop="sort">
-            <el-input
-              ref="sort"
-              v-model="dataform.sort"
-            />
-          </el-form-item>
-          <el-form-item label="启用" prop="enable">
-            <el-switch
-              ref="enable"
-              v-model="dataform.enable"
-              :active-value="1"
-              :inactive-value="0"
-            />
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button
-            v-if="dialogStatus==='create'"
-            ref="createb"
-            type="success"
-            @click="createData_again()"
-          >
-            确认新增
-          </el-button>
-          <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-            确认
-          </el-button>
-          <el-button @click="dialogFormVisible = false">
-            关闭
-          </el-button>
-        </div>
-      </el-dialog>
+    <div class="filter-container">
+      <!-- 搜索条件 -->
+      <el-select v-model="getdataListParm.parammaps.pastureName" clearable placeholder="牧场" class="filter-item">
+        <el-option
+          v-for="item in findAllPasture"
+          :key="item.id"
+          :label="item.name"
+          :value="item.name"
+        />
+      </el-select>
+      <el-select v-model="getdataListParm.parammaps.departmentName" clearable placeholder="部门" class="filter-item">
+        <el-option
+          v-for="item in findAllDepart"
+          :key="item.id"
+          :label="item.name"
+          :value="item.name"
+        />
+      </el-select>
+      <el-button
+        v-waves
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="handleFilter"
+      >搜索</el-button>
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px;"
+        type="primary"
+        icon="el-icon-edit"
+        @click="handleCreate"
+      >添加</el-button>
     </div>
+
+    <el-table
+      :key="tableKey"
+      v-loading="listLoading"
+      element-loading-text="给我一点时间"
+      :data="list"
+      border
+      fit
+      highlight-current-row
+      style="width: 100%;"
+      :row-style="rowStyle"
+      :cell-style="cellStyle"
+      class="elTable"
+    >
+      <!-- table表格 -->
+      <el-table-column label="油卡编号" min-width="110px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.cardNumber }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="油卡类型" prop="id" sortable="custom" align="center" width="150">
+        <template slot-scope="scope">
+          <span>{{ scope.row.cardType }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="剩余余额" width="150px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.cardAmount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="设备编号" width="150px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.assetNumber }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="设备名称" min-width="110px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.assetName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="部门" min-width="110px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.departmentName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+        <template slot-scope="{row}">
+          <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 分页 -->
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="getdataListParm.offset"
+      :limit.sync="getdataListParm.pagecount"
+      @pagination="getList"
+    />
+    <!-- 弹出层新增or修改 -->
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+      :close-on-click-modal="false"
+      width="50%"
+    >
+      <el-form
+        ref="temp"
+        :rules="rules"
+        :model="temp"
+        label-position="right"
+        label-width="100px"
+        style="width: 800px; margin-left:50px;"
+      >
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="卡号" prop="cardNumber">
+              <el-input ref="cardNumber" v-model="temp.cardNumber" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="卡类型" prop="cardType">
+              <el-input ref="cardType" v-model="temp.cardType" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="卡余额" prop="cardAmount">
+              <el-input ref="cardAmount" v-model="temp.cardAmount" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="牧场" prop="pastureId">
+              <el-select v-model="temp.pastureId" placeholder="牧场" class="filter-item">
+                <el-option
+                  v-for="item in findAllPasture"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="部门" prop="departmentId">
+              <el-select v-model="temp.departmentId" placeholder="部门" class="filter-item">
+                <el-option
+                  v-for="item in findAllDepart"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="设备名称" prop="assetId">
+              <el-select v-model="temp.assetId" placeholder="设备名称" class="filter-item">
+                <el-option
+                  v-for="item in findAllAsset"
+                  :key="item.assetId"
+                  :label="item.assetName"
+                  :value="item.assetId"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button
+          v-if="dialogStatus==='create'"
+          ref="createb"
+          type="success"
+          @click="createData_again()"
+        >确认新增</el-button>
+        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确认</el-button>
+        <el-button @click="dialogFormVisible = false">关闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+// 引入
+import { GetDataByName, GetDataByNames, PostDataByName } from '@/api/common'
 import waves from '@/directive/waves' // waves directive
-import { isIntegerZero } from '@/utils/validate'
-import enterToNext from '@/directive/enterToNext' // enterToNext directive
-import { PostDataByName, GetDataByName } from '@/api/common'
+import { parseTime } from '@/utils/index.js'
+// eslint-disable-next-line no-unused-vars
+import { validateEMail } from '@/utils/validate.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
 export default {
-  name: 'OtherInfo',
+  name: 'Product',
   components: { Pagination },
-  directives: { waves, enterToNext },
+  directives: { waves },
   data() {
     return {
       tableKey: 0,
-      list: [],
+      list: null,
       total: 0,
       listLoading: true,
       requestParam: {
-        name: 'createapisql',
-        params: []
+        name: 'insertAsset',
+        offset: 0,
+        pagecount: 0,
+        parammaps: {}
       },
-      dataform: {
-        classname: '',
-        itemname: '',
-        id: '',
-        sort: '',
-        enable: ''
-      },
-      getdataListParm: { name: 'getOtheritemAll',
+      // 1-2:table&搜索传参
+      getdataListParm: {
+        name: 'getOilcardList',
+        page: 1,
         offset: 1,
         pagecount: 10,
-        params: [] },
-      rules: {
-        classname: [{ type: 'string', required: true, message: '项目分类名称必填', trigger: 'change' }],
-        itemname: [{ type: 'string', required: true, message: '项目名称必填', trigger: 'change' }],
-        sort: [{ validator: isIntegerZero, trigger: 'blur' }]
+        returntype: 'Map',
+        parammaps: {
+          pname: ''
+        }
       },
+      // 2-3：下拉框请求后数据加入[]
+      findAllProvider: [],
+      findAllAssetType: [],
+      findAllPasture: [],
+      findAllDepart: [],
+      findAllEmploye: [],
+      getDictByName: [],
+      findAllAsset: [],
+      // 2-1.请求下拉框接口
+      requestParams: [
+        { name: 'findAllProvider', offset: 0, pagecount: 0, params: [] },
+        { name: 'findAllAssetType', offset: 0, pagecount: 0, params: [] },
+        { name: 'findAllPasture', offset: 0, pagecount: 0, params: [] },
+        { name: 'findAllDepart', offset: 0, pagecount: 0, params: [] },
+        { name: 'findAllEmploye', offset: 0, pagecount: 0, params: [] },
+        { name: 'findAllAsset', offset: 0, pagecount: 0, params: [] },
+        { name: 'getDictByName', offset: 0, pagecount: 0, params: ['资产状态'] }
+      ],
+
+      temp: {},
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
         update: '编辑',
-        create: '添加'
+        create: '新增'
       },
-      rowStyle: { maxHeight: 40 + 'px', height: 40 + 'px' },
+      dialogPvVisible: false,
+      // 校验规则
+      rules: {
+        assetNumber: [
+          { required: true, message: '必填', trigger: 'blur' }
+          // 引入自定义校验并使用
+          // { validator: validateEMail, trigger: 'blur' }
+        ],
+        equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
+      },
+      rowStyle: { maxHeight: 10 + 'px', height: 10 + 'px' },
       cellStyle: { padding: 0 + 'px' }
     }
   },
   created() {
+    this.getDownList()
     this.getList()
   },
+
   methods: {
+    // 供应商模糊查询
+    providerSearch(queryString, cb) {
+      var returnList = this.findAllProvider
+      var results = queryString
+        ? returnList.filter(this.createFilter(queryString))
+        : returnList
+      // 调用 callback 返回建议列表的数据
+      cb(results)
+    },
+    createFilter(queryString) {
+      return returnValue => {
+        return (
+          returnValue.name.toLowerCase().indexOf(queryString.toLowerCase()) >= 0
+        )
+      }
+    },
+    handleSelect(item) {
+      console.log(item)
+    },
+    // 1-1: table&搜索
     getList() {
       this.listLoading = true
       GetDataByName(this.getdataListParm).then(response => {
@@ -178,149 +299,138 @@ export default {
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
-        }, 0.5 * 1000)
+        }, 100)
       })
     },
-
-    resetRequestParam() {
-      this.dataform.classname = ''
-      this.dataform.itemname = ''
-      this.dataform.id = ''
-      this.dataform.sort = '0'
-      this.dataform.enable = '1'
+    // 2-2：下拉框
+    getDownList() {
+      GetDataByNames(this.requestParams).then(response => {
+        this.findAllProvider = response.data.findAllProvider.list
+        this.findAllAssetType = response.data.findAllAssetType.list
+        this.findAllPasture = response.data.findAllPasture.list
+        this.findAllDepart = response.data.findAllDepart.list
+        this.findAllEmploye = response.data.findAllEmploye.list
+        this.findAllAsset = response.data.findAllAsset.list
+        this.getDictByName = response.data.getDictByName.list
+      })
+    },
+    handleFilter() {
+      this.listLoading = true
+      this.getList()
+    },
+    handleModifyStatus(row, status) {
+      this.$message({
+        message: '操作成功',
+        type: 'success'
+      })
+      row.status = status
+    },
+    resetTemp() {
+      this.temp = {
+        // 格式化日期
+        inputDatetime: parseTime(new Date(), '{y}-{m}-{d}')
+      }
     },
     handleCreate() {
-      this.resetRequestParam()
+      this.resetTemp()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-        this.$refs.classname.focus()
+        this.$refs['temp'].clearValidate()
       })
     },
     createData() {
-      this.$refs['dataForm'].validate((valid) => {
+      this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'insertOtheritem'
-          this.requestParam.params = []
-          this.requestParam.params[0] = this.dataform.classname
-          this.requestParam.params[1] = this.dataform.itemname
-          this.requestParam.params[2] = this.dataform.sort
-          this.requestParam.params[3] = this.dataform.enable
-          PostDataByName(this.requestParam).then(() => {
-            this.getList()
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '新增成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    createData_again() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.requestParam.name = 'insertOtheritem'
-          this.requestParam.params = []
-          this.requestParam.params[0] = this.dataform.classname
-          this.requestParam.params[1] = this.dataform.itemname
-          this.requestParam.params[2] = this.dataform.sort
-          this.requestParam.params[3] = this.dataform.enable
-          PostDataByName(this.requestParam).then(() => {
-            this.$nextTick(() => {
-              this.$refs['classname'].focus()
-            })
-            this.getList()
-            this.resetRequestParam()
-            this.$notify({
-              title: '成功',
-              message: '新增成功',
-              type: 'success',
-              duration: 2000
-            })
+          this.requestParam.name = 'insertOilcard'
+          this.requestParam.parammaps = this.temp
+
+          PostDataByName(this.requestParam).then(response => {
+            console.log(response)
+            if (response.msg === 'fail') {
+              this.$notify({
+                title: '失败',
+                message: '保存失败-' + response.data,
+                type: 'danger',
+                duration: 2000
+              })
+            } else {
+              this.getList()
+              this.dialogFormVisible = false
+              this.$notify({
+                title: '成功',
+                message: '新增成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
           })
         }
       })
     },
     handleUpdate(row) {
-      this.dataform.id = row.id
-      this.dataform.classname = row.classname
-      this.dataform.itemname = row.itemname
-      this.dataform.sort = row.sort
-      this.dataform.enable = row.enable
+      this.temp = Object.assign({}, row) // copy obj
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-        this.$refs['classname'].focus()
+        this.$refs['temp'].clearValidate()
       })
     },
     updateData() {
-      this.$refs['dataForm'].validate((valid) => {
+      this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'updateOtheritem'
-          this.requestParam.params = []
-          this.requestParam.params[0] = this.dataform.classname
-          this.requestParam.params[1] = this.dataform.itemname
-          this.requestParam.params[2] = this.dataform.sort
-          this.requestParam.params[3] = this.dataform.enable
-          this.requestParam.params[4] = this.dataform.id
-          PostDataByName(this.requestParam).then(() => {
-            this.getList()
-            this.resetRequestParam()
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '修改成功',
-              type: 'success',
-              duration: 2000
-            })
+          this.requestParam.name = 'updateOilcard'
+          this.requestParam.parammaps = this.temp
+          PostDataByName(this.requestParam).then(response => {
+            console.log(response)
+            if (response.msg === 'fail') {
+              this.$notify({
+                title: '失败',
+                message: '保存失败-' + response.data,
+                type: 'warning',
+                duration: 2000
+              })
+            } else {
+              this.getList()
+              this.dialogFormVisible = false
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
           })
         }
       })
     },
-
-    handleEnableChange(index, row) {
-      this.requestParam.name = 'updateOtheritem'
-      this.requestParam.params = []
-      this.requestParam.params[0] = row.classname
-      this.requestParam.params[1] = row.itemname
-      this.requestParam.params[2] = row.sort
-      this.requestParam.params[3] = row.enable
-      this.requestParam.params[4] = row.id
-      PostDataByName(this.requestParam).then(() => {
-        this.$notify({
-          title: '成功',
-          message: '修改成功',
-          type: 'success',
-          duration: 2000
-        })
-      })
-    },
     handleDelete(row) {
-      MessageBox.confirm('项目名称：' + row.itemname, '确认删除？', {
+      MessageBox.confirm('油卡编号' + row.cardNumber, '确认删除？', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.requestParam.name = 'deleteOtheritem'
-        this.requestParam.params = []
-        this.requestParam.params[0] = row.id
-        PostDataByName(this.requestParam).then(() => {
-          this.getList()
-          this.resetRequestParam()
-          this.dialogFormVisible = false
-          this.$notify({
-            title: '成功',
-            message: '删除成功',
-            type: 'success',
-            duration: 2000
+      })
+        .then(() => {
+          this.requestParam.name = 'deleteOilcard'
+          this.requestParam.parammaps = {}
+          this.requestParam.parammaps['id'] = row.id
+          PostDataByName(this.requestParam).then(() => {
+            this.getList()
+            this.dialogFormVisible = false
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
           })
         })
-      })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     }
   }
 }

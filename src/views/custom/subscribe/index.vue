@@ -32,12 +32,6 @@
       <el-button
         class="filter-item"
         style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-      >批准</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
         type="info"
         icon="el-icon-download"
       >导出</el-button>
@@ -128,13 +122,23 @@
           <span>{{ scope.row.employeName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="300" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <!-- <el-button
+          <el-button
             type="success"
             size="mini"
             @click="handleUpdate(row)"
-          >编辑</el-button> -->
+          >主管审核</el-button>
+          <el-button
+            type="success"
+            size="mini"
+            @click="handleUpdate(row)"
+          >库管审核</el-button>
+          <el-button
+            type="success"
+            size="mini"
+            @click="handleUpdate(row)"
+          >审核</el-button>
           <el-button
             type="danger"
             size="mini"
@@ -584,7 +588,7 @@ export default {
       })
     },
     handleDelete(row) {
-      MessageBox.confirm('设备名称：' + row.equipmentName, '确认删除？', {
+      MessageBox.confirm('设备名称：' + row.stockName, '确认删除？', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'

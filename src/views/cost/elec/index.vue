@@ -461,7 +461,7 @@ export default {
     },
     uploadData() {
       return {
-        name: 'insertWatersMeasure',
+        name: 'insertElecsMeasure',
         importParams: '编号,牧场,表名称,表编号,本次值,上次值,单价,录入人,备注,电率,jwt_username',
         sheetname: 'SheetJS'
       }
@@ -498,13 +498,13 @@ export default {
     handleDownload() {
       /*       this.requestParam.name = 'meteringOutfit'
       this.requestParam.returntype = 'xlsx'
-      this.requestParam.parammaps.formType = '水表'
+      this.requestParam.parammaps.formType = '电表'
       GetDataByNameXlsx(this.requestParam).then(response => {
         this.$nextTick(() => {
           DownloadExcel(response, this.requestParam.parammaps.formType)
         }) */
       this.requestParam.name = 'elecMeteringOutfit'
-      //  this.requestParam.parammaps.formType = '水表'
+      //  this.requestParam.parammaps.formType = '电表'
       GetDataByName(this.requestParam).then(response => {
         this.$nextTick(() => {
           import('@/vendor/Export2Excel').then(excel => {
@@ -519,7 +519,7 @@ export default {
             excel.export_json_to_excel({
               header: tHeader,
               data: data1,
-              filename: '水表',
+              filename: '电表',
               autoWidth: true,
               bookType: 'xlsx'
             })

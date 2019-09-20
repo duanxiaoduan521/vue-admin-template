@@ -77,16 +77,26 @@
         v-waves
         class="filter-item"
         type="primary"
-        icon="el-icon-upload2"
-        @click="handleFilter"
-      >导入</el-button>
-      <el-button
-        v-waves
-        class="filter-item"
-        type="primary"
         icon="el-icon-download"
         @click="handleDownload"
       >导出</el-button>
+      <el-upload
+        style="display: inline-block;"
+        :headers="headers"
+        :data="uploadData"
+        :action="uploadExcelUrl"
+        :show-file-list="false"
+        :before-upload="beforeImportExcel"
+        :on-success="handleImportExcelSuccess"
+      >
+        <el-button
+          v-waves
+          class="filter-item"
+          type="primary"
+          icon="el-icon-upload2"
+          @click="handleFilter"
+        >导入</el-button>
+      </el-upload>
     </div>
 
     <el-table
@@ -329,14 +339,16 @@
 // 引入
 require('script-loader!file-saver')
 import { GetDataByName, GetDataByNames, PostDataByName } from '@/api/common'
+// import {  DownloadExcel, GetDataByNameXlsx } from '@/api/common'
 import waves from '@/directive/waves' // waves directive
 // eslint-disable-next-line no-unused-vars
-import { validateEMail } from '@/utils/validate.js'
+// import { isIntegerZero } from '@/utils/validate.js'
 import { parseTime } from '@/utils/index.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
+import { getToken } from '@/utils/auth'
 export default {
-  name: 'Basics',
+  name: 'Steam',
   components: { Pagination },
   directives: { waves },
   data() {
@@ -407,15 +419,52 @@ export default {
       dialogPvVisible: false,
       // 校验规则
       rules: {
-        assetNumber: [{ required: true, message: '必填', trigger: 'blur' }
-        // 引入自定义校验并使用
-          // { validator: validateEMail, trigger: 'blur' }
-        ],
+        endAmount: [{ type: 'number', required: true, validator: (rule, value, callback) => {
+          if (!value) {
+            callback(new Error('不能为空'))
+          }
+          if (value < 0) {
+            callback(new Error('必须大于0'))
+          } else if (value < this.temp.aAmount) {
+            callback(new Error('必须大于上次值'))
+          }
+          setTimeout(() => {
+            const re = /^\d+$/ // /^[0-9]*[1-9][0-9]*$/
+            const rsCheck = re.test(value)
+            if (!rsCheck) {
+              callback(new Error('请输入整数'))
+            } else {
+              callback()
+            }
+          }, 0)
+        }, trigger: 'blur' }],
         equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
       },
       MeasureListbyfilter: [],
-      rowStyle: { maxHeight: 40 + 'px', height: 30 + 'px' },
+      rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' }
+    }
+  },
+
+  computed: {
+    // 设置请求头
+    headers() {
+      return {
+        // 设置token
+        token: getToken()
+      }
+    },
+    uploadData() {
+      return {
+        name: 'insertSteamsMeasure',
+        importParams: '编号,牧场,表名称,表编号,本次值,上次值,单价,录入人,备注,jwt_username',
+        sheetname: 'SheetJS'
+      }
+    },
+    // 设置上传地址
+    uploadExcelUrl() {
+      // process.env.VUE_APP_BASE_API是服务器的路径，也是axios的基本路径
+      return process.env.VUE_APP_BASE_API + 'authdata/ImportExcel'
     }
   },
   created() {
@@ -424,25 +473,106 @@ export default {
   },
 
   methods: {
+    isIntegerZero_(rule, value, callback) {
+      if (value === '' || value === undefined || value === null) {
+        return callback(new Error('输入不可以为空'))
+      }
+      if (value.length === 0) {
+        return callback(new Error('输入不可以为空'))
+      }
+      setTimeout(() => {
+        const re = /^\d+$/ // /^[0-9]*[1-9][0-9]*$/
+        const rsCheck = re.test(value)
+        if (!rsCheck) {
+          callback(new Error('请输入整数'))
+        } else {
+          callback()
+        }
+      }, 0)
+    },
     handleDownload() {
+      /*       this.requestParam.name = 'meteringOutfit'
+      this.requestParam.returntype = 'xlsx'
+      this.requestParam.parammaps.formType = 'ZQ流量计'
+      GetDataByNameXlsx(this.requestParam).then(response => {
+        this.$nextTick(() => {
+          DownloadExcel(response, this.requestParam.parammaps.formType)
+        }) */
       this.requestParam.name = 'meteringOutfit'
-      //  this.requestParam.returntype = 'xlsx'
       this.requestParam.parammaps.formType = 'ZQ流量计'
       GetDataByName(this.requestParam).then(response => {
+        this.$nextTick(() => {
           import('@/vendor/Export2Excel').then(excel => {
-            //  const tHeader = ['Id', 'Title', 'Author', 'Readings', 'Date']
-            // const filterVal = ['id', 'title', 'author', 'pageviews', 'display_time']
-            //  const data1 = this.formatJson(filterVal, list1)
-            // const list1 = response.data.list
-            //  const data1 = this.formatJson(filterVal, list1)
+            const list1 = response.data.list
+            const tHeader = [
+              '编号', '牧场', '表名称', '表编号', '上次值', '本次值', '单价', '录入人', '备注'
+            ]
+            const filterVal = [
+              '编号', '牧场', '表名称', '表编号', '上次值', '本次值', '单价', '录入人', '备注'
+            ]
+            const data1 = this.formatJson(filterVal, list1)
             excel.export_json_to_excel({
-              // data1,
-              filename: 'meteringOutfit',
+              header: tHeader,
+              data: data1,
+              filename: this.requestParam.parammaps.formType,
               autoWidth: true,
               bookType: 'xlsx'
             })
           })
+        })
       })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v =>
+        filterVal.map(j => {
+          if (j === 'timestamp') {
+            return parseTime(v[j])
+          } else {
+            return v[j]
+          }
+        })
+      )
+    },
+    beforeImportExcel(file) {
+      /*   const isExcel =
+        file.type ===
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' */
+      const isLt2M = file.size / 1024 / 1024 < 2
+      /*  if (!isExcel) {
+        this.$message.error(
+          '上传文件必须是Xlsx格式!建议先导出，再修改导出文件再导入！'
+        )
+      }*/
+      if (!isLt2M) {
+        this.$message.error('上传文件大小不能超过 2MB!')
+      }
+      return isLt2M
+    },
+    handleImportExcelSuccess(res, file) {
+    //  if (res.msg === 'ok') {
+      if (res.msg === 'ok') {
+        this.$message({
+          title: '成功',
+          message: '导入成功:' + res.data.success + '条!',
+          type: 'success',
+          duration: 2000
+        })
+        if (res.data.err_count > 0) {
+          this.$notify({
+            title: '失败',
+            message: '导入失败:' + res.data.err_count + '条!',
+            type: 'danger',
+            duration: 2000
+          })
+        }
+      } else {
+        this.$notify({
+          title: '失败',
+          message: '上传失败',
+          type: 'danger',
+          duration: 2000
+        })
+      }
     },
     formNumberSearch(queryString, cb) {
       this.requestFilterParams.name = 'getMeasureListbyfilter'

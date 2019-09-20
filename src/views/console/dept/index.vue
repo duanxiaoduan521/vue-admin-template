@@ -36,6 +36,16 @@
             <span>{{ scope.row.sort }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="是否牧场" min-width="80px" header-align="center" align="center">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.isPasture"
+              :active-value="1"
+              :inactive-value="0"
+              @change="handleEnableChange(scope.$index, scope.row)"
+            />
+          </template>
+        </el-table-column>
         <el-table-column label="启用" min-width="80px" header-align="center" align="center">
           <template slot-scope="scope">
             <el-switch
@@ -218,6 +228,7 @@ export default {
       this.deptform.remark = ''
       this.deptform.sort = '0'
       this.deptform.enable = '1'
+      this.deptform.isPasture = '0'
     },
     handleCreate() {
       this.resetRequestParam()
@@ -245,6 +256,8 @@ export default {
           this.requestParam.params[2] = this.deptform.remark
           this.requestParam.params[3] = this.deptform.sort
           this.requestParam.params[4] = this.deptform.enable
+          this.requestParam.params[5] = this.deptform.isPasture
+
           PostDataByName(this.requestParam).then(() => {
             this.getList()
             this.dialogFormVisible = false
@@ -268,6 +281,8 @@ export default {
           this.requestParam.params[2] = this.deptform.remark
           this.requestParam.params[3] = this.deptform.sort
           this.requestParam.params[4] = this.deptform.enable
+          this.requestParam.params[5] = this.deptform.isPasture
+
           PostDataByName(this.requestParam).then(() => {
             this.$nextTick(() => {
               this.$refs['deptname'].focus()
@@ -282,6 +297,8 @@ export default {
             this.deptform.remark = ''
             this.deptform.sort = '0'
             this.deptform.enable = '1'
+            this.deptform.isPasture = '0'
+
             this.$notify({
               title: '成功',
               message: '新增成功',
@@ -302,6 +319,8 @@ export default {
       this.deptform.remark = row.remark
       this.deptform.sort = row.sort
       this.deptform.enable = row.enable
+      this.deptform.isPasture = row.isPasture
+
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -319,7 +338,9 @@ export default {
           this.requestParam.params[2] = this.deptform.remark
           this.requestParam.params[3] = this.deptform.sort
           this.requestParam.params[4] = this.deptform.enable
-          this.requestParam.params[5] = this.deptform.id
+          this.requestParam.params[5] = this.deptform.isPasture
+          this.requestParam.params[6] = this.deptform.id
+
           PostDataByName(this.requestParam).then(() => {
             this.getList()
             this.dialogFormVisible = false
@@ -341,7 +362,9 @@ export default {
       this.requestParam.params[2] = row.remark
       this.requestParam.params[3] = row.sort
       this.requestParam.params[4] = row.enable
-      this.requestParam.params[5] = row.id
+      this.requestParam.params[5] = row.isPasture
+      this.requestParam.params[6] = row.id
+
       PostDataByName(this.requestParam).then(() => {
         this.$notify({
           title: '成功',

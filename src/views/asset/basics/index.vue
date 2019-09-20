@@ -191,7 +191,7 @@
           <el-col :span="8">
             <el-form-item label="品牌" prop="providerId">
               <el-autocomplete
-                v-model="state1"
+                v-model="temp.providerName"
                 value-key="name"
                 class="inline-input"
                 :fetch-suggestions="providerSearch"
@@ -372,7 +372,6 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      state1: '',
       requestParam: {
         name: 'insertAsset',
         offset: 0,

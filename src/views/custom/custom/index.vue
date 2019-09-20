@@ -44,12 +44,6 @@
       <el-button
         class="filter-item"
         style="margin-left: 10px;"
-        type="success"
-        icon="el-icon-upload2"
-      >导入</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
         type="info"
         icon="el-icon-download"
       >导出</el-button>
@@ -119,11 +113,6 @@
           <span>{{ scope.row.purpose }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="日期" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.date }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="单价" min-width="110px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.price }}</span>
@@ -170,8 +159,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="名称" prop="sname">
-              <el-input ref="sname" v-model="temp.sname" />
+            <el-form-item label="名称" prop="stockName">
+              <el-input ref="stockName" v-model="temp.stockName" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -189,7 +178,7 @@
           <el-col :span="8">
             <el-form-item label="供应商" prop="providerId">
               <el-autocomplete
-                v-model="state1"
+                v-model="temp.providerName"
                 value-key="name"
                 class="inline-input"
                 :fetch-suggestions="providerSearch"
@@ -206,11 +195,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
-            <el-form-item label="数量" prop="amount">
-              <el-input ref="amount" v-model="temp.amount" />
-            </el-form-item>
-          </el-col>
+
           <el-col :span="8">
             <el-form-item label="单价" prop="price">
               <el-input ref="price" v-model="temp.price" />
@@ -221,32 +206,18 @@
               <el-input ref="repertory" v-model="temp.repertory" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="入库时间" prop="entranceDate">
-              <el-date-picker
-                v-model="temp.entranceDate"
-                type="date"
-                placeholder="入库时间"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                style="width:170px;"
-              />
-            </el-form-item>
-          </el-col>
           <el-col :span="8">
             <el-form-item label="最低库存" prop="minRepertory">
               <el-input ref="minRepertory" v-model="temp.minRepertory" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="最高库存" prop="maxRepertory">
               <el-input ref="maxRepertory" v-model="temp.maxRepertory" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="状态" prop="status">
               <el-select v-model="temp.status" placeholder="状态" class="filter-item">
@@ -271,25 +242,15 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
+
           <el-col :span="8">
             <el-form-item label="用途" prop="purpose">
               <el-input ref="purpose" v-model="temp.purpose" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="部门" prop="departmentId">
-              <el-select v-model="temp.departmentId" placeholder="部门" class="filter-item">
-                <el-option
-                  v-for="item in findAllDepart"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
+
           <el-col :span="8">
             <el-form-item label="预警信息" prop="record">
               <el-input ref="record" v-model="temp.record" />
@@ -342,7 +303,6 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      state1: '',
       requestParam: {
         name: 'insertAsset',
         offset: 0,
