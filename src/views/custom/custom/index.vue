@@ -68,7 +68,7 @@
           <span>{{ scope.row.pastureName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="编号" prop="id" sortable="custom" align="center" width="150">
+      <el-table-column label="编号" prop="id" align="center" width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.stockNumber }}</span>
         </template>
@@ -105,7 +105,7 @@
       </el-table-column>
       <el-table-column label="供应商" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.provider }}</span>
+          <span>{{ scope.row.providerName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="用途" min-width="110px" align="center">
@@ -370,7 +370,7 @@ export default {
         ],
         equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
       },
-      rowStyle: { maxHeight: 10 + 'px', height: 10 + 'px' },
+      rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' }
     }
   },
@@ -396,6 +396,8 @@ export default {
     },
     handleSelect(item) {
       console.log(item)
+      this.temp.providerId = item.id
+      this.temp.providerName = item.name
     },
     // 1-1: table&搜索
     getList() {

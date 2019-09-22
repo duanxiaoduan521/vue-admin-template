@@ -41,26 +41,8 @@
         style="margin-left: 10px;"
         type="primary"
         icon="el-icon-edit"
-        @click="handleCreateTable"
+        @click="handleCreate"
       >添加</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-      >详细审核</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-      >确认领用</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-      >旧品录入</el-button>
     </div>
 
     <el-table
@@ -77,24 +59,19 @@
       class="elTable"
     >
       <!-- table表格 -->
-      <el-table-column label="领用单号" min-width="110px" align="center">
+      <el-table-column label="领用单号" min-width="100px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.useForm }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="类型" prop="id" sortable="custom" align="center" width="150">
+      <el-table-column label="类型" prop="id" align="center" width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.listType }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="牧场" width="150px" align="center">
+      <el-table-column label="牧场部门" width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.pastureName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="部门" width="150px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.departmentName }}</span>
+          <span>{{ scope.row.pastureName }}{{ scope.row.departmentName }}</span>
         </template>
       </el-table-column>
 
@@ -103,34 +80,26 @@
           <span>{{ scope.row.oddNumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="申请人" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.applicatName }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="订单生成时间" min-width="110px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="审核状态" min-width="110px" align="center">
+      <el-table-column label="审核状态" min-width="120px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.checkStatue }}</span>
+          <span>审核状态：{{ scope.row.checkStatue }}<br></span>
+          <span>申请人:{{ scope.row.applicatName }}<br></span>
+          <span>审核人:{{ scope.row.employeName }}<br></span>
+          <span>审核时间:{{ scope.row.auditTime }}<br></span>
         </template>
       </el-table-column>
-      <el-table-column label="审核人" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.employeName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="审核时间" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.auditTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+
+      <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
+          <el-button type="success" size="mini">详细审核</el-button>
+          <el-button type="success" size="mini">确认领用</el-button>
+          <el-button type="success" size="mini">旧品录入</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -145,209 +114,11 @@
     <!-- 新增 -->
     <el-dialog
       :title="textMap[dialogStatus]"
-      :visible.sync="dialogFormVisibleTable"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        ref="temp"
-        :rules="rules"
-        :model="temp"
-        label-position="right"
-        label-width="100px"
-        style="width: 800px; margin-left:50px;"
-      >
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="牧场" prop="pastureId">
-              <el-select v-model="temp.pastureId" placeholder="牧场" class="filter-item">
-                <el-option
-                  v-for="item in findAllPasture"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="部门" prop="departmentId">
-              <el-select v-model="temp.departmentId" placeholder="部门" class="filter-item">
-                <el-option
-                  v-for="item in findAllDepart"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="申请人：" prop="pastureId">
-              <el-select v-model="temp.pastureId" placeholder="申请人：" class="filter-item">
-                <el-option
-                  v-for="item in findAllPasture"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="清单类型" prop="departmentId">
-              <el-select v-model="temp.departmentId" placeholder="清单类型" class="filter-item">
-                <el-option
-                  v-for="item in findAllDepart"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="品牌" prop="providerId">
-                <el-autocomplete
-                  v-model="temp.providerName"
-                  value-key="name"
-                  class="inline-input"
-                  :fetch-suggestions="providerSearch"
-                  placeholder="请输入内容"
-                  @select="handleSelect"
-                />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-table
-            :key="tableKey"
-            v-loading="listLoading"
-            element-loading-text="给我一点时间"
-            :data="list"
-            border
-            fit
-            highlight-current-row
-            style="width: 100%;"
-            :row-style="rowStyle"
-            :cell-style="cellStyle"
-            class="elTable"
-          >
-            <!-- table表格 -->
-            <el-table-column label="名称" min-width="110px" align="center">
-              <template slot-scope="scope">
-                <span>{{ scope.row.useForm }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="编码" min-width="110px" align="center">
-              <template slot-scope="scope">
-                <span>{{ scope.row.useForm }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="规格" min-width="110px" align="center">
-              <template slot-scope="scope">
-                <span>{{ scope.row.useForm }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="数量" min-width="110px" align="center">
-              <template slot-scope="scope">
-                <span>{{ scope.row.useForm }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="处理" min-width="110px" align="center">
-              <template slot-scope="scope">
-                <span>{{ scope.row.useForm }}</span>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-row>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button
-          v-if="dialogStatus==='create'"
-          ref="createb"
-          type="success"
-          @click="createData_again()"
-        >确认新增</el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确认</el-button>
-        <el-button @click="dialogFormVisibleTable = false">关闭</el-button>
-      </div>
-    </el-dialog>
-    <!-- 修改 -->
-    <el-dialog
-      :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
     >
-      <el-form
-        ref="temp"
-        :rules="rules"
-        :model="temp"
-        label-position="right"
-        label-width="100px"
-        style="width: 800px; margin-left:50px;"
-      >
-        <el-table
-          :key="tableKey"
-          v-loading="listLoading"
-          element-loading-text="给我一点时间"
-          :data="list"
-          border
-          fit
-          highlight-current-row
-          style="width: 100%;"
-          :row-style="rowStyle"
-          :cell-style="cellStyle"
-          class="elTable"
-        >
-          <!-- table表格 -->
-          <el-table-column label="备件编码" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.stockNumber }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="备件名称" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.stockName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="供应商" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.providerName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="规格" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.specification }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="领用数量" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.useNumber }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="单位" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.unit }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="备注" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.note }}</span>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button
-          v-if="dialogStatus==='create'"
-          ref="createb"
-          type="success"
-          @click="createData_again()"
-        >确认新增</el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确认</el-button>
-        <el-button @click="dialogFormVisible = false">关闭</el-button>
+      <div class="receive-content">
+        <ReceiveAdd :type-temp="temp" />
       </div>
     </el-dialog>
   </div>
@@ -355,16 +126,17 @@
 
 <script>
 // 引入
-import { GetDataByName, GetDataByNames, PostDataByName } from '@/api/common';
-import waves from '@/directive/waves'; // waves directive
-import { parseTime } from '@/utils/index.js';
+import { GetDataByName, GetDataByNames, PostDataByName } from '@/api/common'
+import waves from '@/directive/waves' // waves directive
+import { parseTime } from '@/utils/index.js'
 // eslint-disable-next-line no-unused-vars
-import { validateEMail } from '@/utils/validate.js';
-import Pagination from '@/components/Pagination'; // secondary package based on el-pagination
-import { MessageBox } from 'element-ui';
+import { validateEMail } from '@/utils/validate.js'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { MessageBox } from 'element-ui'
+import ReceiveAdd from './components/receiveAdd'
 export default {
   name: 'Receive',
-  components: { Pagination },
+  components: { Pagination, ReceiveAdd },
   directives: { waves },
   data() {
     return {
@@ -372,7 +144,6 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      state1: '',
       requestParam: {
         name: 'insertAsset',
         offset: 0,
@@ -387,9 +158,8 @@ export default {
         pagecount: 10,
         returntype: 'Map',
         parammaps: {
-          useForm: '',
-          listType: '',
-          createTime: ''
+          stockNumber: '',
+          stockName: ''
         }
       },
       // 2-3：下拉框请求后数据加入[]
@@ -411,24 +181,14 @@ export default {
 
       temp: {},
       dialogFormVisible: false,
-      dialogFormVisibleTable: false,
       dialogStatus: '',
       textMap: {
         update: '编辑',
         create: '新增'
       },
       dialogPvVisible: false,
-      dialogPvVisibleTable: false,
       // 校验规则
-      rules: {
-        assetNumber: [
-          { required: true, message: '必填', trigger: 'blur' }
-          // 引入自定义校验并使用
-          // { validator: validateEMail, trigger: 'blur' }
-        ],
-        equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
-      },
-      rowStyle: { maxHeight: 10 + 'px', height: 10 + 'px' },
+      rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' }
     }
   },
@@ -452,7 +212,7 @@ export default {
         return (
           returnValue.name.toLowerCase().indexOf(queryString.toLowerCase()) >= 0
         )
-      };
+      }
     },
     handleSelect(item) {
       console.log(item)
@@ -462,6 +222,9 @@ export default {
       this.listLoading = true
       GetDataByName(this.getdataListParm).then(response => {
         this.list = response.data.list
+        for (var i = 0; i < this.list.length; i++) {
+          this.list[i].num = i
+        }
         if (response.data.total) {
           this.total = response.data.total
         }
@@ -499,27 +262,15 @@ export default {
         inputDatetime: parseTime(new Date(), '{y}-{m}-{d}')
       }
     },
-    // 新增
-    handleCreateTable() {
-      this.resetTemp()
-      this.dialogStatus = 'create';
-      this.dialogFormVisibleTable = true
-      this.$nextTick(() => {
-        this.$refs['temp'].clearValidate()
-      })
-    },
     handleCreate() {
       this.resetTemp()
-      this.dialogStatus = 'create';
+      this.dialogStatus = 'create'
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['temp'].clearValidate()
-      })
     },
     createData() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'insertAsset';
+          this.requestParam.name = 'insertAsset'
           this.requestParam.parammaps = this.temp
 
           PostDataByName(this.requestParam).then(response => {
@@ -547,16 +298,13 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatus = 'update';
+      this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['temp'].clearValidate()
-      })
     },
     updateData() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'updateAsset';
+          this.requestParam.name = 'updateAsset'
           this.requestParam.parammaps = this.temp
           PostDataByName(this.requestParam).then(response => {
             console.log(response)
@@ -582,13 +330,13 @@ export default {
       })
     },
     handleDelete(row) {
-      MessageBox.confirm('设备名称：' + row.equipmentName, '确认删除？', {
+      MessageBox.confirm('入库单号' + row.laidForm, '确认删除？', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          this.requestParam.name = 'deleteAsset';
+          this.requestParam.name = 'deleteStockLaid'
           this.requestParam.parammaps = {}
           this.requestParam.parammaps['id'] = row.id
           PostDataByName(this.requestParam).then(() => {
@@ -612,3 +360,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.fixed-width .el-button--mini {
+  width: 70px;
+  margin-top: 10px;
+  margin-left: 0;
+}
+</style>

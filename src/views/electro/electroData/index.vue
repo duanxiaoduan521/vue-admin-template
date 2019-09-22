@@ -207,7 +207,7 @@
           <el-col :span="8">
             <el-form-item label="品牌" prop="providerId">
               <el-autocomplete
-                v-model="temp.providerId"
+                v-model="temp.providerName"
                 value-key="name"
                 class="inline-input"
                 :fetch-suggestions="providerSearch"
@@ -443,7 +443,7 @@ export default {
         ],
         equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
       },
-      rowStyle: { maxHeight: 10 + 'px', height: 10 + 'px' },
+      rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' }
     }
   },
@@ -469,6 +469,7 @@ export default {
     },
     handleSelect(item) {
       console.log(item)
+      this.temp.providerId = item.id
     },
     // 1-1: table&搜索
     getList() {

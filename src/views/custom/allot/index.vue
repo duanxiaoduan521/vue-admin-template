@@ -41,12 +41,6 @@
       <el-button
         class="filter-item"
         style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-      >批准</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
         type="success"
         icon="el-icon-upload2"
       >导入</el-button>
@@ -135,21 +129,20 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button
-            type="primary"
-            size="mini"
-            @click="handleUpdate(row)"
-          >卡片</el-button>
-          <el-button
+          <!-- <el-button
             type="success"
             size="mini"
             @click="handleUpdate(row)"
-          >编辑</el-button>
+          >编辑</el-button> -->
           <el-button
+            type="primary"
+            size="mini"
+          >批准</el-button>
+          <!-- <el-button
             type="danger"
             size="mini"
             @click="handleDelete(row)"
-          >删除</el-button>
+          >删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -451,7 +444,7 @@ export default {
         ],
         equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
       },
-      rowStyle: { maxHeight: 10 + 'px', height: 10 + 'px' },
+      rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' }
     }
   },

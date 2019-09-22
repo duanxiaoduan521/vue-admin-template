@@ -73,30 +73,6 @@
       >添加</el-button>-->
       <br>
       <el-button class="filter-item" style type="primary" icon="el-icon-edit">报修</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-      >接单</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-      >维修</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-      >维修完成</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-      >审核</el-button>
     </div>
 
     <el-table
@@ -205,10 +181,14 @@
           <span>{{ scope.row.auditStatue }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="450" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
           <!-- <el-button type="danger" size="mini" @click="handleDelete(row)">删除</el-button> -->
+          <el-button type="success" size="mini">接单</el-button>
+          <el-button type="success" size="mini">维修</el-button>
+          <el-button type="success" size="mini">维修完成</el-button>
+          <el-button type="success" size="mini">审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -498,7 +478,7 @@ export default {
         ],
         equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
       },
-      rowStyle: { maxHeight: 10 + 'px', height: 10 + 'px' },
+      rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' }
     }
   },
@@ -678,3 +658,8 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+  .fixed-width .el-button--mini {
+    width: 70px;
+  }
+</style>

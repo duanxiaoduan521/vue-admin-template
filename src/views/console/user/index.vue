@@ -319,7 +319,7 @@ export default {
         create: '添加',
         role: '选择角色'
       },
-      rowStyle: { maxHeight: 40 + 'px', height: 40 + 'px' },
+      rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' }
     }
   },

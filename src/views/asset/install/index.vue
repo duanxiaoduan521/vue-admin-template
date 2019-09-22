@@ -84,7 +84,7 @@
           <span>{{ scope.row.pastureName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="资产编号" prop="id" sortable="custom" align="center" width="150">
+      <el-table-column label="资产编号" prop="id" align="center" width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.assetNumber }}</span>
         </template>
@@ -151,6 +151,7 @@
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
+      style="width:600px;margin:0 auto;"
     >
       <el-form
         ref="temp"
@@ -158,12 +159,13 @@
         :model="temp"
         label-position="right"
         label-width="100px"
-        style="width: 800px; margin-left:50px;"
+        style="width: 300px; margin-left:50px;"
       >
         <el-radio-group v-model="temp.status">
           <el-radio
             v-for="item in getDictByName"
             :key="item.id"
+            style="margin-bottom:10px;"
             :label="item.label"
             :value="item.value"
           />
@@ -257,7 +259,7 @@ export default {
         ],
         equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
       },
-      rowStyle: { maxHeight: 10 + 'px', height: 10 + 'px' },
+      rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' }
     }
   },

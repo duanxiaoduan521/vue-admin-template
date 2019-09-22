@@ -244,7 +244,7 @@ export default {
         update: '编辑',
         create: '添加'
       },
-      rowStyle: { maxHeight: 40 + 'px', height: 40 + 'px' },
+      rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' },
       defaultProps: {
         children: 'children',

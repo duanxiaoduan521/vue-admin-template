@@ -296,7 +296,7 @@ export default {
         ],
         title: [{ required: true, message: '必填标题', trigger: 'blur' }]
       },
-      rowStyle: { maxHeight: 10 + 'px', height: 10 + 'px' },
+      rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' },
       downloadLoading: false
     }
