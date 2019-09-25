@@ -25,7 +25,14 @@
     </el-col>
     <el-col :span="19">
       <div class="app-container">
-        <Buwei :asset-typeid="dictid" />  <Dianjian :asset-typeid="dictid" />  <Baoyang :asset-typeid="dictid" />
+        <!--       <el-tabs v-model="activeName" @tab-click="handleClick">
+          <el-tab-pane label="部位" name="first"><Buwei :asset-typeid="dictid" /> </el-tab-pane>
+          <el-tab-pane label="点检模板" name="second"> <Dianjian :asset-typeid="dictid" /> </el-tab-pane>
+          <el-tab-pane label="保养模板" name="third"> <Baoyang :asset-typeid="dictid" /></el-tab-pane>
+          <el-tab-pane label="常见故障" name="fourth"><Guzhang :asset-typeid="dictid" /> </el-tab-pane>
+          <el-tab-pane label="运行记录模板" name="fourth"> <Yunxing :asset-typeid="dictid" /> </el-tab-pane>
+        </el-tabs> -->
+        <Buwei :asset-typeid="dictid" /> <Dianjian :asset-typeid="dictid" />  <Baoyang :asset-typeid="dictid" />
         <Guzhang :asset-typeid="dictid" />  <Yunxing :asset-typeid="dictid" />
       </div>
     </el-col>

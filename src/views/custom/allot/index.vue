@@ -37,6 +37,7 @@
         style="margin-left: 10px;"
         type="primary"
         icon="el-icon-edit"
+        @click="handleCreate"
       >申请</el-button>
       <el-button
         class="filter-item"

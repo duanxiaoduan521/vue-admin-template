@@ -1,36 +1,76 @@
 <template>
   <div class="receive-content">
     <el-form
-      ref="typeTemp"
-      :model="typeTemp"
+      ref="updateTemp"
+      :model="updateTemp"
       label-position="right"
       label-width="100px"
       style="width: 800px; margin-left:50px;"
     >
       <el-row>
-        <el-col :span="8">
-          <el-form-item label="申购单编号" prop="assetNumber">
-            <el-input ref="assetNumber" v-model="typeTemp.assetNumber" />
+        <el-col :span="6">
+          <el-form-item label="牧场设备编号" prop="stockNumber">
+            <el-input ref="stockNumber" v-model="temp.stockNumber" />
           </el-form-item>
         </el-col>
-        <el-col :span="4">
-          <el-form-item label="是否加急" prop="assetNumber">
-            <el-switch v-model="value" active-color="#13ce66" inactive-color="#eee" />
+        <el-col :span="6">
+          <el-form-item label="牧场名称" prop="stockName">
+            <el-input ref="stockName" v-model="temp.stockName" />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="名称" prop="providerId">
-            <el-autocomplete
-              v-model="typeTemp.providerName"
-              value-key="name"
-              class="inline-input"
-              :fetch-suggestions="providerSearch"
-              placeholder="请输入名称或编号新增备件"
-              style="width:200px"
-              @select="handleSelect"
-            />
+        <el-col :span="6">
+          <el-form-item label="牧场设备编号" prop="stockNumber">
+            <el-input ref="stockNumber" v-model="temp.stockNumber" />
           </el-form-item>
         </el-col>
+        <el-col :span="6">
+          <el-form-item label="资产名称" prop="stockName">
+            <el-input ref="stockName" v-model="temp.stockName" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="故障现象" prop="stockNumber">
+            <el-input ref="stockNumber" v-model="temp.stockNumber" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="报修图片" prop="stockName">
+            <el-input ref="stockName" v-model="temp.stockName" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="故障详情" prop="stockNumber">
+            <el-input ref="stockNumber" v-model="temp.stockNumber" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="处理结果" prop="stockNumber">
+            <el-radio-group v-model="radio">
+              <el-radio :label="3">备选项</el-radio>
+              <el-radio :label="6">备选项</el-radio>
+              <el-radio :label="9">备选项</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-form-item label="名称" prop="providerId">
+          <el-autocomplete
+            v-model="updateTemp.providerName"
+            value-key="name"
+            class="inline-input"
+            :fetch-suggestions="providerSearch"
+            placeholder="请输入名称或编号新增备件"
+            style="width:200px"
+            @select="handleSelect"
+          />
+        </el-form-item>
       </el-row>
     </el-form>
     <el-table
@@ -41,20 +81,20 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;margin-bottom:30px"
+      style="width: 100%;"
       :row-style="rowStyle"
       :cell-style="cellStyle"
       class="elTable"
     >
       <!-- table表格 -->
-      <el-table-column label="类型" min-width="110px" align="center">
+      <el-table-column label="名称" min-width="110px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.pastureName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="名称" prop="id" align="center" width="150">
+      <el-table-column label="编码" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.assetNumber }}</span>
+          <span>{{ scope.row.pastureName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="规格" min-width="110px" align="center">
@@ -62,51 +102,28 @@
           <span>{{ scope.row.pastureName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="单位" prop="id" align="center" width="150">
+      <el-table-column label="数量" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.assetNumber }}</span>
+          <span>{{ scope.row.pastureName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="数量" prop="id" align="center" width="150">
-        <template slot-scope="scope">
-          <span>{{ scope.row.assetNumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        align="center"
-        width="150"
-        class-name="small-padding fixed-width"
-      >
+      <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(row)">删除</el-button>
+          <el-button type="success" size="mini" @click="handleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-form
-      ref="typeTemp"
-      :model="typeTemp"
+      ref="updateTemp"
+      :model="updateTemp"
       label-position="right"
       label-width="100px"
-      style="width: 800px; margin-left:50px;"
+      style="width: 800px; margin-left:50px;margin-top:30px"
     >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="录入时间" prop="inputDatetime">
-            <el-date-picker
-              v-model="typeTemp.inputDatetime"
-              type="date"
-              placeholder="录入时间"
-              format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
-              style="width:170px;"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="责任人" prop="employeId">
-            <el-select v-model="typeTemp.employeId" placeholder="责任人" class="filter-item">
+          <el-form-item label="处理人" prop="employeId">
+            <el-select v-model="updateTemp.employeId" placeholder="处理人" class="filter-item">
               <el-option
                 v-for="item in findAllEmploye"
                 :key="item.id"
@@ -116,30 +133,16 @@
             </el-select>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="8">
-          <el-form-item label="牧场" prop="pastureId">
-            <el-select v-model="typeTemp.pastureId" placeholder="牧场" class="filter-item">
-              <el-option
-                v-for="item in findAllPasture"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="部门" prop="departmentId">
-            <el-select v-model="typeTemp.departmentId" placeholder="部门" class="filter-item">
-              <el-option
-                v-for="item in findAllDepart"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
+          <el-form-item label="日期" prop="inputDatetime">
+            <el-date-picker
+              v-model="temp.inputDatetime"
+              type="date"
+              placeholder="日期"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+              style="width:170px;"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -151,8 +154,8 @@
         type="success"
         @click="createData_again()"
       >确认新增</el-button>
-      <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确认</el-button>
-      <el-button @click="dialogFormVisible = false">关闭</el-button>
+      <el-button type="primary" @click="dialogStatusUpdate==='create'?createData():updateData()">确认</el-button>
+      <el-button @click="dialogFormVisibleRepair = false">关闭</el-button>
     </div>
   </div>
 </template>
@@ -164,13 +167,9 @@ import { parseTime } from '@/utils/index.js'
 import { validateEMail } from '@/utils/validate.js'
 import { MessageBox } from 'element-ui'
 export default {
-  name: 'ReceiveAdd',
-  // props: {
-  //   // eslint-disable-next-line vue/require-default-prop
-  //   typeTemp: Object
-  // },
+  name: 'Update',
   // eslint-disable-next-line vue/require-prop-types
-  props: ['typeTemp'],
+  props: ['updateTemp'],
   data() {
     return {
       tableKey: 0,
@@ -218,7 +217,7 @@ export default {
       ],
 
       temp: {},
-      dialogFormVisible: false,
+      dialogFormVisibleRepair: false,
       dialogStatus: '',
       textMap: {
         update: '编辑',
@@ -271,7 +270,6 @@ export default {
     },
     // 2-2：下拉框
     getDownList() {
-      console.log('sdf')
       GetDataByNames(this.requestParams).then(response => {
         this.findAllProvider = response.data.findAllProvider.list
         this.findAllAssetType = response.data.findAllAssetType.list
@@ -298,13 +296,13 @@ export default {
         inputDatetime: parseTime(new Date(), '{y}-{m}-{d}')
       }
     },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
+    handleCreateRepair(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatusRepair = 'repair'
+      this.dialogFormVisibleRepair = true
       // this.$nextTick(() => {
-      //   this.$refs['temp'].clearValidate()
-      // })
+      //   this.$refs["temp"].clearValidate();
+      // });
     },
     createData() {
       this.$refs['temp'].validate(valid => {
@@ -323,7 +321,7 @@ export default {
               })
             } else {
               this.getList()
-              this.dialogFormVisible = false
+              this.dialogFormVisibleRepair = false
               this.$notify({
                 title: '成功',
                 message: '新增成功',
@@ -403,5 +401,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .dialog-footer{text-align:right;}
+.dialog-footer {
+  text-align: right;
+}
 </style>

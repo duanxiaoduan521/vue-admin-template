@@ -14,6 +14,14 @@
         style="width: 140px;"
         class="filter-item"
       />
+      <el-date-picker
+        v-model="getdataListParm.parammaps.createTime"
+        type="date"
+        placeholder="领用时间"
+        style="width:170px;top:-3px;"
+        format="yyyy-MM-dd"
+        value-format="yyyy-MM-dd"
+      />
       <el-button
         v-waves
         class="filter-item"
@@ -21,25 +29,13 @@
         icon="el-icon-search"
         @click="handleFilter"
       >搜索</el-button>
-      <!-- <el-button
+      <el-button
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
         icon="el-icon-edit"
         @click="handleCreate"
-      >添加</el-button> -->
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-      >快速完成</el-button>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-      >详细点检</el-button>
+      >点检</el-button>
     </div>
 
     <el-table
@@ -97,23 +93,10 @@
           <span>{{ scope.row.department }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="350" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <!-- <el-button
-            type="primary"
-            size="mini"
-            @click="handleUpdate(row)"
-          >卡片</el-button> -->
-          <el-button
-            type="success"
-            size="mini"
-            @click="handleUpdate(row)"
-          >编辑</el-button>
-          <el-button
-            type="danger"
-            size="mini"
-            @click="handleDelete(row)"
-          >删除</el-button>
+          <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -142,88 +125,29 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="资产编号" prop="assetNumber">
-              <el-input
-                ref="assetNumber"
-                v-model="temp.assetNumber"
-              />
+              <el-input ref="assetNumber" v-model="temp.assetNumber" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="设备名称" prop="equipmentName">
-              <el-input
-                ref="equipmentName"
-                v-model="temp.equipmentName"
-              />
+            <el-form-item label="名称" prop="assetName">
+              <el-input ref="assetName" v-model="temp.assetName" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="状态" prop="status">
-              <el-select v-model="temp.status" placeholder="状态" class="filter-item">
-                <el-option
-                  v-for="item in getDictByName"
-                  :key="item.id"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+            <el-form-item label="备注" prop="note">
+              <el-input ref="note" v-model="temp.note" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="规格" prop="specification">
-              <el-input
-                ref="specification"
-                v-model="temp.specification"
-              />
+            <el-form-item label="设备类别" prop="assetType">
+              <el-input ref="assetType" v-model="temp.assetType" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="品牌" prop="providerId">
-              <el-autocomplete
-                v-model="state1"
-                value-key="name"
-                class="inline-input"
-                :fetch-suggestions="providerSearch"
-                placeholder="请输入内容"
-                @select="handleSelect"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="用途" prop="purpose">
-              <el-input ref="purpose" v-model="temp.purpose" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="牧场" prop="pastureId">
-              <el-select v-model="temp.pastureId" placeholder="牧场" class="filter-item">
-                <el-option
-                  v-for="item in findAllPasture"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="部门" prop="departmentId">
-              <el-select v-model="temp.departmentId" placeholder="部门" class="filter-item">
-                <el-option
-                  v-for="item in findAllDepart"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="负责人" prop="employeId">
-              <el-select v-model="temp.employeId" placeholder="负责人" class="filter-item">
+            <el-form-item label="点检人" prop="employeId">
+              <el-select v-model="temp.employeId" placeholder="点检人" class="filter-item">
                 <el-option
                   v-for="item in findAllEmploye"
                   :key="item.id"
@@ -234,101 +158,53 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="购置日期" prop="purchaseDate">
-              <el-date-picker
-                v-model="temp.purchaseDate"
-                type="date"
-                placeholder="选择日期"
-                style="width:170px;"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-              />
-              <!-- <el-input ref="deptname" v-model="temp.purchaseDate" @keyup.enter.native="deptenter" /> -->
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="入场日期" prop="entranceDate">
-              <el-date-picker
-                v-model="temp.entranceDate"
-                type="date"
-                placeholder="选择日期"
-                style="width:170px;"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="牧场设备编号" prop="equipmentNumber">
-              <el-input
-                ref="equipmentNumber"
-                v-model="temp.equipmentNumber"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="年保养费用" prop="yearUpkeepCost">
-              <el-input
-                ref="yearUpkeepCost"
-                v-model="temp.yearUpkeepCost"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="年维修费用" prop="yearMaintainDost">
-              <el-input
-                ref="yearMaintainDost"
-                v-model="temp.yearMaintainDost"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="原值" prop="yuanzhi">
-              <el-input ref="yuanzhi" v-model="temp.yuanzhi" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="设备类别" prop="typeName">
-              <el-select v-model="temp.assTypeId" placeholder="设备类别" class="filter-item">
-                <el-option
-                  v-for="item in findAllAssetType"
-                  :key="item.id"
-                  :label="item.typeName"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="财务编号" prop="financeNumber">
-              <el-input
-                ref="financeNumber"
-                v-model="temp.financeNumber"
-                @keyup.enter.native="deptenter"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="录入时间" prop="inputDatetime">
-              <el-date-picker
-                v-model="temp.inputDatetime"
-                type="date"
-                placeholder="录入时间"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                disabled
-                style="width:170px;"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
       </el-form>
+      <el-table
+        :key="tableKey"
+        v-loading="listLoading"
+        element-loading-text="给我一点时间"
+        :data="list"
+        border
+        fit
+        highlight-current-row
+        style="width: 100%;"
+        :row-style="rowStyle"
+        :cell-style="cellStyle"
+        class="elTable"
+      >
+        <!-- table表格 -->
+        <el-table-column label="序号" prop="id" sortable="custom" align="center" width="150">
+          <template slot-scope="scope">
+            <span>{{ scope.row.assetNumber }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="部位" width="150px" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.assetName }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="检查内容" width="150px" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.typeName }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="标准" min-width="110px" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.inspectionDate }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="检查结果" min-width="110px" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.inspectionDate }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="备注" min-width="110px" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.inspectionDate }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button
           v-if="dialogStatus==='create'"
@@ -360,6 +236,7 @@ export default {
     return {
       tableKey: 0,
       list: null,
+      list1: null,
       total: 0,
       listLoading: true,
       state1: '',
@@ -381,25 +258,25 @@ export default {
           assetName: ''
         }
       },
+      getdataListParmAdd: {
+        name: 'getBigSpotcheckList',
+        page: 1,
+        offset: 1,
+        pagecount: 10,
+        returntype: 'Map',
+        parammaps: {
+          assetNumber: '',
+          assetName: ''
+        }
+      },
       // 2-3：下拉框请求后数据加入[]
-      findAllProvider: [],
-      findAllAssetType: [],
-      findAllPasture: [],
-      findAllDepart: [],
       findAllEmploye: [],
-      getDictByName: [],
       // 2-1.请求下拉框接口
       requestParams: [
-        { name: 'findAllProvider', offset: 0, pagecount: 0, params: [] },
-        { name: 'findAllAssetType', offset: 0, pagecount: 0, params: [] },
-        { name: 'findAllPasture', offset: 0, pagecount: 0, params: [] },
-        { name: 'findAllDepart', offset: 0, pagecount: 0, params: [] },
-        { name: 'findAllEmploye', offset: 0, pagecount: 0, params: [] },
-        { name: 'getDictByName', offset: 0, pagecount: 0, params: ['资产状态'] }
+        { name: 'findAllEmploye', offset: 0, pagecount: 0, params: [] }
       ],
 
-      temp: {
-      },
+      temp: {},
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -409,8 +286,9 @@ export default {
       dialogPvVisible: false,
       // 校验规则
       rules: {
-        assetNumber: [{ required: true, message: '必填', trigger: 'blur' }
-        // 引入自定义校验并使用
+        assetNumber: [
+          { required: true, message: '必填', trigger: 'blur' }
+          // 引入自定义校验并使用
           // { validator: validateEMail, trigger: 'blur' }
         ],
         equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
@@ -425,23 +303,6 @@ export default {
   },
 
   methods: {
-    // 供应商模糊查询
-    providerSearch(queryString, cb) {
-      var returnList = this.findAllProvider
-      var results = queryString ? returnList.filter(this.createFilter(queryString)) : returnList
-      // 调用 callback 返回建议列表的数据
-      cb(results)
-    },
-    createFilter(queryString) {
-      return returnValue => {
-        return (
-          returnValue.name.toLowerCase().indexOf(queryString.toLowerCase()) >= 0
-        )
-      }
-    },
-    handleSelect(item) {
-      console.log(item)
-    },
     // 1-1: table&搜索
     getList() {
       this.listLoading = true
@@ -455,16 +316,21 @@ export default {
           this.listLoading = false
         }, 100)
       })
+      GetDataByName(this.getdataListParmAdd).then(response => {
+        this.list1 = response.data.list
+        if (response.data.total) {
+          this.total = response.data.total
+        }
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 100)
+      })
     },
     // 2-2：下拉框
     getDownList() {
       GetDataByNames(this.requestParams).then(response => {
-        this.findAllProvider = response.data.findAllProvider.list
-        this.findAllAssetType = response.data.findAllAssetType.list
-        this.findAllPasture = response.data.findAllPasture.list
-        this.findAllDepart = response.data.findAllDepart.list
         this.findAllEmploye = response.data.findAllEmploye.list
-        this.getDictByName = response.data.getDictByName.list
       })
     },
     handleFilter() {
@@ -481,7 +347,7 @@ export default {
     resetTemp() {
       this.temp = {
         // 格式化日期
-        inputDatetime: parseTime(new Date(), '{y}-{m}-{d}')
+        date: parseTime(new Date(), '{y}-{m}-{d}')
       }
     },
     handleCreate() {
@@ -495,7 +361,7 @@ export default {
     createData() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'insertAsset'
+          this.requestParam.name = 'insertBigSpotcheck'
           this.requestParam.parammaps = this.temp
 
           PostDataByName(this.requestParam).then(response => {
@@ -562,26 +428,28 @@ export default {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.requestParam.name = 'deleteAsset'
-        this.requestParam.parammaps = {}
-        this.requestParam.parammaps['id'] = row.id
-        PostDataByName(this.requestParam).then(() => {
-          this.getList()
-          this.dialogFormVisible = false
-          this.$notify({
-            title: '成功',
-            message: '删除成功',
-            type: 'success',
-            duration: 2000
+      })
+        .then(() => {
+          this.requestParam.name = 'deleteBigSpotcheck'
+          this.requestParam.parammaps = {}
+          this.requestParam.parammaps['id'] = row.id
+          PostDataByName(this.requestParam).then(() => {
+            this.getList()
+            this.dialogFormVisible = false
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
           })
         })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
         })
-      })
     }
   }
 }

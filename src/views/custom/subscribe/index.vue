@@ -396,6 +396,7 @@ export default {
         : returnList
       // 调用 callback 返回建议列表的数据
       cb(results)
+      console.log(results)
     },
     createFilter(queryString) {
       return returnValue => {
@@ -405,7 +406,7 @@ export default {
       }
     },
     handleSelect(item) {
-      console.log(item)
+      console.log(item.name)
       this.temp.providerId = item.id
       this.temp.providerName = item.name
     },
@@ -525,13 +526,13 @@ export default {
       })
     },
     handleDelete(row) {
-      MessageBox.confirm('设备名称：' + row.equipmentName, '确认删除？', {
+      MessageBox.confirm('申购单号' + row.purchaseNumber, '确认删除？', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          this.requestParam.name = 'deleteAsset'
+          this.requestParam.name = 'deleteStockPurchase'
           this.requestParam.parammaps = {}
           this.requestParam.parammaps['id'] = row.id
           PostDataByName(this.requestParam).then(() => {

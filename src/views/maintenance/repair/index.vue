@@ -7,6 +7,7 @@
         clearable
         placeholder="牧场"
         class="filter-item"
+        style="width:150px;"
       >
         <el-option
           v-for="item in findAllPasture"
@@ -25,7 +26,7 @@
         v-model="getdataListParm.parammaps.applyTime"
         type="date"
         placeholder="日期"
-        style="width:170px;top:-4px;"
+        style="width:150px;top:-4px;"
         format="yyyy-MM-dd"
         value-format="yyyy-MM-dd"
       />
@@ -35,6 +36,7 @@
         clearable
         placeholder="处理状态"
         class="filter-item"
+        style="width:150px;"
       >
         <el-option
           v-for="item in getDictByName"
@@ -48,6 +50,7 @@
         clearable
         placeholder="审核状态"
         class="filter-item"
+        style="width:150px;"
       >
         <el-option
           v-for="item in getDictByNameA"
@@ -64,15 +67,13 @@
         icon="el-icon-search"
         @click="handleFilter"
       >搜索</el-button>
-      <!-- <el-button
+      <el-button
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
         icon="el-icon-edit"
-        @click="handleCreate"
-      >添加</el-button>-->
-      <br>
-      <el-button class="filter-item" style type="primary" icon="el-icon-edit">报修</el-button>
+        @click="handleCreateRepair"
+      >报修</el-button>
     </div>
 
     <el-table
@@ -184,11 +185,10 @@
       <el-table-column label="操作" align="center" width="450" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
-          <!-- <el-button type="danger" size="mini" @click="handleDelete(row)">删除</el-button> -->
-          <el-button type="success" size="mini">接单</el-button>
-          <el-button type="success" size="mini">维修</el-button>
-          <el-button type="success" size="mini">维修完成</el-button>
-          <el-button type="success" size="mini">审核</el-button>
+          <el-button type="success" size="mini" @click="handleReceipt(row)">接单</el-button>
+          <el-button type="success" size="mini" @click="handleRepair(row)">维修</el-button>
+          <el-button type="success" size="mini" @click="handeleComplete(row)">维修完成</el-button>
+          <el-button type="success" size="mini" @click="handeleExamine(row)">审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -200,201 +200,737 @@
       :limit.sync="getdataListParm.pagecount"
       @pagination="getList"
     />
-    <!-- 弹出层新增or修改 -->
+    <!-- 弹出层报修 -->
+    <el-dialog
+      :title="textMap[dialogStatusRepair]"
+      :visible.sync="dialogFormVisibleRepair"
+      :close-on-click-modal="false"
+    >
+      <div class="app-containerRepair">
+        <el-form
+          ref="temp"
+          :rules="rules"
+          :model="temp"
+          label-position="right"
+          label-width="120px"
+          style="width: 800px; margin-left:50px;"
+        >
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="牧场" prop="pastureId">
+                <el-select v-model="temp.pastureId" placeholder="牧场" class="filter-item">
+                  <el-option
+                    v-for="item in findAllPasture"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="部门" prop="departmentId">
+                <el-select v-model="temp.departmentId" placeholder="部门" class="filter-item">
+                  <el-option
+                    v-for="item in findAllDepart"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="设备名称：" prop="assetName">
+                <el-autocomplete
+                  ref="assetName"
+                  v-model="temp.assetName"
+                  value-key="assetName"
+                  class="inline-input"
+                  :fetch-suggestions="formNameSearch"
+                  placeholder="请输入内容"
+                  :disabled="dialogStatus==='update'"
+                  @select="handleformNameSelect"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="牧场设备编号：" prop="assetNumber">
+                <el-autocomplete
+                  ref="assetNumber"
+                  v-model="temp.assetNumber"
+                  value-key="assetNumber"
+                  class="inline-input"
+                  :fetch-suggestions="formNumberSearch"
+                  placeholder="请输入内容"
+                  :disabled="dialogStatus==='update'"
+                  @select="handleformNumberSelect"
+                />
+              </el-form-item>
+            </el-col>
+
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="故障部位" prop="pastureId">
+                <el-select v-model="temp.pastureId" placeholder="故障部位" class="filter-item">
+                  <el-option
+                    v-for="item in findAllPasture"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="故障现象" prop="departmentId">
+                <el-select v-model="temp.departmentId" placeholder="故障现象" class="filter-item">
+                  <el-option
+                    v-for="item in findAllDepart"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="故障详情" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="责任人" prop="employeId">
+                <el-select v-model="temp.employeId" placeholder="责任人" class="filter-item">
+                  <el-option
+                    v-for="item in findAllEmploye"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="日期" prop="inputDatetime">
+                <el-date-picker
+                  v-model="temp.inputDatetime"
+                  type="date"
+                  placeholder="日期"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  style="width:170px;"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button
+            v-if="dialogStatusRepair==='create'"
+            ref="createb"
+            type="success"
+            @click="createData_again()"
+          >确认新增</el-button>
+          <el-button type="primary" @click="dialogStatusRepair==='create'?createData():updateData()">确认</el-button>
+          <el-button @click="dialogFormVisibleRepair = false">关闭</el-button>
+        </div>
+      </div>
+    </el-dialog>
+    <!-- 弹出层接单 -->
+    <el-dialog
+      :title="textMap[dialogStatusReceipt]"
+      :visible.sync="dialogFormVisibleReceipt"
+      :close-on-click-modal="false"
+    >
+      <div class="app-containerReceipt">
+        <el-form
+          ref="temp"
+          :rules="rules"
+          :model="temp"
+          label-position="right"
+          label-width="100px"
+          style="width: 800px; margin-left:50px;"
+        >
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="牧场设备编号" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="牧场名称" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="牧场设备编号" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="资产名称" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="故障部位" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="故障现象" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="故障详情" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="部门" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="报修图片" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button
+            v-if="dialogStatusReceipt==='create'"
+            ref="createb"
+            type="success"
+            @click="createData_again()"
+          >确认新增</el-button>
+          <el-button type="primary" @click="dialogStatusReceipt==='create'?createData():updateData()">确认</el-button>
+          <el-button @click="dialogFormVisibleReceipt = false">关闭</el-button>
+        </div>
+      </div>
+    </el-dialog>
+    <!-- 弹出层维修 -->
+    <el-dialog
+      :title="textMap[dialogStatusRepairW]"
+      :visible.sync="dialogFormVisibleRepairW"
+      :close-on-click-modal="false"
+    >
+      <div class="app-containerRepairW">
+        <el-form
+          ref="temp"
+          :rules="rules"
+          :model="temp"
+          label-position="right"
+          label-width="100px"
+          style="width: 800px; margin-left:50px;"
+        >
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="牧场设备编号" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="牧场名称" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="牧场设备编号" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="资产名称" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="故障现象" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="报修图片" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="部门" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="操作" prop="stockName">
+                <el-select
+                  v-model="getdataListParm.parammaps.auditStatue"
+                  clearable
+                  placeholder="操作"
+                  class="filter-item"
+                >
+                  <el-option
+                    v-for="item in getDictByNameA"
+                    :key="item.id"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="故障详情" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="处理结果" prop="stockNumber">
+                <el-radio-group v-model="radio">
+                  <el-radio :label="3">备选项</el-radio>
+                  <el-radio :label="6">备选项</el-radio>
+                  <el-radio :label="9">备选项</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-form-item label="名称" prop="providerId">
+              <el-autocomplete
+                v-model="temp.providerName"
+                value-key="name"
+                class="inline-input"
+                :fetch-suggestions="providerSearch"
+                placeholder="请输入名称或编号新增备件"
+                style="width:200px"
+                @select="handleSelect"
+              />
+            </el-form-item>
+          </el-row>
+        </el-form>
+        <el-table
+          :key="tableKey"
+          v-loading="listLoading"
+          element-loading-text="给我一点时间"
+          :data="list"
+          border
+          fit
+          highlight-current-row
+          style="width: 100%;"
+          :row-style="rowStyle"
+          :cell-style="cellStyle"
+          class="elTable"
+        >
+          <!-- table表格 -->
+          <el-table-column label="名称" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.pastureName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="编码" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.pastureName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="规格" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.pastureName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="数量" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.pastureName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
+            <template slot-scope="{row}">
+              <el-button type="success" size="mini" @click="handleDelete(row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-form
+          ref="temp"
+          :model="temp"
+          label-position="right"
+          label-width="100px"
+          style="width: 800px; margin-left:50px;margin-top:30px"
+        >
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="责任人" prop="employeId">
+                <el-select v-model="temp.employeId" placeholder="责任人" class="filter-item">
+                  <el-option
+                    v-for="item in findAllEmploye"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="日期" prop="inputDatetime">
+                <el-date-picker
+                  v-model="temp.inputDatetime"
+                  type="date"
+                  placeholder="日期"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  style="width:170px;"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button
+            v-if="dialogStatusRepairW==='create'"
+            ref="createb"
+            type="success"
+            @click="createData_again()"
+          >确认新增</el-button>
+          <el-button type="primary" @click="dialogStatusRepairW==='create'?createData():updateData()">确认</el-button>
+          <el-button @click="dialogFormVisibleRepairW = false">关闭</el-button>
+        </div>
+      </div>
+    </el-dialog>
+    <!-- 弹出层修改 -->
     <el-dialog
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
     >
-      <el-form
-        ref="temp"
-        :rules="rules"
-        :model="temp"
-        label-position="right"
-        label-width="100px"
-        style="width: 800px; margin-left:50px;"
-      >
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="资产编号" prop="assetNumber">
-              <el-input ref="assetNumber" v-model="temp.assetNumber" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="设备名称" prop="equipmentName">
-              <el-input ref="equipmentName" v-model="temp.equipmentName" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="状态" prop="status">
-              <el-select v-model="temp.status" placeholder="状态" class="filter-item">
-                <el-option
-                  v-for="item in getDictByName"
-                  :key="item.id"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="规格" prop="specification">
-              <el-input ref="specification" v-model="temp.specification" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="品牌" prop="providerId">
+      <div class="app-container">
+        <el-form
+          ref="temp"
+          :rules="rules"
+          :model="temp"
+          label-position="right"
+          label-width="100px"
+          style="width: 800px; margin-left:50px;"
+        >
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="牧场设备编号" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="牧场名称" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="牧场设备编号" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="资产名称" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="故障现象" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="报修图片" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="故障详情" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="处理结果" prop="stockNumber">
+                <el-radio-group v-model="radio">
+                  <el-radio :label="3">备选项</el-radio>
+                  <el-radio :label="6">备选项</el-radio>
+                  <el-radio :label="9">备选项</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-form-item label="名称" prop="providerId">
               <el-autocomplete
-                v-model="state1"
+                v-model="temp.providerName"
                 value-key="name"
                 class="inline-input"
                 :fetch-suggestions="providerSearch"
-                placeholder="请输入内容"
+                placeholder="请输入名称或编号新增备件"
+                style="width:200px"
                 @select="handleSelect"
               />
             </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="用途" prop="purpose">
-              <el-input ref="purpose" v-model="temp.purpose" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="牧场" prop="pastureId">
-              <el-select v-model="temp.pastureId" placeholder="牧场" class="filter-item">
-                <el-option
-                  v-for="item in findAllPasture"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
+          </el-row>
+        </el-form>
+        <el-table
+          :key="tableKey"
+          v-loading="listLoading"
+          element-loading-text="给我一点时间"
+          :data="list"
+          border
+          fit
+          highlight-current-row
+          style="width: 100%;"
+          :row-style="rowStyle"
+          :cell-style="cellStyle"
+          class="elTable"
+        >
+          <!-- table表格 -->
+          <el-table-column label="名称" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.pastureName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="编码" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.pastureName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="规格" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.pastureName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="数量" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.pastureName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
+            <template slot-scope="{row}">
+              <el-button type="success" size="mini" @click="handleDelete(row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-form
+          ref="temp"
+          :rules="rules"
+          :model="temp"
+          label-position="right"
+          label-width="100px"
+          style="width: 800px; margin-left:50px;"
+        >
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="处理人" prop="employeId">
+                <el-select v-model="temp.employeId" placeholder="处理人" class="filter-item">
+                  <el-option
+                    v-for="item in findAllEmploye"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="日期" prop="inputDatetime">
+                <el-date-picker
+                  v-model="temp.inputDatetime"
+                  type="date"
+                  placeholder="日期"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  style="width:170px;"
                 />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="部门" prop="departmentId">
-              <el-select v-model="temp.departmentId" placeholder="部门" class="filter-item">
-                <el-option
-                  v-for="item in findAllDepart"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button
+            v-if="dialogStatus==='create'"
+            ref="createb"
+            type="success"
+            @click="createData_again()"
+          >确认新增</el-button>
+          <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确认</el-button>
+          <el-button @click="dialogFormVisible = false">关闭</el-button>
+        </div>
+      </div>
+    </el-dialog>
+    <!-- 弹出层维修完成 -->
+    <el-dialog
+      :title="textMap[dialogStatusComplete]"
+      :visible.sync="dialogFormVisibleComplete"
+      :close-on-click-modal="false"
+      style="width:400px;margin:0 auto;"
+    >
+      <div class="app-containerComplete">
+        <el-form
+          ref="temp"
+          :rules="rules"
+          :model="temp"
+          label-position="right"
+          label-width="100px"
+          style="width: 400px; margin-left:50px;"
+        >
+          <h3 style="margin-bottom:50px;">是否完成？</h3>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button
+            v-if="dialogStatusComplete ==='create'"
+            ref="createb"
+            type="success"
+            @click="createData_again()"
+          >确认新增</el-button>
+          <el-button type="primary" @click="dialogStatusComplete ==='create'?createData():updateData()">确认</el-button>
+          <el-button @click="dialogFormVisibleComplete = false">关闭</el-button>
+        </div>
+      </div>
+    </el-dialog>
+    <!-- 弹出层审核 -->
+    <el-dialog
+      :title="textMap[dialogStatusExamine]"
+      :visible.sync="dialogFormVisibleExamine"
+      :close-on-click-modal="false"
+    >
+      <div class="app-containerExamine">
+        <el-form
+          ref="temp"
+          :rules="rules"
+          :model="temp"
+          label-position="right"
+          label-width="100px"
+          style="width: 800px; margin-left:50px;"
+        >
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="牧场编号" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="牧场名称" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="牧场设备编号" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="资产名称" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="故障现象" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="报修图片" prop="stockName">
+                <el-input ref="stockName" v-model="temp.stockName" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="部门" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="操作" prop="stockName">
+                <el-select
+                  v-model="getdataListParm.parammaps.auditStatue"
+                  clearable
+                  placeholder="操作"
+                  class="filter-item"
+                >
+                  <el-option
+                    v-for="item in getDictByNameA"
+                    :key="item.id"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="故障详情" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="审核图片" prop="stockNumber">
+                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-button size="small" type="primary">点击上传</el-button>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="审核人" prop="employeId">
+                <el-select v-model="temp.employeId" placeholder="责任人" class="filter-item">
+                  <el-option
+                    v-for="item in findAllEmploye"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="审核日期" prop="inputDatetime">
+                <el-date-picker
+                  v-model="temp.inputDatetime"
+                  type="date"
+                  placeholder="日期"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  style="width:170px;"
                 />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="负责人" prop="employeId">
-              <el-select v-model="temp.employeId" placeholder="负责人" class="filter-item">
-                <el-option
-                  v-for="item in findAllEmploye"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="购置日期" prop="purchaseDate">
-              <el-date-picker
-                v-model="temp.purchaseDate"
-                type="date"
-                placeholder="选择日期"
-                style="width:170px;"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-              />
-              <!-- <el-input ref="deptname" v-model="temp.purchaseDate" @keyup.enter.native="deptenter" /> -->
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="入场日期" prop="entranceDate">
-              <el-date-picker
-                v-model="temp.entranceDate"
-                type="date"
-                placeholder="选择日期"
-                style="width:170px;"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="牧场设备编号" prop="equipmentNumber">
-              <el-input ref="equipmentNumber" v-model="temp.equipmentNumber" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="年保养费用" prop="yearUpkeepCost">
-              <el-input ref="yearUpkeepCost" v-model="temp.yearUpkeepCost" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="年维修费用" prop="yearMaintainDost">
-              <el-input ref="yearMaintainDost" v-model="temp.yearMaintainDost" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="原值" prop="yuanzhi">
-              <el-input ref="yuanzhi" v-model="temp.yuanzhi" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="设备类别" prop="typeName">
-              <el-select v-model="temp.assTypeId" placeholder="设备类别" class="filter-item">
-                <el-option
-                  v-for="item in findAllAssetType"
-                  :key="item.id"
-                  :label="item.typeName"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="财务编号" prop="financeNumber">
-              <el-input
-                ref="financeNumber"
-                v-model="temp.financeNumber"
-                @keyup.enter.native="deptenter"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="录入时间" prop="inputDatetime">
-              <el-date-picker
-                v-model="temp.inputDatetime"
-                type="date"
-                placeholder="录入时间"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                disabled
-                style="width:170px;"
-              />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button
-          v-if="dialogStatus==='create'"
-          ref="createb"
-          type="success"
-          @click="createData_again()"
-        >确认新增</el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确认</el-button>
-        <el-button @click="dialogFormVisible = false">关闭</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button
+            v-if="dialogStatusExamine==='create'"
+            ref="createb"
+            type="success"
+            @click="createData_again()"
+          >确认新增</el-button>
+          <el-button type="primary" @click="dialogStatusExamine==='create'?createData():updateData()">确认</el-button>
+          <el-button @click="dialogFormVisibleExamine = false">关闭</el-button>
+        </div>
       </div>
     </el-dialog>
   </div>
@@ -406,7 +942,6 @@ import { GetDataByName, GetDataByNames, PostDataByName } from '@/api/common'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils/index.js'
 // eslint-disable-next-line no-unused-vars
-import { validateEMail } from '@/utils/validate.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
 export default {
@@ -416,8 +951,9 @@ export default {
   data() {
     return {
       tableKey: 0,
-      list: null,
+      list: [],
       total: 0,
+      radio: '',
       listLoading: true,
       state1: '',
       requestParam: {
@@ -461,10 +997,33 @@ export default {
       requestParamAs: [
         { name: 'getDictByName', offset: 0, pagecount: 0, params: ['审核状态'] }
       ],
-      temp: {},
+
+      temp: {
+        assetNumber: '',
+        assetName: ''
+      },
+      requestFilterParams: {
+        returntype: 'Map',
+        parammaps: {}
+      },
+      dialogFormVisibleRepair: false,
       dialogFormVisible: false,
+      dialogFormVisibleReceipt: false,
+      dialogFormVisibleRepairW: false,
+      dialogFormVisibleComplete: false,
+      dialogFormVisibleExamine: false,
+      dialogStatusRepair: '',
+      dialogStatusReceipt: '',
+      dialogStatusRepairW: '',
       dialogStatus: '',
+      dialogStatusComplete: '',
+      dialogStatusExamine: '',
       textMap: {
+        examine: '审核',
+        complete: '维修完成',
+        repairW: '维修',
+        receipt: '接单',
+        repair: '报修',
         update: '编辑',
         create: '新增'
       },
@@ -488,6 +1047,53 @@ export default {
   },
 
   methods: {
+    // 模糊查询-报修名称
+    formNumberSearch(queryString, cb) {
+      this.requestFilterParams.name = 'findAssetMain'
+      this.requestFilterParams.parammaps['assetNumber'] = queryString
+      this.requestFilterParams.parammaps['assetName'] = ''
+      GetDataByName(this.requestFilterParams).then(response => {
+        cb(response.data.list)
+      })
+    },
+    formNameSearch(queryString, cb) {
+      this.requestFilterParams.name = 'findAssetMain'
+      this.requestFilterParams.parammaps['assetNumber'] = ''
+      this.requestFilterParams.parammaps['assetName'] = queryString
+      GetDataByName(this.requestFilterParams).then(response => {
+        cb(response.data.list)
+      })
+    },
+    handleformNumberSelect(item) {
+      this.requestFilterParams.name = 'findAssetMain'
+      this.requestFilterParams.parammaps['assetName'] = ''
+      this.requestFilterParams.parammaps['assetNumber'] = this.temp.assetNumber
+      GetDataByName(this.requestFilterParams).then(response => {
+        this.$nextTick(() => {
+          if (response.data.list.length > 0) {
+            // this.temp.assetNumber = response.data.list[0].assetNumber
+            // this.temp.assetName = response.data.list[0].assetName
+            this.temp.assetNumber = item.assetNumber
+            this.temp.assetName = item.assetName
+          }
+        })
+      })
+    },
+    handleformNameSelect(item) {
+      this.requestFilterParams.name = 'findAssetMain'
+      this.requestFilterParams.parammaps['assetNumber'] = ''
+      this.requestFilterParams.parammaps['assetName'] = this.temp.assetName
+      GetDataByName(this.requestFilterParams).then(response => {
+        this.$nextTick(() => {
+          if (response.data.list.length > 0) {
+            this.temp.assetNumber = item.assetNumber
+            this.temp.assetName = item.assetName
+            // this.temp.assetNumber = response.data.list[0].assetNumber
+            // this.temp.assetName = response.data.list[0].assetName
+          }
+        })
+      })
+    },
     // 供应商模糊查询
     providerSearch(queryString, cb) {
       var returnList = this.findAllProvider
@@ -554,50 +1160,44 @@ export default {
         inputDatetime: parseTime(new Date(), '{y}-{m}-{d}')
       }
     },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['temp'].clearValidate()
-      })
+    // 报修
+    handleCreateRepair(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatusRepair = 'repair'
+      this.dialogFormVisibleRepair = true
+      // this.$nextTick(() => {
+      //   this.$refs["temp"].clearValidate();
+      // });
     },
-    createData() {
-      this.$refs['temp'].validate(valid => {
-        if (valid) {
-          this.requestParam.name = 'insertAsset'
-          this.requestParam.parammaps = this.temp
-
-          PostDataByName(this.requestParam).then(response => {
-            console.log(response)
-            if (response.msg === 'fail') {
-              this.$notify({
-                title: '失败',
-                message: '保存失败-' + response.data,
-                type: 'danger',
-                duration: 2000
-              })
-            } else {
-              this.getList()
-              this.dialogFormVisible = false
-              this.$notify({
-                title: '成功',
-                message: '新增成功',
-                type: 'success',
-                duration: 2000
-              })
-            }
-          })
-        }
-      })
+    // 接单
+    handleReceipt(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatusReceipt = 'receipt'
+      this.dialogFormVisibleReceipt = true
     },
+    // 维修
+    handleRepair(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatusRepairW = 'repairW'
+      this.dialogFormVisibleRepairW = true
+    },
+    // 修改
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['temp'].clearValidate()
-      })
+    },
+    // 维修完成
+    handeleComplete(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatusComplete = 'complete'
+      this.dialogFormVisibleComplete = true
+    },
+    // 审核
+    handeleExamine(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatusExamine = 'examine'
+      this.dialogFormVisibleExamine = true
     },
     updateData() {
       this.$refs['temp'].validate(valid => {
@@ -659,7 +1259,11 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .fixed-width .el-button--mini {
-    width: 70px;
-  }
+
+// .filter-container .filter-item{
+//   width: 140px;
+// }
+// .el-button--primary{
+//   width: 70px;
+// }
 </style>

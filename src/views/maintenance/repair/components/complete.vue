@@ -1,148 +1,13 @@
 <template>
   <div class="receive-content">
     <el-form
-      ref="typeTemp"
-      :model="typeTemp"
+      ref="updateTemp"
+      :model="updateTemp"
       label-position="right"
       label-width="100px"
-      style="width: 800px; margin-left:50px;"
+      style="width: 400px;"
     >
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="申购单编号" prop="assetNumber">
-            <el-input ref="assetNumber" v-model="typeTemp.assetNumber" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="是否加急" prop="assetNumber">
-            <el-switch v-model="value" active-color="#13ce66" inactive-color="#eee" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="名称" prop="providerId">
-            <el-autocomplete
-              v-model="typeTemp.providerName"
-              value-key="name"
-              class="inline-input"
-              :fetch-suggestions="providerSearch"
-              placeholder="请输入名称或编号新增备件"
-              style="width:200px"
-              @select="handleSelect"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      element-loading-text="给我一点时间"
-      :data="list"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%;margin-bottom:30px"
-      :row-style="rowStyle"
-      :cell-style="cellStyle"
-      class="elTable"
-    >
-      <!-- table表格 -->
-      <el-table-column label="类型" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.pastureName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="名称" prop="id" align="center" width="150">
-        <template slot-scope="scope">
-          <span>{{ scope.row.assetNumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="规格" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.pastureName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="单位" prop="id" align="center" width="150">
-        <template slot-scope="scope">
-          <span>{{ scope.row.assetNumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="数量" prop="id" align="center" width="150">
-        <template slot-scope="scope">
-          <span>{{ scope.row.assetNumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        align="center"
-        width="150"
-        class-name="small-padding fixed-width"
-      >
-        <template slot-scope="{row}">
-          <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-form
-      ref="typeTemp"
-      :model="typeTemp"
-      label-position="right"
-      label-width="100px"
-      style="width: 800px; margin-left:50px;"
-    >
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="录入时间" prop="inputDatetime">
-            <el-date-picker
-              v-model="typeTemp.inputDatetime"
-              type="date"
-              placeholder="录入时间"
-              format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
-              style="width:170px;"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="责任人" prop="employeId">
-            <el-select v-model="typeTemp.employeId" placeholder="责任人" class="filter-item">
-              <el-option
-                v-for="item in findAllEmploye"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="牧场" prop="pastureId">
-            <el-select v-model="typeTemp.pastureId" placeholder="牧场" class="filter-item">
-              <el-option
-                v-for="item in findAllPasture"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="部门" prop="departmentId">
-            <el-select v-model="typeTemp.departmentId" placeholder="部门" class="filter-item">
-              <el-option
-                v-for="item in findAllDepart"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <h3 style="margin-bottom:50px;">是否完成？</h3>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button
@@ -151,8 +16,8 @@
         type="success"
         @click="createData_again()"
       >确认新增</el-button>
-      <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确认</el-button>
-      <el-button @click="dialogFormVisible = false">关闭</el-button>
+      <el-button type="primary" @click="dialogStatusUpdate==='create'?createData():updateData()">确认</el-button>
+      <el-button @click="dialogFormVisibleRepair = false">关闭</el-button>
     </div>
   </div>
 </template>
@@ -164,13 +29,9 @@ import { parseTime } from '@/utils/index.js'
 import { validateEMail } from '@/utils/validate.js'
 import { MessageBox } from 'element-ui'
 export default {
-  name: 'ReceiveAdd',
-  // props: {
-  //   // eslint-disable-next-line vue/require-default-prop
-  //   typeTemp: Object
-  // },
+  name: 'Complete',
   // eslint-disable-next-line vue/require-prop-types
-  props: ['typeTemp'],
+  props: ['updateTemp'],
   data() {
     return {
       tableKey: 0,
@@ -218,7 +79,7 @@ export default {
       ],
 
       temp: {},
-      dialogFormVisible: false,
+      dialogFormVisibleRepair: false,
       dialogStatus: '',
       textMap: {
         update: '编辑',
@@ -271,7 +132,6 @@ export default {
     },
     // 2-2：下拉框
     getDownList() {
-      console.log('sdf')
       GetDataByNames(this.requestParams).then(response => {
         this.findAllProvider = response.data.findAllProvider.list
         this.findAllAssetType = response.data.findAllAssetType.list
@@ -298,13 +158,13 @@ export default {
         inputDatetime: parseTime(new Date(), '{y}-{m}-{d}')
       }
     },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
+    handleCreateRepair(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatusRepair = 'repair'
+      this.dialogFormVisibleRepair = true
       // this.$nextTick(() => {
-      //   this.$refs['temp'].clearValidate()
-      // })
+      //   this.$refs["temp"].clearValidate();
+      // });
     },
     createData() {
       this.$refs['temp'].validate(valid => {
@@ -323,7 +183,7 @@ export default {
               })
             } else {
               this.getList()
-              this.dialogFormVisible = false
+              this.dialogFormVisibleRepair = false
               this.$notify({
                 title: '成功',
                 message: '新增成功',
@@ -403,5 +263,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .dialog-footer{text-align:right;}
+.dialog-footer {
+  text-align: right;
+}
 </style>

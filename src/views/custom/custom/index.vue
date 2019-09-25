@@ -42,10 +42,11 @@
         @click="handleCreate"
       >添加</el-button>
       <el-button
+        v-waves
         class="filter-item"
-        style="margin-left: 10px;"
-        type="info"
+        type="primary"
         icon="el-icon-download"
+        @click="handleDownload"
       >导出</el-button>
     </div>
 
@@ -546,6 +547,90 @@ export default {
             message: '已取消删除'
           })
         })
+    },
+    handleDownload() {
+      /*       this.requestParam.name = 'meteringOutfit'
+      this.requestParam.returntype = 'xlsx'
+      this.requestParam.parammaps.formType = '水表'
+      GetDataByNameXlsx(this.requestParam).then(response => {
+        this.$nextTick(() => {
+          DownloadExcel(response, this.requestParam.parammaps.formType)
+        }) */
+      this.requestParam.name = 'meteringOutfit'
+      this.requestParam.parammaps.formType = '备件信息'
+      GetDataByName(this.requestParam).then(response => {
+        this.$nextTick(() => {
+          import('@/vendor/Export2Excel').then(excel => {
+            const list1 = response.data.list
+            const tHeader = [
+              '牧场', '名称', '规格', '用途', '最低库存', '最高库存', '当前库存', '单位', '供应商'
+            ]
+            const filterVal = [
+              '牧场', '名称', '规格', '用途', '最低库存', '最高库存', '当前库存', '单位', '供应商'
+            ]
+            const data1 = this.formatJson(filterVal, list1)
+            excel.export_json_to_excel({
+              header: tHeader,
+              data: data1,
+              filename: this.requestParam.parammaps.formType,
+              autoWidth: true,
+              bookType: 'xlsx'
+            })
+          })
+        })
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v =>
+        filterVal.map(j => {
+          if (j === 'timestamp') {
+            return parseTime(v[j])
+          } else {
+            return v[j]
+          }
+        })
+      )
+    },
+    beforeImportExcel(file) {
+      /*   const isExcel =
+        file.type ===
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' */
+      const isLt2M = file.size / 1024 / 1024 < 2
+      /*  if (!isExcel) {
+        this.$message.error(
+          '上传文件必须是Xlsx格式!建议先导出，再修改导出文件再导入！'
+        )
+      }*/
+      if (!isLt2M) {
+        this.$message.error('上传文件大小不能超过 2MB!')
+      }
+      return isLt2M
+    },
+    handleImportExcelSuccess(res, file) {
+    //  if (res.msg === 'ok') {
+      if (res.msg === 'ok') {
+        this.$message({
+          title: '成功',
+          message: '导入成功:' + res.data.success + '条!',
+          type: 'success',
+          duration: 2000
+        })
+        if (res.data.err_count > 0) {
+          this.$notify({
+            title: '失败',
+            message: '导入失败:' + res.data.err_count + '条!',
+            type: 'danger',
+            duration: 2000
+          })
+        }
+      } else {
+        this.$notify({
+          title: '失败',
+          message: '上传失败',
+          type: 'danger',
+          duration: 2000
+        })
+      }
     }
   }
 }
