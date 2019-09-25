@@ -72,7 +72,7 @@
         style="margin-left: 10px;"
         type="primary"
         icon="el-icon-edit"
-        @click="handleCreateRepair"
+        @click="handleCreateBaoxiu"
       >报修</el-button>
     </div>
 
@@ -274,32 +274,32 @@
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="故障部位" prop="pastureId">
-                <el-select v-model="temp.pastureId" placeholder="故障部位" class="filter-item">
+              <el-form-item label="故障部位" prop="appearanceId">
+                <el-select v-model="temp.appearanceId" placeholder="故障部位" class="filter-item">
                   <el-option
-                    v-for="item in findAllPasture"
+                    v-for="item in findAllPart"
                     :key="item.id"
-                    :label="item.name"
+                    :label="item.partName"
                     :value="item.id"
                   />
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="故障现象" prop="departmentId">
-                <el-select v-model="temp.departmentId" placeholder="故障现象" class="filter-item">
+              <el-form-item label="故障现象" prop="phenomen">
+                <el-select v-model="temp.phenomen" placeholder="故障现象" class="filter-item">
                   <el-option
-                    v-for="item in findAllDepart"
+                    v-for="item in findAllAppearance"
                     :key="item.id"
-                    :label="item.name"
+                    :label="item.appearanceName"
                     :value="item.id"
                   />
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="故障详情" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              <el-form-item label="故障详情" prop="active">
+                <el-input ref="active" v-model="temp.active" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -333,11 +333,11 @@
         <div slot="footer" class="dialog-footer">
           <el-button
             v-if="dialogStatusRepair==='create'"
-            ref="createb"
+            ref="create"
             type="success"
             @click="createData_again()"
           >确认新增</el-button>
-          <el-button type="primary" @click="dialogStatusRepair==='create'?createData():updateData()">确认</el-button>
+          <el-button type="primary" @click="dialogStatusRepair==='create'?createDataBaoxiu():updateData()">确认</el-button>
           <el-button @click="dialogFormVisibleRepair = false">关闭</el-button>
         </div>
       </div>
@@ -982,6 +982,8 @@ export default {
       findAllPasture: [],
       findAllDepart: [],
       findAllEmploye: [],
+      findAllAppearance: [],
+      findAllPart: [],
       getDictByName: [],
       getDictByNameA: [],
       // 2-1.请求下拉框接口
@@ -991,6 +993,8 @@ export default {
         { name: 'findAllPasture', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllDepart', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllEmploye', offset: 0, pagecount: 0, params: [] },
+        { name: 'findAllAppearance', offset: 0, pagecount: 0, params: [] },
+        { name: 'findAllPart', offset: 0, pagecount: 0, params: [] },
         { name: 'getDictByName', offset: 0, pagecount: 0, params: ['处理状态'] }
       ],
 
@@ -1135,6 +1139,8 @@ export default {
         this.findAllPasture = response.data.findAllPasture.list
         this.findAllDepart = response.data.findAllDepart.list
         this.findAllEmploye = response.data.findAllEmploye.list
+        this.findAllAppearance = response.data.findAllAppearance.list
+        this.findAllPart = response.data.findAllPart.list
         this.getDictByName = response.data.getDictByName.list
         this.$nextTick(() => {
           GetDataByNames(this.requestParamAs).then(response => {
@@ -1161,13 +1167,42 @@ export default {
       }
     },
     // 报修
-    handleCreateRepair(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusRepair = 'repair'
+    handleCreateBaoxiu() {
+      this.resetTemp()
+      this.dialogStatusRepair = 'create'
       this.dialogFormVisibleRepair = true
-      // this.$nextTick(() => {
-      //   this.$refs["temp"].clearValidate();
-      // });
+      this.$nextTick(() => {
+        this.$refs['temp'].clearValidate()
+      })
+    },
+    createDataBaoxiu() {
+      this.$refs['temp'].validate(valid => {
+        if (valid) {
+          this.requestParam.name = 'insertRepairs'
+          this.requestParam.parammaps = this.temp
+
+          PostDataByName(this.requestParam).then(response => {
+            console.log(response)
+            if (response.msg === 'fail') {
+              this.$notify({
+                title: '失败',
+                message: '保存失败-' + response.data,
+                type: 'danger',
+                duration: 2000
+              })
+            } else {
+              this.getList()
+              this.dialogFormVisible = false
+              this.$notify({
+                title: '成功',
+                message: '新增成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          })
+        }
+      })
     },
     // 接单
     handleReceipt(row) {
