@@ -69,52 +69,27 @@
           <span>{{ scope.row.pastureName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="编号" prop="id" align="center" width="150">
+      <el-table-column label="备件信息" prop="id" align="center" width="260">
         <template slot-scope="scope">
-          <span>{{ scope.row.stockNumber }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">编号：</span>{{ scope.row.stockNumber }} </span><br>
+          <span style="float:left;"><span style="font-weight:bold;">名称：</span>{{ scope.row.stockName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">类型：</span>{{ scope.row.categoryName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">用途：</span>{{ scope.row.purpose }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="名称" width="150px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.stockName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="备件类型" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.categoryName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="单位" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.unit }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="当前库存" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.repertory }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="最低库存" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.minRepertory }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="最高库存" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.maxRepertory }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="供应商" min-width="110px" align="center">
+      <el-table-column label="供应商" min-width="200px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.providerName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="用途" min-width="110px" align="center">
+      <el-table-column label="库存" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.purpose }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">当前库存( {{ scope.row.unit }} )：</span>{{ scope.row.repertory }} </span><br>
+          <span style="float:left;"><span style="font-weight:bold;">最低库存( {{ scope.row.unit }} )：</span>{{ scope.row.minRepertory }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">最高库存( {{ scope.row.unit }} )：</span>{{ scope.row.maxRepertory }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="单价" min-width="110px" align="center">
+      <el-table-column label="单价" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.price }}</span>
         </template>
@@ -124,7 +99,7 @@
           <span>{{ scope.row.employeName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="150px" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row)">删除</el-button>

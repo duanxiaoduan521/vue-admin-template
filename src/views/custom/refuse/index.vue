@@ -124,18 +124,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <!-- <el-button
-            type="success"
-            size="mini"
-            @click="handleUpdate(row)"
-          >编辑</el-button>
-          <el-button
-            type="danger"
-            size="mini"
-            @click="handleDelete(row)"
-          >删除</el-button>-->
           <el-button type="success" size="mini" @click="handleDestruction(row)">销毁/卖掉</el-button>
-          <!-- <el-button type="success" size="mini" @click="handleSell(row)">快速卖掉</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -147,18 +136,7 @@
       :limit.sync="getdataListParm.pagecount"
       @pagination="getList"
     />
-    <!-- 弹出层新增or修改 -->
-    <!-- 快速销毁 -->
-    <!-- <el-dialog
-      :title="textMap[dialogStatusDestruction]"
-      :visible.sync="dialogFormVisibleDestruction"
-      :close-on-click-modal="false"
-    >
-      <div class="refuse-container">
-        <RefuseDestruct :destruct-temp="temp" />
-      </div>
-    </el-dialog> -->
-    <!-- 销毁/卖掉 -->
+    <!-- 弹出层销毁/卖掉 -->
     <el-dialog
       :title="textMap[dialogStatusDestruction]"
       :visible.sync="dialogFormVisibleDestruction"
@@ -173,50 +151,50 @@
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="牧场" prop="assetNumber">
-              <el-input ref="assetNumber" v-model="temp.assetNumber" />
+            <el-form-item label="牧场" prop="pastureName">
+              <el-input ref="pastureName" v-model="temp.pastureName" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="部门" prop="assetNumber">
-              <el-input ref="assetNumber" v-model="temp.assetNumber" />
+            <el-form-item label="部门" prop="departName">
+              <el-input ref="departName" v-model="temp.departName" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="单号" prop="equipmentName">
-              <el-input ref="equipmentName" v-model="temp.equipmentName" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="类型" prop="assetNumber">
-              <el-input ref="assetNumber" v-model="temp.assetNumber" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="规格" prop="equipmentName">
-              <el-input ref="equipmentName" v-model="temp.equipmentName" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="数量" prop="assetNumber">
-              <el-input ref="assetNumber" v-model="temp.assetNumber" />
+            <el-form-item label="单号" prop="listNumber">
+              <el-input ref="listNumber" v-model="temp.listNumber" disabled />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="单位" prop="assetNumber">
-              <el-input ref="assetNumber" v-model="temp.assetNumber" />
+            <el-form-item label="类型" prop="listType">
+              <el-input ref="listType" v-model="temp.listType" disabled />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="规格" prop="specification">
+              <el-input ref="specification" v-model="temp.specification" disabled />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="数量" prop="rufuseNumber">
+              <el-input ref="rufuseNumber" v-model="temp.rufuseNumber" disabled />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="处理结果" prop="equipmentName">
-              <el-radio v-model="radio" label="1">销毁</el-radio>
-              <el-radio v-model="radio" label="2">卖掉</el-radio>
+            <el-form-item label="单位" prop="unit">
+              <el-input ref="unit" v-model="temp.unit" disabled />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="处理结果" prop="isOrNo">
+              <el-radio v-model="isOrNo" label="0">销毁</el-radio>
+              <el-radio v-model="isOrNo" label="1">卖掉</el-radio>
             </el-form-item>
           </el-col>
         </el-row>
@@ -228,7 +206,10 @@
           type="success"
           @click="createData_again()"
         >确认新增</el-button>
-        <el-button type="primary" @click="dialogStatusDestruction==='create'?createData():updateData()">确认</el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatusDestruction==='create'?createData():updateDataDestruction()"
+        >确认</el-button>
         <el-button @click="dialogFormVisibleDestruction = false">关闭</el-button>
       </div>
     </el-dialog>
@@ -243,16 +224,14 @@ import { parseTime } from '@/utils/index.js'
 // eslint-disable-next-line no-unused-vars
 import { validateEMail } from '@/utils/validate.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-// import RefuseDestruct from './components/refuseDestruct'
-// import refuseSell from './components/refuseSell'
 // import { MessageBox } from 'element-ui'
 export default {
   name: 'Refuse',
-  // components: { Pagination, RefuseDestruct, refuseSell },
   components: { Pagination },
   directives: { waves },
   data() {
     return {
+      isOrNo: '',
       tableKey: 0,
       list: null,
       total: 0,
@@ -298,12 +277,9 @@ export default {
 
       temp: {},
       dialogFormVisibleDestruction: false,
-      dialogFormVisibleSell: false,
       dialogStatusDestruction: '',
-      dialogStatusSell: '',
       textMap: {
-        destruction: '销毁/卖掉',
-        sell: '快速卖掉'
+        destruction: '销毁/卖掉'
       },
       dialogPvVisible: false,
       // 校验规则
@@ -386,35 +362,37 @@ export default {
         inputDatetime: parseTime(new Date(), '{y}-{m}-{d}')
       }
     },
-    // handleCreate() {
-    //   this.resetTemp()
-    //   this.dialogStatus = 'create'
-    //   this.dialogFormVisible = true
-    //   this.$nextTick(() => {
-    //     this.$refs['temp'].clearValidate()
-    //   })
-    // },
-    createData() {
+    // 销毁/卖掉
+    handleDestruction(row) {
+      console.log(row)
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatusDestruction = 'destruction'
+      this.dialogFormVisibleDestruction = true
+      // this.$nextTick(() => {
+      //   this.$refs['temp'].clearValidate()
+      // })
+    },
+    updateDataDestruction() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'insertAsset'
+          this.requestParam.name = 'okRefuseDispose'
           this.requestParam.parammaps = this.temp
-
+          this.requestParam.parammaps['isOrNo'] = this.isOrNo
           PostDataByName(this.requestParam).then(response => {
             console.log(response)
             if (response.msg === 'fail') {
               this.$notify({
                 title: '失败',
                 message: '保存失败-' + response.data,
-                type: 'danger',
+                type: 'warning',
                 duration: 2000
               })
             } else {
               this.getList()
-              this.dialogFormVisible = false
+              this.dialogFormVisibleDestruction = false
               this.$notify({
                 title: '成功',
-                message: '新增成功',
+                message: '成功',
                 type: 'success',
                 duration: 2000
               })
@@ -422,24 +400,6 @@ export default {
           })
         }
       })
-    },
-    // 确认领用
-    handleDestruction(row) {
-      // this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusDestruction = 'destruction'
-      this.dialogFormVisibleDestruction = true
-      // this.$nextTick(() => {
-      //   this.$refs['temp'].clearValidate()
-      // })
-    },
-    // 旧品录入
-    handleSell(row) {
-      // this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusSell = 'sell'
-      this.dialogFormVisibleSell = true
-      // this.$nextTick(() => {
-      //   this.$refs['temp'].clearValidate()
-      // })
     }
   }
 }

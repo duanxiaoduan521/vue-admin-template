@@ -90,105 +90,52 @@
       class="elTable"
     >
       <!-- table表格 -->
-      <el-table-column label="牧场" min-width="110px" align="center">
+      <el-table-column label="报修信息" prop="id" sortable="custom" align="center" width="230px">
         <template slot-scope="scope">
-          <span>{{ scope.row.pastureName }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">单号：</span>{{ scope.row.repairNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">申请人：</span>{{ scope.row.applyName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">申请时间：</span>{{ scope.row.applyTime }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="报修单编号" prop="id" sortable="custom" align="center" width="150">
+      <el-table-column label="资产信息" min-width="235px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.repairNumber }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">牧场：</span> {{ scope.row.pastureName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">资产编号：</span> {{ scope.row.assetNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">牧场设备编号：</span>{{ scope.row.equipmentNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">设备名称：</span>{{ scope.row.assetName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">规格型号：</span>{{ scope.row.specification }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="牧场设备编号" width="150px" align="center">
+      <el-table-column label="故障信息" min-width="180px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.equipmentNumber }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">故障部位：</span>{{ scope.row.partName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">故障现象：</span>{{ scope.row.appearanceName }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="资产编号" width="150px" align="center">
+      <el-table-column label="接单信息" min-width="240px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.assetNumber }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">接单人：</span> {{ scope.row.dispose }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">接单时间：</span>{{ scope.row.orderTime }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">维修开始时间：</span> {{ scope.row.dealTime }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">维修结束时间：</span>{{ scope.row.stopTime }}</span><br>
         </template>
       </el-table-column>
-
-      <el-table-column label="设备名称" min-width="110px" align="center">
+      <el-table-column label="处理/审核" min-width="205px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.assetName }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">处理状态：</span>{{ scope.row.statue }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">审核人：</span>{{ scope.row.auditName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">审核时间：</span>{{ scope.row.auditTime }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">审核状态：</span>{{ scope.row.auditStatue }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="规格型号" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.specification }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="故障部位" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.part }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="故障现象" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.appearance }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="申请人" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.applyName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="申请时间" width="150px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.applyTime }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="接单人" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.dispose }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="接单时间" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.orderTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="维修开始时间" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.dealTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="维修结束时间" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.stopTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="处理状态" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.statue }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="审核人" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.auditName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="审核时间" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.auditTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="审核状态" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.auditStatue }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" width="450" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="230px" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
-          <el-button type="success" size="mini" @click="handleReceipt(row)">接单</el-button>
-          <el-button type="success" size="mini" @click="handleRepair(row)">维修</el-button>
-          <el-button type="success" size="mini" @click="handeleComplete(row)">维修完成</el-button>
-          <el-button type="success" size="mini" @click="handeleExamine(row)">审核</el-button>
+          <el-button type="success" size="mini" style="margin-left:10px;" @click="handleUpdate(row)">查看明细</el-button>
+          <el-button type="success" size="mini" style="margin-left:0;" @click="handleReceipt(row)">接单</el-button>
+          <el-button type="success" size="mini" style="margin-left:0;" @click="handleRepair(row)">维修</el-button>
+          <el-button type="success" size="mini" style="margin-top:10px;margin-left:0;" @click="handeleComplete(row)">维修完成</el-button>
+          <el-button type="success" size="mini" style="margin-top:10px;margin-left:0;" @click="handeleExamine(row)">审核</el-button>
+          <el-button type="success" size="mini" style="margin-top:10px;margin-left:0;" @click="handeleImg(row)">图片上传</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -270,7 +217,6 @@
                 />
               </el-form-item>
             </el-col>
-
           </el-row>
           <el-row>
             <el-col :span="8">
@@ -298,8 +244,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="故障详情" prop="active">
-                <el-input ref="active" v-model="temp.active" />
+              <el-form-item label="故障详情" prop="details">
+                <el-input ref="details" v-model="temp.details" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -337,7 +283,10 @@
             type="success"
             @click="createData_again()"
           >确认新增</el-button>
-          <el-button type="primary" @click="dialogStatusRepair==='create'?createDataBaoxiu():updateData()">确认</el-button>
+          <el-button
+            type="primary"
+            @click="dialogStatusRepair==='create'?createDataBaoxiu():updateData()"
+          >确认</el-button>
           <el-button @click="dialogFormVisibleRepair = false">关闭</el-button>
         </div>
       </div>
@@ -359,52 +308,45 @@
         >
           <el-row>
             <el-col :span="6">
-              <el-form-item label="牧场设备编号" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              <el-form-item label="资产编号" prop="assetNumber">
+                <el-input ref="assetNumber" v-model="temp.assetNumber" disabled />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="牧场名称" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
+              <el-form-item label="牧场名称" prop="pastureName">
+                <el-input ref="pastureName" v-model="temp.pastureName" disabled />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="牧场设备编号" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              <el-form-item label="牧场设备编号" prop="equipmentNumber">
+                <el-input ref="equipmentNumber" v-model="temp.equipmentNumber" disabled />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="资产名称" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="故障部位" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="故障现象" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="故障详情" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="部门" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
+              <el-form-item label="资产名称" prop="assetName">
+                <el-input ref="assetName" v-model="temp.assetName" disabled />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="6">
-              <el-form-item label="报修图片" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              <el-form-item label="故障部位" prop="partName">
+                <el-input ref="partName" v-model="temp.partName" disabled />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="故障现象" prop="appearanceName">
+                <el-input ref="appearanceName" v-model="temp.appearanceName" disabled />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="故障详情" prop="details">
+                <el-input ref="details" v-model="temp.details" disabled />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="部门" prop="departmentName">
+                <el-input ref="departmentName" v-model="temp.departmentName" disabled />
               </el-form-item>
             </el-col>
           </el-row>
@@ -416,7 +358,10 @@
             type="success"
             @click="createData_again()"
           >确认新增</el-button>
-          <el-button type="primary" @click="dialogStatusReceipt==='create'?createData():updateData()">确认</el-button>
+          <el-button
+            type="primary"
+            @click="dialogStatusReceipt==='create'?createData():updateDataReceipt()"
+          >确认</el-button>
           <el-button @click="dialogFormVisibleReceipt = false">关闭</el-button>
         </div>
       </div>
@@ -438,52 +383,47 @@
         >
           <el-row>
             <el-col :span="6">
-              <el-form-item label="牧场设备编号" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              <el-form-item label="资产编号" prop="assetNumber">
+                <el-input ref="assetNumber" v-model="temp.assetNumber" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="牧场名称" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
+              <el-form-item label="牧场名称" prop="pastureName">
+                <el-input ref="pastureName" v-model="temp.pastureName" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="牧场设备编号" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              <el-form-item label="牧场设备编号" prop="equipmentNumber">
+                <el-input ref="equipmentNumber" v-model="temp.equipmentNumber" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="资产名称" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
+              <el-form-item label="资产名称" prop="equipmentName">
+                <el-input ref="equipmentName" v-model="temp.equipmentName" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="6">
-              <el-form-item label="故障现象" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              <el-form-item label="故障现象" prop="appearanceName">
+                <el-input ref="appearanceName" v-model="temp.appearanceName" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="报修图片" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
+              <el-form-item label="部门" prop="departmentName">
+                <el-input ref="departmentName" v-model="temp.departmentName" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="部门" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="操作" prop="stockName">
+              <el-form-item label="操作" prop="active">
                 <el-select
-                  v-model="getdataListParm.parammaps.auditStatue"
+                  v-model="getdataListParm.parammaps.active"
                   clearable
                   placeholder="操作"
                   class="filter-item"
                 >
                   <el-option
-                    v-for="item in getDictByNameA"
+                    v-for="item in getDictByName"
                     :key="item.id"
                     :label="item.label"
                     :value="item.value"
@@ -491,88 +431,14 @@
                 </el-select>
               </el-form-item>
             </el-col>
+            <el-col :span="6">
+              <el-form-item label="故障详情" prop="details">
+                <el-input ref="details" v-model="temp.details" />
+              </el-form-item>
+            </el-col>
           </el-row>
           <el-row>
             <el-col :span="6">
-              <el-form-item label="故障详情" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="24">
-              <el-form-item label="处理结果" prop="stockNumber">
-                <el-radio-group v-model="radio">
-                  <el-radio :label="3">备选项</el-radio>
-                  <el-radio :label="6">备选项</el-radio>
-                  <el-radio :label="9">备选项</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-form-item label="名称" prop="providerId">
-              <el-autocomplete
-                v-model="temp.providerName"
-                value-key="name"
-                class="inline-input"
-                :fetch-suggestions="providerSearch"
-                placeholder="请输入名称或编号新增备件"
-                style="width:200px"
-                @select="handleSelect"
-              />
-            </el-form-item>
-          </el-row>
-        </el-form>
-        <el-table
-          :key="tableKey"
-          v-loading="listLoading"
-          element-loading-text="给我一点时间"
-          :data="list"
-          border
-          fit
-          highlight-current-row
-          style="width: 100%;"
-          :row-style="rowStyle"
-          :cell-style="cellStyle"
-          class="elTable"
-        >
-          <!-- table表格 -->
-          <el-table-column label="名称" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.pastureName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="编码" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.pastureName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="规格" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.pastureName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="数量" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.pastureName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
-            <template slot-scope="{row}">
-              <el-button type="success" size="mini" @click="handleDelete(row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-form
-          ref="temp"
-          :model="temp"
-          label-position="right"
-          label-width="100px"
-          style="width: 800px; margin-left:50px;margin-top:30px"
-        >
-          <el-row>
-            <el-col :span="8">
               <el-form-item label="责任人" prop="employeId">
                 <el-select v-model="temp.employeId" placeholder="责任人" class="filter-item">
                   <el-option
@@ -584,10 +450,10 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="日期" prop="inputDatetime">
+            <el-col :span="6">
+              <el-form-item label="日期" prop="aaDate">
                 <el-date-picker
-                  v-model="temp.inputDatetime"
+                  v-model="temp.aaDate"
                   type="date"
                   placeholder="日期"
                   format="yyyy-MM-dd"
@@ -597,101 +463,59 @@
               </el-form-item>
             </el-col>
           </el-row>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button
-            v-if="dialogStatusRepairW==='create'"
-            ref="createb"
-            type="success"
-            @click="createData_again()"
-          >确认新增</el-button>
-          <el-button type="primary" @click="dialogStatusRepairW==='create'?createData():updateData()">确认</el-button>
-          <el-button @click="dialogFormVisibleRepairW = false">关闭</el-button>
-        </div>
-      </div>
-    </el-dialog>
-    <!-- 弹出层修改 -->
-    <el-dialog
-      :title="textMap[dialogStatus]"
-      :visible.sync="dialogFormVisible"
-      :close-on-click-modal="false"
-    >
-      <div class="app-container">
-        <el-form
-          ref="temp"
-          :rules="rules"
-          :model="temp"
-          label-position="right"
-          label-width="100px"
-          style="width: 800px; margin-left:50px;"
-        >
           <el-row>
-            <el-col :span="6">
-              <el-form-item label="牧场设备编号" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="牧场名称" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="牧场设备编号" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="资产名称" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
+            <el-col :span="14">
+              <el-form-item label="状态" prop="receiveStatue">
+                <el-input ref="receiveStatue" v-model="temp.receiveStatue" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="6">
-              <el-form-item label="故障现象" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="报修图片" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="故障详情" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="24">
-              <el-form-item label="处理结果" prop="stockNumber">
-                <el-radio-group v-model="radio">
-                  <el-radio :label="3">备选项</el-radio>
-                  <el-radio :label="6">备选项</el-radio>
-                  <el-radio :label="9">备选项</el-radio>
+            <el-col :span="14">
+              <el-form-item label="处理结果" prop="checkResult">
+                <el-radio-group v-model="temp.checkResult" @change="changeHandler">
+                  <el-radio
+                    v-for="item in getDictByNameResult"
+                    :key="item.id"
+                    style="margin-bottom:10px;"
+                    :label="item.label"
+                    :value="item.value"
+                  />
                 </el-radio-group>
               </el-form-item>
             </el-col>
+            <el-col :span="4">
+              <el-button v-if="shengcheng" @click="handleshengcheng">生成领用单</el-button>
+            </el-col>
           </el-row>
           <el-row>
-            <el-form-item label="名称" prop="providerId">
-              <el-autocomplete
-                v-model="temp.providerName"
-                value-key="name"
-                class="inline-input"
-                :fetch-suggestions="providerSearch"
-                placeholder="请输入名称或编号新增备件"
-                style="width:200px"
-                @select="handleSelect"
-              />
-            </el-form-item>
+            <el-col v-if="display" :span="8">
+              <el-form-item label="编号/名称：" prop="stockA">
+                <el-autocomplete
+                  v-model="stockAAA.stockA"
+                  style="width:350px;"
+                  class="inline-input mediaInput"
+                  :fetch-suggestions="stockSearch"
+                  placeholder="请输入备件编号或者备件名称"
+                  :disabled="dialogStatus==='update'"
+                  :trigger-on-focus="false"
+                  @select="handleStockSelect"
+                >
+                  <template slot-scope="{ item }">
+                    <div class="name" style="display: inline;">{{ item.stockNumber }}</div>
+                    <span class="addr">{{ item.stockName }}</span>
+                  </template>
+                </el-autocomplete>
+                <div slot="footer" class="dialog-footer">
+                  <el-button @click="dialogFormVisible = false">关闭</el-button>
+                </div>
+              </el-form-item>
+            </el-col>
           </el-row>
         </el-form>
         <el-table
+          v-if="display"
+          id="myTable"
           :key="tableKey"
           v-loading="listLoading"
           element-loading-text="给我一点时间"
@@ -707,42 +531,114 @@
           <!-- table表格 -->
           <el-table-column label="名称" min-width="110px" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.pastureName }}</span>
+              <span>{{ scope.row.stockName }}</span>
             </template>
           </el-table-column>
           <el-table-column label="编码" min-width="110px" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.pastureName }}</span>
+              <span>{{ scope.row.stockNumber }}</span>
             </template>
           </el-table-column>
           <el-table-column label="规格" min-width="110px" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.pastureName }}</span>
+              <span>{{ scope.row.specification }}</span>
             </template>
           </el-table-column>
           <el-table-column label="数量" min-width="110px" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.pastureName }}</span>
+              <input v-model="scope.row.amount" type="text" style="width:80px;border:none;">
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
+          <el-table-column
+            label="操作"
+            align="center"
+            width="150"
+            class-name="small-padding fixed-width"
+          >
             <template slot-scope="{row}">
-              <el-button type="success" size="mini" @click="handleDelete(row)">删除</el-button>
+              <el-button type="success" size="mini" @click="stockAdd(row)">保存</el-button>
+              <el-button type="success" size="mini" @click="stockDel(row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
+      </div>
+    </el-dialog>
+    <!-- 弹出层查看详情 -->
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+      :close-on-click-modal="false"
+    >
+      <div class="app-container">
         <el-form
           ref="temp"
           :rules="rules"
           :model="temp"
           label-position="right"
-          label-width="100px"
+          label-width="120px"
           style="width: 800px; margin-left:50px;"
         >
           <el-row>
-            <el-col :span="8">
-              <el-form-item label="处理人" prop="employeId">
-                <el-select v-model="temp.employeId" placeholder="处理人" class="filter-item">
+            <el-col :span="6">
+              <el-form-item label="资产编号" prop="assetNumber">
+                <el-input ref="assetNumber" v-model="temp.assetNumber" disabled />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="牧场名称" prop="pastureName">
+                <el-input ref="pastureName" v-model="temp.pastureName" disabled />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="牧场设备编号" prop="equipmentNumber">
+                <el-input ref="equipmentNumber" v-model="temp.equipmentNumber" disabled />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="资产名称" prop="equipmentName">
+                <el-input ref="equipmentName" v-model="temp.equipmentName" disabled />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="故障现象" prop="appearanceName">
+                <el-input ref="appearanceName" v-model="temp.appearanceName" disabled />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="部门" prop="departmentName">
+                <el-input ref="departmentName" v-model="temp.departmentName" disabled />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="操作" prop="active">
+                <el-select
+                  v-model="getdataListParm.parammaps.active"
+                  clearable
+                  placeholder="操作"
+                  class="filter-item"
+                  disabled
+                >
+                  <el-option
+                    v-for="item in getDictByName"
+                    :key="item.id"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="故障详情" prop="details">
+                <el-input ref="details" v-model="temp.details" disabled />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="责任人" prop="employeId">
+                <el-select v-model="temp.employeId" placeholder="责任人" class="filter-item" disabled>
                   <el-option
                     v-for="item in findAllEmploye"
                     :key="item.id"
@@ -752,10 +648,11 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="日期" prop="inputDatetime">
+            <el-col :span="6">
+              <el-form-item label="日期" prop="aaDate">
                 <el-date-picker
-                  v-model="temp.inputDatetime"
+                  v-model="temp.aaDate"
+                  disabled
                   type="date"
                   placeholder="日期"
                   format="yyyy-MM-dd"
@@ -765,15 +662,82 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row>
+            <el-col :span="14">
+              <el-form-item label="处理结果" prop="checkResult">
+                <el-radio-group v-model="temp.checkResult" disabled @change="changeHandler">
+                  <el-radio
+                    v-for="item in getDictByNameResult"
+                    :key="item.id"
+                    style="margin-bottom:10px;"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button
-            v-if="dialogStatus==='create'"
-            ref="createb"
-            type="success"
-            @click="createData_again()"
-          >确认新增</el-button>
-          <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确认</el-button>
+        <el-table
+          v-if="display"
+          :key="tableKey"
+          v-loading="listLoading"
+          element-loading-text="给我一点时间"
+          :data="listchakan"
+          border
+          fit
+          highlight-current-row
+          style="width: 100%;"
+          :row-style="rowStyle"
+          :cell-style="cellStyle"
+          class="elTable"
+        >
+          <!-- table表格 -->
+          <el-table-column label="备件编码" min-width="100px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.stockNumber }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="备件名称" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.stockName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="供应商" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.providerName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="规格" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.specification }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="数量" min-width="110px" align="center">
+            <template slot-scope="scope">
+              领用数量：<span>{{ scope.row.useNumber }}</span><br>
+              审批数量：<span>{{ scope.row.approvalAmount }}</span><br>
+              单位：<span>{{ scope.row.unit }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="价格" min-width="110px" align="center">
+            <template slot-scope="scope">
+              单价：<span>{{ scope.row.price }}</span><br>
+              总价：<span>{{ scope.row.sumPrice }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="驳回原因" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.note }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="是否驳回" property="isReject" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <el-switch v-model="scope.row.isReject" active-color="#13ce66" inactive-color="#ff4949" active-value="0" inactive-value="1" disabled />
+            </template>
+          </el-table-column>
+        </el-table>
+        <div slot="footer" class="dialog-footer" style="float:right;">
           <el-button @click="dialogFormVisible = false">关闭</el-button>
         </div>
       </div>
@@ -803,7 +767,10 @@
             type="success"
             @click="createData_again()"
           >确认新增</el-button>
-          <el-button type="primary" @click="dialogStatusComplete ==='create'?createData():updateData()">确认</el-button>
+          <el-button
+            type="primary"
+            @click="dialogStatusComplete ==='create'?createData():updateDataComplete()"
+          >确认</el-button>
           <el-button @click="dialogFormVisibleComplete = false">关闭</el-button>
         </div>
       </div>
@@ -825,79 +792,52 @@
         >
           <el-row>
             <el-col :span="6">
-              <el-form-item label="牧场编号" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              <el-form-item label="资产编号" prop="assetNumber">
+                <el-input ref="assetNumber" v-model="temp.assetNumber" disabled />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="牧场名称" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
+              <el-form-item label="牧场名称" prop="pastureName">
+                <el-input ref="pastureName" v-model="temp.pastureName" disabled />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="牧场设备编号" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              <el-form-item label="牧场设备编号" prop="equipmentNumber">
+                <el-input ref="equipmentNumber" v-model="temp.equipmentNumber" disabled />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="资产名称" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
+              <el-form-item label="资产名称" prop="assetName">
+                <el-input ref="assetName" v-model="temp.assetName" disabled />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="6">
-              <el-form-item label="故障现象" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              <el-form-item label="故障现象" prop="appearanceName">
+                <el-input ref="appearanceName" v-model="temp.appearanceName" disabled />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="报修图片" prop="stockName">
-                <el-input ref="stockName" v-model="temp.stockName" />
+              <el-form-item label="故障详情" prop="details">
+                <el-input ref="details" v-model="temp.details" disabled />
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="部门" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="操作" prop="stockName">
-                <el-select
-                  v-model="getdataListParm.parammaps.auditStatue"
-                  clearable
-                  placeholder="操作"
-                  class="filter-item"
-                >
-                  <el-option
-                    v-for="item in getDictByNameA"
-                    :key="item.id"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
+              <el-form-item label="部门" prop="departmentName">
+                <el-input ref="departmentName" v-model="temp.departmentName" disabled />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="6">
-              <el-form-item label="故障详情" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
+              <el-form-item label="故障部位" prop="partName">
+                <el-input ref="partName" v-model="temp.partName" disabled />
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="24">
-              <el-form-item label="审核图片" prop="stockNumber">
-                <el-input ref="stockNumber" v-model="temp.stockNumber" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-button size="small" type="primary">点击上传</el-button>
-          <el-row>
             <el-col :span="8">
               <el-form-item label="审核人" prop="employeId">
-                <el-select v-model="temp.employeId" placeholder="责任人" class="filter-item">
+                <el-select v-model="temp.employeId" placeholder="责任人" class="filter-item" disabled>
                   <el-option
                     v-for="item in findAllEmploye"
                     :key="item.id"
@@ -908,15 +848,17 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="审核日期" prop="inputDatetime">
+              <el-form-item label="审核日期" prop="aaDate">
                 <el-date-picker
-                  v-model="temp.inputDatetime"
+                  v-model="temp.aaDate"
+                  disabled
                   type="date"
                   placeholder="日期"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd"
                   style="width:170px;"
                 />
+
               </el-form-item>
             </el-col>
           </el-row>
@@ -928,10 +870,45 @@
             type="success"
             @click="createData_again()"
           >确认新增</el-button>
-          <el-button type="primary" @click="dialogStatusExamine==='create'?createData():updateData()">确认</el-button>
+          <el-button
+            type="primary"
+            @click="dialogStatusExamine==='create'?createData():updateDataExamine()"
+          >确认</el-button>
           <el-button @click="dialogFormVisibleExamine = false">关闭</el-button>
         </div>
       </div>
+    </el-dialog>
+
+    <!-- 弹出层图片上传 -->
+    <el-dialog
+      :title="textMap[dialogStatusImg]"
+      :visible.sync="dialogFormVisibleImg"
+      :close-on-click-modal="false"
+    >
+      <div class="app-containerImg">
+        <el-form
+          ref="temp"
+          :rules="rules"
+          :model="temp"
+          label-position="right"
+          label-width="100px"
+          style="width: 800px; margin-left:50px;"
+        >
+
+          <div slot="footer" class="dialog-footer">
+            <el-button
+              v-if="dialogStatusExamine==='create'"
+              ref="createb"
+              type="success"
+              @click="createData_again()"
+            >确认新增</el-button>
+            <el-button
+              type="primary"
+              @click="dialogStatusImg==='create'?createData():updateDataImg()"
+            >确认</el-button>
+            <el-button @click="dialogFormVisibleImg = false">关闭</el-button>
+          </div>
+        </el-form></div>
     </el-dialog>
   </div>
 </template>
@@ -944,14 +921,20 @@ import { parseTime } from '@/utils/index.js'
 // eslint-disable-next-line no-unused-vars
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
+// import { fstat } from 'fs'
 export default {
   name: 'Repair',
   components: { Pagination },
   directives: { waves },
   data() {
     return {
+      isReject: [],
       tableKey: 0,
+      shengcheng: false,
+      display: false,
+      radioSex: 'man',
       list: [],
+      listchakan: [],
       total: 0,
       radio: '',
       listLoading: true,
@@ -960,11 +943,12 @@ export default {
         name: 'insertAsset',
         offset: 0,
         pagecount: 0,
-        parammaps: {}
+        parammaps: {},
+        params: []
       },
       // 1-2:table&搜索传参
       getdataListParm: {
-        name: 'getRepairsList',
+        name: 'getMaintainList',
         page: 1,
         offset: 1,
         pagecount: 10,
@@ -974,6 +958,18 @@ export default {
           assetName: '',
           pastureName: '',
           applyTime: ''
+        }
+      },
+      // 查看详情table
+      getdataListParmchakan: {
+        name: 'selectFindStock1',
+        page: 1,
+        offset: 1,
+        pagecount: 10,
+        returntype: 'Map',
+        parammaps: {
+          id: '',
+          assetName: ''
         }
       },
       // 2-3：下拉框请求后数据加入[]
@@ -986,6 +982,7 @@ export default {
       findAllPart: [],
       getDictByName: [],
       getDictByNameA: [],
+      getDictByNameResult: [],
       // 2-1.请求下拉框接口
       requestParams: [
         { name: 'findAllProvider', offset: 0, pagecount: 0, params: [] },
@@ -995,7 +992,9 @@ export default {
         { name: 'findAllEmploye', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllAppearance', offset: 0, pagecount: 0, params: [] },
         { name: 'findAllPart', offset: 0, pagecount: 0, params: [] },
-        { name: 'getDictByName', offset: 0, pagecount: 0, params: ['处理状态'] }
+        { name: 'getDictByName', offset: 0, pagecount: 0, params: ['维修操作'] },
+        { name: 'getDictByNameA', offset: 0, pagecount: 0, params: ['资产状态'] },
+        { name: 'getDictByName', offset: 0, pagecount: 0, params: ['维修处理结果'] }
       ],
 
       requestParamAs: [
@@ -1016,20 +1015,31 @@ export default {
       dialogFormVisibleRepairW: false,
       dialogFormVisibleComplete: false,
       dialogFormVisibleExamine: false,
+      dialogFormVisibleImg: false,
       dialogStatusRepair: '',
       dialogStatusReceipt: '',
       dialogStatusRepairW: '',
       dialogStatus: '',
       dialogStatusComplete: '',
       dialogStatusExamine: '',
+      dialogStatusImg: '',
       textMap: {
         examine: '审核',
         complete: '维修完成',
         repairW: '维修',
         receipt: '接单',
         repair: '报修',
-        update: '编辑',
-        create: '新增'
+        update: '查看详情',
+        create: '新增',
+        img: '图片上传'
+      },
+      stockAAA: {
+        stockA: '',
+        stockNumber: '',
+        stockName: '',
+        specification: '',
+        amount: '',
+        note: ''
       },
       dialogPvVisible: false,
       // 校验规则
@@ -1051,6 +1061,155 @@ export default {
   },
 
   methods: {
+    // 模糊查询-报修备件信息搜索
+
+    stockSearch(queryString, cb) {
+      this.requestFilterParams.name = 'findByDimStock'
+      this.requestFilterParams.parammaps = {}
+      this.requestFilterParams.parammaps['stockA'] = queryString
+
+      GetDataByName(this.requestFilterParams).then(response => {
+        console.log(response.data.list)
+        cb(response.data.list)
+      })
+    },
+
+    handleStockSelect(item) {
+      GetDataByName(this.requestFilterParams).then(response => {
+        this.$nextTick(() => {
+          if (response.data.list.length > 0) {
+            this.stockAAA = {}
+            this.stockAAA.stockNumber = item.stockNumber
+            this.stockAAA.stockName = item.stockName
+            this.stockAAA.specification = item.specification
+            this.stockAAA.amount = item.amount
+            this.stockAAA.note = item.note
+            this.createSearch()
+          }
+        })
+      })
+    },
+
+    // 模糊查询保存接口
+    createSearch() {
+      if (this.list.length > 0) {
+        this.requestParam.name = 'insertStockUse'
+        this.requestParam.params = []
+        this.requestParam.params[0] = this.stockAAA.stockNumber
+        this.requestParam.params[1] = this.stockAAA.stockName
+        this.requestParam.params[2] = this.stockAAA.amount
+        this.requestParam.params[3] = this.stockAAA.note
+        this.requestParam.params[4] = this.list[0].id
+        this.requestParam.params[5] = this.stockAAA.specification
+        this.requestParam.params[6] = this.stockAAA.stockNumber
+        PostDataByName(this.requestParam).then(() => {
+          this.$notify({
+            title: '成功',
+            message: '新增成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.uplodeStockList111(this.list[0].id)
+        })
+      }
+    },
+
+    // 刷新修改过的信息
+    uplodeStockList111(aa) {
+      if (this.list.length > 0) {
+        this.requestFilterParams.parammaps = {}
+        this.requestFilterParams.name = 'getStcokUseStockList'
+        this.requestFilterParams.parammaps['partId'] = aa
+        this.requestFilterParams.parammaps['assetTypeId'] = this.assetTypeid
+        GetDataByName(this.requestFilterParams).then(response => {
+          this.list2 = response.data.list
+        })
+      }
+    },
+    // 加载备件列表信息
+    uplodeStockList(row) {
+      if (this.list.length > 0) {
+        this.requestFilterParams.parammaps = {}
+        this.requestFilterParams.name = 'getStcokUseStockList'
+        this.requestFilterParams.parammaps['partId'] = row.id
+        this.requestFilterParams.parammaps['assetTypeId'] = this.assetTypeid
+        GetDataByName(this.requestFilterParams).then(response => {
+          this.list2 = response.data.list
+        })
+      }
+    },
+    stcokUpdate(row) {
+      // 点击备件按钮的时候加载表格信息
+      this.uplodeStockList(row)
+      GetDataByName(this.requestFilterParams).then(response => {
+        this.dialogFormVisible = true
+      })
+    },
+
+    //  维修-备件信息删除保存（修改接口）
+    stockAdd(row) {
+      console.log(row)
+      this.requestParam.parammaps = {}
+      this.requestParam.name = 'updateStcokUseStock1'
+      this.requestParam.parammaps['amount'] = row.amount
+      this.requestParam.parammaps['note'] = row.note
+      this.requestParam.parammaps['id'] = row.id
+      PostDataByName(this.requestParam).then(response => {
+        if (response.msg === 'fail') {
+          this.$notify({
+            title: '失败',
+            message: '保存失败-' + response.data,
+            type: 'warning',
+            duration: 2000
+          })
+          this.uplodeStockList111(row.partId)
+        } else {
+          this.getList()
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '成功',
+            message: '修改成功',
+            type: 'success',
+            duration: 2000
+          })
+          // this.uplodeStockList111(row.partId)
+        }
+      })
+    },
+    // 维修-备件信息删除
+    stockDel(row) {
+      MessageBox.confirm('确认删除此条信息？', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.requestParam.name = 'deleteStcokUseStock1'
+          this.requestParam.parammaps = {}
+          this.requestParam.parammaps['id'] = row.id
+          PostDataByName(this.requestParam).then(() => {
+            this.getList()
+            this.dialogFormVisible = false
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+            setTimeout(() => {
+              this.listLoading = false
+              // this.uplodeStockList111(row.partId)
+            }, 100)
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
+
     // 模糊查询-报修名称
     formNumberSearch(queryString, cb) {
       this.requestFilterParams.name = 'findAssetMain'
@@ -1122,6 +1281,8 @@ export default {
       this.listLoading = true
       GetDataByName(this.getdataListParm).then(response => {
         this.list = response.data.list
+        this.isReject = response.data.list
+        console.log(response.data.list)
         if (response.data.total) {
           this.total = response.data.total
         }
@@ -1142,6 +1303,8 @@ export default {
         this.findAllAppearance = response.data.findAllAppearance.list
         this.findAllPart = response.data.findAllPart.list
         this.getDictByName = response.data.getDictByName.list
+        this.getDictByNameA = response.data.getDictByName.list
+        this.getDictByNameResult = response.data.getDictByName.list
         this.$nextTick(() => {
           GetDataByNames(this.requestParamAs).then(response => {
             this.getDictByNameA = response.data.getDictByName.list
@@ -1165,6 +1328,18 @@ export default {
         // 格式化日期
         inputDatetime: parseTime(new Date(), '{y}-{m}-{d}')
       }
+    },
+    getNowTime() {
+      var now = new Date()
+      var year = now.getFullYear() // 得到年份
+      var month = now.getMonth() // 得到月份
+      var date = now.getDate() // 得到日期
+      console.log(now)
+      month = month + 1
+      month = month.toString().padStart(2, '0')
+      date = date.toString().padStart(2, '0')
+      var defaultDate = `${year}-${month}-${date}`
+      this.$set(this.inputDatetime, 'date', defaultDate)
     },
     // 报修
     handleCreateBaoxiu() {
@@ -1195,7 +1370,7 @@ export default {
               this.dialogFormVisible = false
               this.$notify({
                 title: '成功',
-                message: '新增成功',
+                message: '报修成功',
                 type: 'success',
                 duration: 2000
               })
@@ -1210,34 +1385,100 @@ export default {
       this.dialogStatusReceipt = 'receipt'
       this.dialogFormVisibleReceipt = true
     },
+    updateDataReceipt() {
+      this.$refs['temp'].validate(valid => {
+        if (valid) {
+          this.requestParam.name = 'receivingOrder'
+          this.requestParam.parammaps = this.temp
+          PostDataByName(this.requestParam).then(response => {
+            console.log(response)
+            if (response.msg === 'fail') {
+              this.$notify({
+                title: '失败',
+                message: '保存失败-' + response.data,
+                type: 'warning',
+                duration: 2000
+              })
+            } else {
+              this.getList()
+              this.dialogFormVisibleReceipt = false
+              this.$notify({
+                title: '成功',
+                message: '接单成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          })
+        }
+      })
+    },
     // 维修
     handleRepair(row) {
+      console.log(row.receiveStatue)
+
+      if (row.receiveStatue === '未审核') {
+        if (row.checkResult === '需要备件') {
+          // alert(1)
+        }
+      }else{
+
+      }
       this.temp = Object.assign({}, row) // copy obj
       this.dialogStatusRepairW = 'repairW'
       this.dialogFormVisibleRepairW = true
+      this.$nextTick(() => {
+        console.log(this.temp.checkResult)
+        // 从后台获取时row.checkResult === '需要备件'
+        if (row.checkResult === '需要备件') {
+          this.shengcheng = true
+        } else {
+          this.display = false
+          this.shengcheng = false
+        }
+      })
     },
-    // 修改
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
+    // 领用单以及表格显示隐藏
+    changeHandler(value) {
+      if (value === '需要备件') {
+        this.shengcheng = true
+      } else {
+        this.shengcheng = false
+        this.display = false
+      }
+      console.log(value)
     },
-    // 维修完成
-    handeleComplete(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusComplete = 'complete'
-      this.dialogFormVisibleComplete = true
+    handleshengcheng() {
+      this.display = true
+      this.requestParam.name = 'insertBigStockUse1'
+      this.requestParam.parammaps = this.temp
+      this.requestParam.parammaps.isOrNo = '1'
+      GetDataByName(this.requestParam).then(response => {
+        console.log(response)
+        if (response.msg === 'fail') {
+          this.$notify({
+            title: '失败',
+            message: '保存失败-' + response.data,
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          this.getList()
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '成功',
+            message: '成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
     },
-    // 审核
-    handeleExamine(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusExamine = 'examine'
-      this.dialogFormVisibleExamine = true
-    },
-    updateData() {
+
+    updateDataRepair() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
-          this.requestParam.name = 'updateAsset'
+          this.requestParam.name = 'updateRepairs'
           this.requestParam.parammaps = this.temp
           PostDataByName(this.requestParam).then(response => {
             console.log(response)
@@ -1261,6 +1502,139 @@ export default {
           })
         }
       })
+    },
+    // 查看详情
+    handleUpdate(row) {
+      console.log(row.id)
+      this.getdataListParmchakan.parammaps.id = row.id
+      GetDataByName(this.getdataListParmchakan).then(response => {
+        this.listchakan = response.data.list
+        console.log(response.data.list)
+        if (response.data.total) {
+          this.total = response.data.total
+        }
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 100)
+      })
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        // console.log(row.checkResult)
+        // 从后台获取时row.checkResult === '需要备件'
+        if (row.checkResult === '需要备件') {
+          this.display = true
+        } else {
+          this.display = false
+        }
+      })
+    },
+    updateDataModify() {
+      this.$refs['temp'].validate(valid => {
+        if (valid) {
+          this.requestParam.name = 'updateRepairs'
+          this.requestParam.parammaps = this.temp
+          PostDataByName(this.requestParam).then(response => {
+            console.log(response)
+            if (response.msg === 'fail') {
+              this.$notify({
+                title: '失败',
+                message: '保存失败-' + response.data,
+                type: 'warning',
+                duration: 2000
+              })
+            } else {
+              this.getList()
+              this.dialogFormVisible = false
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          })
+        }
+      })
+    },
+    // 维修完成
+    handeleComplete(row) {
+      this.temp = row
+      // this.temp = Object.assign({}, row); // copy obj
+      console.log(row)
+      this.dialogStatusComplete = 'complete'
+      this.dialogFormVisibleComplete = true
+    },
+    updateDataComplete() {
+      this.$refs['temp'].validate(valid => {
+        if (valid) {
+          this.requestParam.name = 'finishByIdMaintain'
+          this.requestParam.parammaps = this.temp
+          PostDataByName(this.requestParam).then(response => {
+            console.log(response)
+            if (response.msg === 'fail') {
+              this.$notify({
+                title: '失败',
+                message: '保存失败-' + response.data,
+                type: 'warning',
+                duration: 2000
+              })
+            } else {
+              this.getList()
+              this.dialogFormVisibleComplete = false
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          })
+        }
+      })
+    },
+    // 审核
+    handeleExamine(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatusExamine = 'examine'
+      this.dialogFormVisibleExamine = true
+    },
+    updateDataExamine() {
+      this.$refs['temp'].validate(valid => {
+        if (valid) {
+          this.requestParam.name = 'maintainCheck'
+          this.requestParam.parammaps = this.temp
+          this.requestParam.parammaps['isOrNo'] = '0'
+          PostDataByName(this.requestParam).then(response => {
+            console.log(response)
+            if (response.msg === 'fail') {
+              this.$notify({
+                title: '失败',
+                message: '保存失败-' + response.data,
+                type: 'warning',
+                duration: 2000
+              })
+            } else {
+              this.getList()
+              this.dialogFormVisibleExamine = false
+              this.$notify({
+                title: '成功',
+                message: '审核成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          })
+        }
+      })
+    },
+    // 图片上传
+    handeleImg(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatusImg = 'img'
+      this.dialogFormVisibleImg = true
     },
     handleDelete(row) {
       MessageBox.confirm('设备名称：' + row.equipmentName, '确认删除？', {
@@ -1295,10 +1669,4 @@ export default {
 </script>
 <style lang="scss" scoped>
 
-// .filter-container .filter-item{
-//   width: 140px;
-// }
-// .el-button--primary{
-//   width: 70px;
-// }
 </style>

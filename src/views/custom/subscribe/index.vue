@@ -50,14 +50,10 @@
       class="elTable"
     >
       <!-- table表格 -->
-      <el-table-column label="牧场" min-width="110px" align="center">
+      <el-table-column label="牧场/部门" min-width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.pastureName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="申购单号" prop="id" align="center" width="150">
-        <template slot-scope="scope">
-          <span>{{ scope.row.purchaseNumber }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">牧场：</span>{{ scope.row.pastureName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">部门：</span>{{ scope.row.departName }}</span><br>
         </template>
       </el-table-column>
       <el-table-column label="名称" width="150px" align="center">
@@ -65,30 +61,23 @@
           <span>{{ scope.row.stockName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="部门" width="150px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.departName }}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column label="单位" min-width="110px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.unit }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="当前库存" min-width="110px" align="center">
+      <el-table-column label="库存" min-width="110px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.repertory }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">当前库存：</span>{{ scope.row.repertory }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">最低库存：</span>{{ scope.row.minRepertory }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">最高库存：</span>{{ scope.row.maxRepertory }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="最低库存" min-width="110px" align="center">
+      <el-table-column label="申购" min-width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.minRepertory }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="最高库存" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.maxRepertory }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">申购单号：</span>{{ scope.row.purchaseNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">申购数量：</span>{{ scope.row.purchaseNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">申购人：</span>{{ scope.row.employeName }}</span><br>
         </template>
       </el-table-column>
       <el-table-column label="供应商" min-width="110px" align="center">
@@ -111,22 +100,12 @@
           <span>{{ scope.row.date }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="申购数量" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.purchaseNumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="申购人" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.employeName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" width="300" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="success" size="mini" @click="handleUpdate(row)">主管审核</el-button>
-          <el-button type="success" size="mini" @click="handleUpdate(row)">库管审核</el-button>
-          <el-button type="success" size="mini" @click="handleUpdate(row)">审核</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(row)">删除</el-button>
+          <el-button type="success" size="mini" style="margin-top:10px;width:70px;" @click="handleUpdate(row)">主管审核</el-button>
+          <el-button type="success" size="mini" style="margin-top:10px;width:70px;" @click="handleUpdate(row)">库管审核</el-button>
+          <el-button type="success" size="mini" style="margin-top:10px;" @click="handleUpdate(row)">审核</el-button>
+          <el-button type="danger" size="mini" style="margin-top:10px;" @click="handleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

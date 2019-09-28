@@ -113,57 +113,32 @@
       class="elTable"
     >
       <!-- table表格 -->
-      <el-table-column label="牧场" min-width="110px" align="center">
+      <el-table-column label="牧场/部门" width="170px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.pastureName }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">牧场：</span>{{ scope.row.pastureName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">部门：</span>{{ scope.row.departName }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="部门" prop="id" sortable="custom" align="center" width="150">
+      <el-table-column label="天然气表信息" width="300px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.departName }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">编号/名称：</span>{{ scope.row.gasNumber }}&#12288;&#12288;{{ scope.row.gasName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">类型：</span>{{ scope.row.useType }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="天然气表编号" width="150px" align="center">
+      <el-table-column label="使用量(m³)" width="190px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.gasNumber }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">上次值：</span>{{ scope.row.lastAmount }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">本次值：</span>{{ scope.row.endAmount }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">当天用水量：</span>{{ scope.row.gasConsumption }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="天然气表名称" width="150px" align="center">
+      <el-table-column label="价格(元)" width="170px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.gasName }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">单价：</span>{{ scope.row.price }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">当天费用：</span>{{ scope.row.sumPrice }}</span><br>
         </template>
       </el-table-column>
 
-      <el-table-column label="天然气类型" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.useType }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="上次值" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.lastAmount }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="本次值" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.endAmount }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="当天用水量" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.gasConsumption }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="单价" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.price }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="当天费用" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.sumPrice }}</span>
-        </template>
-      </el-table-column>
       <el-table-column label="记录人" min-width="110px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.putName }}</span>

@@ -147,6 +147,58 @@
       >
         <el-row>
           <el-col :span="8">
+            <el-form-item label="录入时间" prop="inputDatetime">
+              <el-date-picker
+                v-model="temp.inputDatetime"
+                type="date"
+                placeholder="录入时间"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                style="width:170px;"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="责任人" prop="employeId">
+              <el-select v-model="temp.employeId" placeholder="责任人" class="filter-item">
+                <el-option
+                  v-for="item in findAllEmploye"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="牧场" prop="pastureId">
+              <el-select v-model="temp.pastureId" placeholder="牧场" class="filter-item">
+                <el-option
+                  v-for="item in findAllPasture"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="部门" prop="departmentId">
+              <el-select v-model="temp.departmentId" placeholder="部门" class="filter-item">
+                <el-option
+                  v-for="item in findAllDepart"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
             <el-form-item label="入库单号" prop="assetNumber">
               <el-input ref="assetNumber" v-model="temp.assetNumber" />
             </el-form-item>
@@ -242,60 +294,7 @@
         label-position="right"
         label-width="100px"
         style="width: 800px; margin-left:50px;"
-      >
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="录入时间" prop="inputDatetime">
-              <el-date-picker
-                v-model="temp.inputDatetime"
-                type="date"
-                placeholder="录入时间"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                style="width:170px;"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="责任人" prop="employeId">
-              <el-select v-model="temp.employeId" placeholder="责任人" class="filter-item">
-                <el-option
-                  v-for="item in findAllEmploye"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="牧场" prop="pastureId">
-              <el-select v-model="temp.pastureId" placeholder="牧场" class="filter-item">
-                <el-option
-                  v-for="item in findAllPasture"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="部门" prop="departmentId">
-              <el-select v-model="temp.departmentId" placeholder="部门" class="filter-item">
-                <el-option
-                  v-for="item in findAllDepart"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
+      />
       <div slot="footer" class="dialog-footer">
         <el-button
           v-if="dialogStatus==='create'"

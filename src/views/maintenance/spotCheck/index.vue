@@ -281,7 +281,7 @@ export default {
       dialogStatus: '',
       textMap: {
         update: '编辑',
-        create: '新增'
+        create: '点检'
       },
       dialogPvVisible: false,
       // 校验规则

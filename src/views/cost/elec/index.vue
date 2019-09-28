@@ -113,60 +113,30 @@
       class="elTable"
     >
       <!-- table表格 -->
-      <el-table-column label="牧场" min-width="110px" align="center">
+      <el-table-column label="牧场/部门" width="170px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.pastureName }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">牧场：</span>{{ scope.row.pastureName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">部门：</span>{{ scope.row.departName }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="部门" prop="id" sortable="custom" align="center" width="150">
+      <el-table-column label="电表信息" width="300px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.departName }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">编号/名称：</span>{{ scope.row.elecNumber }}&#12288;&#12288;{{ scope.row.elecName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">类型：</span>{{ scope.row.useType }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="电表编号" width="150px" align="center">
+      <el-table-column label="使用量(°)" width="190px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.elecNumber }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">上次值：</span>{{ scope.row.lastAmount }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">本次值：</span>{{ scope.row.endAmount }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">当天用电量：</span>{{ scope.row.elecConsumption }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="表名称" width="150px" align="center">
+      <el-table-column label="价格(元)" width="170px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.elecName }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="类型" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.useType }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="上次值" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.lastAmount }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="本次值" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.endAmount }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="当天用电量" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.elecConsumption }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="单价" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.price }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="电率" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.rate }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="当天费用" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.sumPrice }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">单价：</span>{{ scope.row.price }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">电率：</span>{{ scope.row.rate }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">当天费用：</span>{{ scope.row.sumPrice }}</span><br>
         </template>
       </el-table-column>
       <el-table-column label="记录人" min-width="110px" align="center">

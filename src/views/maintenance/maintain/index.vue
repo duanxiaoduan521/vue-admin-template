@@ -116,7 +116,7 @@
         <template slot-scope="{row}">
           <!-- <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row)">删除</el-button>-->
-          <el-button type="success" size="mini" @click="handleExamine">审核</el-button>
+          <el-button type="success" size="mini" @click="handleExamine(row)">审核</el-button>
           <el-button type="success" size="mini" @click="handleUpdate(row)">详细维保</el-button>
         </template>
       </el-table-column>
@@ -157,7 +157,6 @@
     >
       <el-form
         ref="temp"
-        :rules="rules"
         :model="temp"
         label-position="right"
         label-width="110px"
@@ -355,7 +354,7 @@ import { GetDataByName, GetDataByNames, PostDataByName } from '@/api/common'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils/index.js'
 // eslint-disable-next-line no-unused-vars
-import { validateEMail } from '@/utils/validate.js'
+// import { validateEMail } from '@/utils/validate.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
 export default {
@@ -487,90 +486,52 @@ export default {
         inputDatetime: parseTime(new Date(), '{y}-{m}-{d}')
       }
     },
-    // handleCreate() {
-    //   this.resetTemp()
-    //   this.dialogStatus = 'create'
-    //   this.dialogFormVisible = true
-    //   this.$nextTick(() => {
-    //     this.$refs['temp'].clearValidate()
-    //   })
-    // },
-    // createData() {
-    //   this.$refs['temp'].validate(valid => {
-    //     if (valid) {
-    //       this.requestParam.name = 'insertAsset'
-    //       this.requestParam.parammaps = this.temp
-
-    //       PostDataByName(this.requestParam).then(response => {
-    //         console.log(response)
-    //         if (response.msg === 'fail') {
-    //           this.$notify({
-    //             title: '失败',
-    //             message: '保存失败-' + response.data,
-    //             type: 'danger',
-    //             duration: 2000
-    //           })
-    //         } else {
-    //           this.getList()
-    //           this.dialogFormVisible = false
-    //           this.$notify({
-    //             title: '成功',
-    //             message: '新增成功',
-    //             type: 'success',
-    //             duration: 2000
-    //           })
-    //         }
-    //       })
-    //     }
-    //   })
-    // },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['temp'].clearValidate()
-      })
+      // this.$nextTick(() => {
+      //   this.$refs['temp'].clearValidate()
+      // })
     },
     updateData() {
-      this.$refs['temp'].validate(valid => {
-        if (valid) {
-          this.requestParam.name = 'updateAsset'
-          this.requestParam.parammaps = this.temp
-          PostDataByName(this.requestParam).then(response => {
-            console.log(response)
-            if (response.msg === 'fail') {
-              this.$notify({
-                title: '失败',
-                message: '保存失败-' + response.data,
-                type: 'warning',
-                duration: 2000
-              })
-            } else {
-              this.getList()
-              this.dialogFormVisible = false
-              this.$notify({
-                title: '成功',
-                message: '修改成功',
-                type: 'success',
-                duration: 2000
-              })
-            }
+      // this.$refs['temp'].validate(valid => {
+      //   if (valid) {
+      this.requestParam.name = 'updateAsset'
+      this.requestParam.parammaps = this.temp
+      PostDataByName(this.requestParam).then(response => {
+        console.log(response)
+        if (response.msg === 'fail') {
+          this.$notify({
+            title: '失败',
+            message: '保存失败-' + response.data,
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          this.getList()
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '成功',
+            message: '详细审核成功',
+            type: 'success',
+            duration: 2000
           })
         }
       })
+      //   }
+      // })
     },
     // 审核
     handleExamine(row) {
       this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusExamine = 'examine'
+      this.dialogStatus = 'examine'
       this.dialogFormVisibleExamine = true
       // this.$nextTick(() => {
       //   this.$refs['temp'].clearValidate()
       // })
     },
     updateDataExamine() {
-      console.log(1)
       this.requestParam.name = 'upkeepCheck'
       this.requestParam.parammaps = this.temp
       PostDataByName(this.requestParam).then(response => {
@@ -587,7 +548,7 @@ export default {
           this.dialogFormVisible = false
           this.$notify({
             title: '成功',
-            message: '修改成功',
+            message: '审核成功',
             type: 'success',
             duration: 2000
           })
