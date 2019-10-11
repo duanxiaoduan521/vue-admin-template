@@ -194,7 +194,7 @@
               <el-input ref="maxRepertory" v-model="temp.maxRepertory" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!--           <el-col :span="8">
             <el-form-item label="状态" prop="status">
               <el-select v-model="temp.status" placeholder="状态" class="filter-item">
                 <el-option
@@ -205,7 +205,7 @@
                 />
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="牧场" prop="pastureId">
               <el-select v-model="temp.pastureId" placeholder="牧场" class="filter-item">
@@ -496,7 +496,7 @@ export default {
       })
     },
     handleDelete(row) {
-      MessageBox.confirm('设备名称：' + row.equipmentName, '确认删除？', {
+      MessageBox.confirm('备件编号：' + row.stockNumber + ' ,备件名称：' + row.stockName, '确认删除？', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'

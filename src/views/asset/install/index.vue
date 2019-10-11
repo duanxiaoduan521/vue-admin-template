@@ -5,8 +5,8 @@
     <div class="filter-container">
       <!-- 搜索条件 -->
       <el-input
-        v-model="getdataListParm.parammaps.assetNumbe"
-        placeholder="编号"
+        v-model="getdataListParm.parammaps.assetNumber"
+        placeholder="牧场设备编号"
         clearable
         class="filter-item"
         style="width: 130px"
@@ -84,22 +84,13 @@
           <span>{{ scope.row.pastureName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="资产编号" prop="id" align="center" width="150">
+      <el-table-column label="编号/名称" prop="id" align="center" width="230">
         <template slot-scope="scope">
-          <span>{{ scope.row.assetNumber }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">资产编号：</span>{{ scope.row.assetNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">牧场设备编号：</span>{{ scope.row.equipmentNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">名称：</span>{{ scope.row.equipmentName }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="牧场设备编号" width="150px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.equipmentNumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="名称" width="150px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.equipmentName }}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column label="部门" width="150px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.departmentName }}</span>
@@ -116,7 +107,7 @@
           <span>{{ scope.row.providerName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" min-width="110px" align="center">
+      <el-table-column label="状态" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.status }}</span>
         </template>
@@ -132,7 +123,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">修改状态</el-button>
         </template>
@@ -193,7 +184,7 @@ import { parseTime } from '@/utils/index.js'
 // eslint-disable-next-line no-unused-vars
 import { validateEMail } from '@/utils/validate.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { MessageBox } from 'element-ui'
+// import { MessageBox } from 'element-ui'
 export default {
   name: 'Install',
   components: { Pagination },

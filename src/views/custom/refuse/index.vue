@@ -71,58 +71,40 @@
       class="elTable"
     >
       <!-- table表格 -->
-      <el-table-column label="牧场" min-width="110px" align="center">
+      <el-table-column label="清单" min-width="220px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.pastureName }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">清单编号：</span> {{ scope.row.listNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">清单类型：</span> {{ scope.row.listType }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="清单编号" prop="id" sortable="custom" align="center" width="150">
+      <el-table-column label="牧场/部门" min-width="130px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.listNumber }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">牧场：</span> {{ scope.row.pastureName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">部门：</span> {{ scope.row.departName }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="清单类型" width="150px" align="center">
+      <el-table-column label="备件信息" min-width="265px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.listType }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">备件编号：</span>{{ scope.row.stockNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">备件名称：</span>{{ scope.row.stockName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">规格型号：</span>{{ scope.row.specification }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">供应商：</span>{{ scope.row.provider }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="处理日期" width="150px" align="center">
+      <el-table-column label="单价/数量" min-width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.handleDate }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">单价：</span>{{ scope.row.price }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">数量({{ scope.row.unit }})：</span>{{ scope.row.amount }}</span><br>
         </template>
       </el-table-column>
-
-      <el-table-column label="单位" min-width="110px" align="center">
+      <el-table-column label="处理信息" min-width="235px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.unit }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">处理日期：</span>{{ scope.row.handleDate }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">处理人：</span>{{ scope.row.employeName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">状态：</span>{{ scope.row.statue }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="单价" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.price }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="供应商" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.provider }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="部门" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.departName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="处理人" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.employeName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.statue }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="success" size="mini" @click="handleDestruction(row)">销毁/卖掉</el-button>
         </template>
@@ -364,13 +346,19 @@ export default {
     },
     // 销毁/卖掉
     handleDestruction(row) {
-      console.log(row)
-      this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusDestruction = 'destruction'
-      this.dialogFormVisibleDestruction = true
-      // this.$nextTick(() => {
-      //   this.$refs['temp'].clearValidate()
-      // })
+      if (row.statue === '未处理') {
+        console.log(row)
+        this.temp = Object.assign({}, row) // copy obj
+        this.dialogStatusDestruction = 'destruction'
+        this.dialogFormVisibleDestruction = true
+      } else {
+        this.$notify({
+          title: '',
+          message: '旧品已处理...',
+          type: 'warning',
+          duration: 2000
+        })
+      }
     },
     updateDataDestruction() {
       this.$refs['temp'].validate(valid => {

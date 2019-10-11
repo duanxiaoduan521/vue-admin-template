@@ -35,16 +35,21 @@
             <span>{{ scope.row.deptname }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="职位" min-width="150px" header-align="center" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.position }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="电话" min-width="150px" header-align="center" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.tel }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="顺序" min-width="80px" header-align="center" align="center">
+        <!-- <el-table-column label="顺序" min-width="80px" header-align="center" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.sort }}</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="启用" min-width="80px" header-align="center" align="center">
           <template slot-scope="scope">
             <el-switch
@@ -106,7 +111,10 @@
               @popoverHide="popoverHide"
             />
           </el-form-item>
-          <el-form-item label="电话号码" prop="tel">
+          <el-form-item label="职位" prop="remark">
+            <el-input ref="position" v-model="dataform.position" />
+          </el-form-item>
+          <el-form-item label="联系方式" prop="tel">
             <el-input ref="tel" v-model="dataform.tel" />
           </el-form-item>
           <el-form-item label="备注" prop="remark">
@@ -250,6 +258,7 @@ export default {
       this.dataform.empname = ''
       this.dataform.deptname = ''
       this.dataform.deptid = ''
+      this.dataform.position = ''
       this.dataform.tel = ''
       this.dataform.remark = ''
       this.dataform.id = ''
@@ -271,6 +280,7 @@ export default {
           this.requestParam.params = []
           this.requestParam.params[0] = this.dataform.empname
           this.requestParam.params[1] = this.dataform.deptid
+          this.requestParam.params[2] = this.dataform.position
           this.requestParam.params[2] = this.dataform.tel
           this.requestParam.params[3] = this.dataform.remark
           this.requestParam.params[4] = this.dataform.sort
@@ -295,6 +305,7 @@ export default {
           this.requestParam.params = []
           this.requestParam.params[0] = this.dataform.empname
           this.requestParam.params[1] = this.dataform.deptid
+          this.requestParam.params[2] = this.dataform.position
           this.requestParam.params[2] = this.dataform.tel
           this.requestParam.params[3] = this.dataform.remark
           this.requestParam.params[4] = this.dataform.sort
@@ -317,6 +328,7 @@ export default {
       this.dataform.empname = row.empname
       this.dataform.deptname = row.deptname
       this.dataform.deptid = row.deptid
+      this.dataform.position = row.position
       this.dataform.tel = row.tel
       this.dataform.remark = row.remark
       this.dataform.id = row.id
@@ -335,6 +347,7 @@ export default {
           this.requestParam.params = []
           this.requestParam.params[0] = this.dataform.empname
           this.requestParam.params[1] = this.dataform.deptid
+          this.requestParam.params[2] = this.dataform.position
           this.requestParam.params[2] = this.dataform.tel
           this.requestParam.params[3] = this.dataform.remark
           this.requestParam.params[4] = this.dataform.sort
@@ -353,6 +366,7 @@ export default {
       this.requestParam.params = []
       this.requestParam.params[0] = row.empname
       this.requestParam.params[1] = row.deptid
+      this.requestParam.params[2] = row.position
       this.requestParam.params[2] = row.tel
       this.requestParam.params[3] = row.remark
       this.requestParam.params[4] = row.sort

@@ -114,8 +114,9 @@
       </el-table-column>
       <el-table-column label="接单信息" min-width="240px" align="center">
         <template slot-scope="scope">
-          <span style="float:left;"><span style="font-weight:bold;">接单人：</span> {{ scope.row.dispose }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">接单人：</span> {{ scope.row.empname }}</span><br>
           <span style="float:left;"><span style="font-weight:bold;">接单时间：</span>{{ scope.row.orderTime }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">维修人：</span> {{ scope.row.dispose }}</span><br>
           <span style="float:left;"><span style="font-weight:bold;">维修开始时间：</span> {{ scope.row.dealTime }}</span><br>
           <span style="float:left;"><span style="font-weight:bold;">维修结束时间：</span>{{ scope.row.stopTime }}</span><br>
         </template>
@@ -132,10 +133,10 @@
         <template slot-scope="{row}">
           <el-button type="success" size="mini" style="margin-left:10px;" @click="handleUpdate(row)">查看明细</el-button>
           <el-button type="success" size="mini" style="margin-left:0;" @click="handleReceipt(row)">接单</el-button>
-          <el-button type="success" size="mini" style="margin-left:0;" @click="handleRepair(row)">维修</el-button>
+          <el-button type="success" size="mini" :v-if="row.dispose !== undefined && row.orderTime !== undefined" style="margin-left:0;" @click="handleRepair(row)">维修</el-button>
           <el-button type="success" size="mini" style="margin-top:10px;margin-left:0;" @click="handeleComplete(row)">维修完成</el-button>
           <el-button type="success" size="mini" style="margin-top:10px;margin-left:0;" @click="handeleExamine(row)">审核</el-button>
-          <el-button type="success" size="mini" style="margin-top:10px;margin-left:0;" @click="handeleImg(row)">图片上传</el-button>
+          <!--     <el-button type="success" size="mini" style="margin-top:10px;margin-left:0;" @click="handeleImg(row)">图片上传</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -189,32 +190,43 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="8">
+            <el-col :span="12">
               <el-form-item label="设备名称：" prop="assetName">
                 <el-autocomplete
                   ref="assetName"
-                  v-model="temp.assetName"
+                  v-model="temp1.assetName"
                   value-key="assetName"
                   class="inline-input"
                   :fetch-suggestions="formNameSearch"
                   placeholder="请输入内容"
-                  :disabled="dialogStatus==='update'"
+                  style="width:270px;"
                   @select="handleformNameSelect"
-                />
+                >
+                  <template slot-scope="{ item }">
+                    <div class="name" style="display: inline;">{{ item.assetName }}</div>
+                    <span class="addr">{{ item.assetNumber }}</span>
+                  </template>
+                </el-autocomplete>
+
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
               <el-form-item label="牧场设备编号：" prop="assetNumber">
                 <el-autocomplete
                   ref="assetNumber"
-                  v-model="temp.assetNumber"
+                  v-model="temp1.assetNumber"
                   value-key="assetNumber"
                   class="inline-input"
                   :fetch-suggestions="formNumberSearch"
                   placeholder="请输入内容"
-                  :disabled="dialogStatus==='update'"
+                  style="width:270px;"
                   @select="handleformNumberSelect"
-                />
+                >
+                  <template slot-scope="{ item }">
+                    <div class="name" style="display: inline;">{{ item.assetName }}</div>
+                    <span class="addr">{{ item.assetNumber }}</span>
+                  </template>
+                </el-autocomplete>
               </el-form-item>
             </el-col>
           </el-row>
@@ -303,50 +315,52 @@
           :rules="rules"
           :model="temp"
           label-position="right"
-          label-width="100px"
+          label-width="150px"
           style="width: 800px; margin-left:50px;"
         >
           <el-row>
-            <el-col :span="6">
-              <el-form-item label="资产编号" prop="assetNumber">
-                <el-input ref="assetNumber" v-model="temp.assetNumber" disabled />
+            <el-col :span="8">
+              <el-form-item label="资产编号：" prop="assetNumber">
+                <el-input ref="assetNumber" v-model="temp.assetNumber" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="牧场名称" prop="pastureName">
-                <el-input ref="pastureName" v-model="temp.pastureName" disabled />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="牧场设备编号" prop="equipmentNumber">
-                <el-input ref="equipmentNumber" v-model="temp.equipmentNumber" disabled />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="资产名称" prop="assetName">
-                <el-input ref="assetName" v-model="temp.assetName" disabled />
+            <el-col :span="8">
+              <el-form-item label="资产名称：" prop="assetName">
+                <el-input ref="assetName" v-model="temp.assetName" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="6">
-              <el-form-item label="故障部位" prop="partName">
-                <el-input ref="partName" v-model="temp.partName" disabled />
+            <el-col :span="8">
+              <el-form-item label="牧场设备编号：" prop="equipmentNumber">
+                <el-input ref="equipmentNumber" v-model="temp.equipmentNumber" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="故障现象" prop="appearanceName">
-                <el-input ref="appearanceName" v-model="temp.appearanceName" disabled />
+            <el-col :span="8">
+              <el-form-item label="牧场名称：" prop="pastureName">
+                <el-input ref="pastureName" v-model="temp.pastureName" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="故障详情" prop="details">
-                <el-input ref="details" v-model="temp.details" disabled />
+            <el-col :span="8">
+              <el-form-item label="部门：" prop="departmentName">
+                <el-input ref="departmentName" v-model="temp.departmentName" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="部门" prop="departmentName">
-                <el-input ref="departmentName" v-model="temp.departmentName" disabled />
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="故障部位：" prop="partName">
+                <el-input ref="partName" v-model="temp.partName" disabled style="width:170px;" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="故障现象：" prop="appearanceName">
+                <el-input ref="appearanceName" v-model="temp.appearanceName" disabled style="width:170px;" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="故障详情：" prop="details">
+                <el-input ref="details" v-model="temp.details" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -378,69 +392,59 @@
           :rules="rules"
           :model="temp"
           label-position="right"
-          label-width="100px"
+          label-width="130px"
           style="width: 800px; margin-left:50px;"
         >
           <el-row>
-            <el-col :span="6">
-              <el-form-item label="资产编号" prop="assetNumber">
-                <el-input ref="assetNumber" v-model="temp.assetNumber" />
+            <el-col :span="8">
+              <el-form-item label="资产编号：" prop="assetNumber">
+                <el-input ref="assetNumber" v-model="temp.assetNumber" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="牧场名称" prop="pastureName">
-                <el-input ref="pastureName" v-model="temp.pastureName" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="牧场设备编号" prop="equipmentNumber">
-                <el-input ref="equipmentNumber" v-model="temp.equipmentNumber" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="资产名称" prop="equipmentName">
-                <el-input ref="equipmentName" v-model="temp.equipmentName" />
+            <el-col :span="8">
+              <el-form-item label="资产名称：" prop="assetName">
+                <el-input ref="assetName" v-model="temp.assetName" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="6">
-              <el-form-item label="故障现象" prop="appearanceName">
-                <el-input ref="appearanceName" v-model="temp.appearanceName" />
+            <el-col :span="8">
+              <el-form-item label="牧场设备编号：" prop="equipmentNumber">
+                <el-input ref="equipmentNumber" v-model="temp.equipmentNumber" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="部门" prop="departmentName">
-                <el-input ref="departmentName" v-model="temp.departmentName" />
+            <el-col :span="8">
+              <el-form-item label="牧场名称：" prop="pastureName">
+                <el-input ref="pastureName" v-model="temp.pastureName" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="操作" prop="active">
-                <el-select
-                  v-model="getdataListParm.parammaps.active"
-                  clearable
-                  placeholder="操作"
-                  class="filter-item"
-                >
-                  <el-option
-                    v-for="item in getDictByName"
-                    :key="item.id"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="故障详情" prop="details">
-                <el-input ref="details" v-model="temp.details" />
+            <el-col :span="8">
+              <el-form-item label="部门：" prop="departmentName">
+                <el-input ref="departmentName" v-model="temp.departmentName" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="6">
+            <el-col :span="8">
+              <el-form-item label="故障部位：" prop="partName">
+                <el-input ref="partName" v-model="temp.partName" disabled style="width:170px;" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="故障现象：" prop="appearanceName">
+                <el-input ref="appearanceName" v-model="temp.appearanceName" disabled style="width:170px;" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="故障详情：" prop="details">
+                <el-input ref="details" v-model="temp.details" disabled style="width:170px;" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
               <el-form-item label="责任人" prop="employeId">
-                <el-select v-model="temp.employeId" placeholder="责任人" class="filter-item">
+                <el-select v-model="temp.employeId" placeholder="责任人" class="filter-item" :disabled="isDisabled">
                   <el-option
                     v-for="item in findAllEmploye"
                     :key="item.id"
@@ -450,10 +454,11 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="8">
               <el-form-item label="日期" prop="aaDate">
                 <el-date-picker
                   v-model="temp.aaDate"
+                  :disabled="isDisabled"
                   type="date"
                   placeholder="日期"
                   format="yyyy-MM-dd"
@@ -464,18 +469,12 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="14">
-              <el-form-item label="状态" prop="receiveStatue">
-                <el-input ref="receiveStatue" v-model="temp.receiveStatue" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="14">
+            <el-col :span="20">
               <el-form-item label="处理结果" prop="checkResult">
-                <el-radio-group v-model="temp.checkResult" @change="changeHandler">
+                <el-radio-group v-model="temp.checkResult" :disabled="isDisabled" @change="changeHandler">
                   <el-radio
                     v-for="item in getDictByNameResult"
+                    ref="temp"
                     :key="item.id"
                     style="margin-bottom:10px;"
                     :label="item.label"
@@ -484,26 +483,26 @@
                 </el-radio-group>
               </el-form-item>
             </el-col>
-            <el-col :span="4">
+            <!-- <el-col :span="4">
               <el-button v-if="shengcheng" @click="handleshengcheng">生成领用单</el-button>
-            </el-col>
+            </el-col> -->
           </el-row>
           <el-row>
             <el-col v-if="display" :span="8">
               <el-form-item label="编号/名称：" prop="stockA">
                 <el-autocomplete
                   v-model="stockAAA.stockA"
-                  style="width:350px;"
+                  style="width:430px;"
                   class="inline-input mediaInput"
                   :fetch-suggestions="stockSearch"
                   placeholder="请输入备件编号或者备件名称"
-                  :disabled="dialogStatus==='update'"
+                  :disabled="isDisabled"
                   :trigger-on-focus="false"
                   @select="handleStockSelect"
                 >
                   <template slot-scope="{ item }">
                     <div class="name" style="display: inline;">{{ item.stockNumber }}</div>
-                    <span class="addr">{{ item.stockName }}</span>
+                    <span class="addr">{{ item.stockName }}</span>&nbsp; &nbsp; 库存数量：<span class="addr">{{ item.repertory }}</span>
                   </template>
                 </el-autocomplete>
                 <div slot="footer" class="dialog-footer">
@@ -518,8 +517,9 @@
           id="myTable"
           :key="tableKey"
           v-loading="listLoading"
+          :rules="rules"
           element-loading-text="给我一点时间"
-          :data="list"
+          :data="list2"
           border
           fit
           highlight-current-row
@@ -546,7 +546,12 @@
           </el-table-column>
           <el-table-column label="数量" min-width="110px" align="center">
             <template slot-scope="scope">
-              <input v-model="scope.row.amount" type="text" style="width:80px;border:none;">
+              <el-form :model="scope.row" :rules="rules">
+                <el-form-item prop="amount">
+                  <el-input v-show="true" v-model="scope.row.amount" style="width:80px;border:none;margin-top:25px;height:30px" :disabled="isDisabled" />
+                  <!-- <input v-model="scope.row.amount" type="number" style="width:80px;border:none;margin-top:25px;height:30px"> -->
+                </el-form-item>
+              </el-form>
             </template>
           </el-table-column>
           <el-table-column
@@ -556,11 +561,18 @@
             class-name="small-padding fixed-width"
           >
             <template slot-scope="{row}">
-              <el-button type="success" size="mini" @click="stockAdd(row)">保存</el-button>
-              <el-button type="success" size="mini" @click="stockDel(row)">删除</el-button>
+              <el-button type="success" size="mini" :disabled="isDisabled" @click="stockDel(row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button
+          type="primary"
+          :disabled="isDisabled"
+          @click="dialogStatusComplete ==='create'?createDataRepairW():createDataRepairW()"
+        >确认</el-button>
+        <el-button @click="dialogFormVisibleRepairW = false">关闭</el-button>
       </div>
     </el-dialog>
     <!-- 弹出层查看详情 -->
@@ -579,65 +591,54 @@
           style="width: 800px; margin-left:50px;"
         >
           <el-row>
-            <el-col :span="6">
-              <el-form-item label="资产编号" prop="assetNumber">
-                <el-input ref="assetNumber" v-model="temp.assetNumber" disabled />
+            <el-col :span="8">
+              <el-form-item label="资产编号：" prop="assetNumber">
+                <el-input ref="assetNumber" v-model="temp.assetNumber" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="牧场名称" prop="pastureName">
-                <el-input ref="pastureName" v-model="temp.pastureName" disabled />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="牧场设备编号" prop="equipmentNumber">
-                <el-input ref="equipmentNumber" v-model="temp.equipmentNumber" disabled />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="资产名称" prop="equipmentName">
-                <el-input ref="equipmentName" v-model="temp.equipmentName" disabled />
+            <el-col :span="8">
+              <el-form-item label="资产名称：" prop="assetName">
+                <el-input ref="assetName" v-model="temp.assetName" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="6">
-              <el-form-item label="故障现象" prop="appearanceName">
-                <el-input ref="appearanceName" v-model="temp.appearanceName" disabled />
+            <el-col :span="8">
+              <el-form-item label="牧场设备编号：" prop="equipmentNumber">
+                <el-input ref="equipmentNumber" v-model="temp.equipmentNumber" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="部门" prop="departmentName">
-                <el-input ref="departmentName" v-model="temp.departmentName" disabled />
+            <el-col :span="8">
+              <el-form-item label="牧场名称：" prop="pastureName">
+                <el-input ref="pastureName" v-model="temp.pastureName" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="操作" prop="active">
-                <el-select
-                  v-model="getdataListParm.parammaps.active"
-                  clearable
-                  placeholder="操作"
-                  class="filter-item"
-                  disabled
-                >
-                  <el-option
-                    v-for="item in getDictByName"
-                    :key="item.id"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="故障详情" prop="details">
-                <el-input ref="details" v-model="temp.details" disabled />
+            <el-col :span="8">
+              <el-form-item label="部门：" prop="departmentName">
+                <el-input ref="departmentName" v-model="temp.departmentName" disabled style="width:170px;" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="6">
-              <el-form-item label="责任人" prop="employeId">
+            <el-col :span="8">
+              <el-form-item label="故障部位：" prop="partName">
+                <el-input ref="partName" v-model="temp.partName" disabled style="width:170px;" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="故障现象：" prop="appearanceName">
+                <el-input ref="appearanceName" v-model="temp.appearanceName" disabled style="width:170px;" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="故障详情：" prop="details">
+                <el-input ref="details" v-model="temp.details" disabled style="width:170px;" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="责任人：" prop="employeId">
                 <el-select v-model="temp.employeId" placeholder="责任人" class="filter-item" disabled>
                   <el-option
                     v-for="item in findAllEmploye"
@@ -648,8 +649,8 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="日期" prop="aaDate">
+            <el-col :span="8">
+              <el-form-item label="日期：" prop="aaDate">
                 <el-date-picker
                   v-model="temp.aaDate"
                   disabled
@@ -661,23 +662,22 @@
                 />
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="14">
-              <el-form-item label="处理结果" prop="checkResult">
-                <el-radio-group v-model="temp.checkResult" disabled @change="changeHandler">
-                  <el-radio
-                    v-for="item in getDictByNameResult"
-                    :key="item.id"
-                    style="margin-bottom:10px;"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
+            <el-row>
+              <el-col :span="14">
+                <el-form-item label="处理结果" prop="checkResult">
+                  <el-radio-group v-model="temp.checkResult" disabled @change="changeHandler">
+                    <el-radio
+                      v-for="item in getDictByNameResult"
+                      :key="item.id"
+                      style="margin-bottom:10px;"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-row></el-form>
         <el-table
           v-if="display"
           :key="tableKey"
@@ -761,12 +761,12 @@
           <h3 style="margin-bottom:50px;">是否完成？</h3>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button
+          <!--        <el-button
             v-if="dialogStatusComplete ==='create'"
             ref="createb"
             type="success"
             @click="createData_again()"
-          >确认新增</el-button>
+          >确认新增</el-button> -->
           <el-button
             type="primary"
             @click="dialogStatusComplete ==='create'?createData():updateDataComplete()"
@@ -915,36 +915,40 @@
 
 <script>
 // 引入
-import { GetDataByName, GetDataByNames, PostDataByName } from '@/api/common'
+import { GetDataByName, GetDataByNames, PostDataByName, ExecDataByConfig, checkButtons } from '@/api/common'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils/index.js'
 // eslint-disable-next-line no-unused-vars
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
-// import { fstat } from 'fs'
+// import { validator } from '@/utils/validate.js'
 export default {
   name: 'Repair',
   components: { Pagination },
   directives: { waves },
   data() {
     return {
+      buttonShow: [],
       isReject: [],
       tableKey: 0,
-      shengcheng: false,
+      isDisabled: true,
+      //  shengcheng: false,
       display: false,
       radioSex: 'man',
       list: [],
+      list2: [],
       listchakan: [],
       total: 0,
       radio: '',
       listLoading: true,
+      maintainStockUseId: '', // 维修时点击维修按钮加载的维修主键
       state1: '',
+      bigsSolrId: '', // 生成领用单时候获取的父类ID
       requestParam: {
         name: 'insertAsset',
         offset: 0,
         pagecount: 0,
-        parammaps: {},
-        params: []
+        parammaps: {}
       },
       // 1-2:table&搜索传参
       getdataListParm: {
@@ -1005,6 +1009,15 @@ export default {
         assetNumber: '',
         assetName: ''
       },
+      temp1: {
+        assetNumber: '',
+        assetName: ''
+      },
+
+      tempSolr: {
+        assetNumber: '',
+        assetName: ''
+      },
       requestFilterParams: {
         returntype: 'Map',
         parammaps: {}
@@ -1033,6 +1046,9 @@ export default {
         create: '新增',
         img: '图片上传'
       },
+      postDataPramas: {
+
+      },
       stockAAA: {
         stockA: '',
         stockNumber: '',
@@ -1044,22 +1060,45 @@ export default {
       dialogPvVisible: false,
       // 校验规则
       rules: {
-        assetNumber: [
-          { required: true, message: '必填', trigger: 'blur' }
-          // 引入自定义校验并使用
-          // { validator: validateEMail, trigger: 'blur' }
-        ],
-        equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
+        amount: [{ type: 'number', required: true, validator: (rule, value, callback) => {
+          // console.log(this.list2[this.list2.length - 1].repertory)
+          if (!value) {
+            callback(new Error('不能为空'))
+          }
+          if (value < 0) {
+            callback(new Error('必须大于0'))
+          } else if (value > this.list2[this.list2.length - 1].repertory) {
+            this.$message({
+              type: 'warning',
+              message: '输入的值不能大于当前库存'
+            })
+          }
+          setTimeout(() => {
+            const re = /^\d+$/ // /^[0-9]*[1-9][0-9]*$/
+            const rsCheck = re.test(value)
+            if (!rsCheck) {
+              this.$message({
+                type: 'warning',
+                message: '请输入正整数'
+              })
+            } else {
+              callback()
+            }
+          }, 0)
+        }, trigger: 'blur' }]
       },
       rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' }
     }
   },
+
   created() {
+    console.log(this.$store.state.user.buttons)
     this.getDownList()
     this.getList()
+    checkButtons(this.$store.state.user.buttons, 'baoxiu')
+    console.log(this.$store.state.user.buttons)
   },
-
   methods: {
     // 模糊查询-报修备件信息搜索
 
@@ -1069,60 +1108,96 @@ export default {
       this.requestFilterParams.parammaps['stockA'] = queryString
 
       GetDataByName(this.requestFilterParams).then(response => {
-        console.log(response.data.list)
+        // console.log(response.data.list)
         cb(response.data.list)
       })
     },
 
     handleStockSelect(item) {
+      var ss = 0
       GetDataByName(this.requestFilterParams).then(response => {
         this.$nextTick(() => {
           if (response.data.list.length > 0) {
             this.stockAAA = {}
-            this.stockAAA.stockNumber = item.stockNumber
-            this.stockAAA.stockName = item.stockName
-            this.stockAAA.specification = item.specification
-            this.stockAAA.amount = item.amount
-            this.stockAAA.note = item.note
-            this.createSearch()
+            if (item.repertory <= 0) {
+              this.$notify({
+                title: '添加失败',
+                message: '此备件无库存了，请联系库管尽快补货哦...',
+                type: 'warning',
+                duration: 2000
+              })
+            } else {
+              if (this.list2 === null) {
+                this.list2 = []
+              }
+              this.list2.some((item1, i) => {
+                if (item1.stockNumber === item.stockNumber) {
+                  ss = 1
+                }
+              })
+              if (ss === 0) { this.list2.push(item) }
+            }
           }
         })
       })
     },
 
-    // 模糊查询保存接口
-    createSearch() {
-      if (this.list.length > 0) {
-        this.requestParam.name = 'insertStockUse'
-        this.requestParam.params = []
-        this.requestParam.params[0] = this.stockAAA.stockNumber
-        this.requestParam.params[1] = this.stockAAA.stockName
-        this.requestParam.params[2] = this.stockAAA.amount
-        this.requestParam.params[3] = this.stockAAA.note
-        this.requestParam.params[4] = this.list[0].id
-        this.requestParam.params[5] = this.stockAAA.specification
-        this.requestParam.params[6] = this.stockAAA.stockNumber
-        PostDataByName(this.requestParam).then(() => {
+    createDataRepairW() {
+      this.postDataPramas.common = { 'returnmap': '0' }
+      this.postDataPramas.data = []
+
+      this.postDataPramas.data[0] = { 'name': 'deleteStockUse1', 'type': 'e', 'parammaps': { 'bigId': this.temp.bigId }}
+      this.postDataPramas.data[1] = { 'name': 'deleteBigStockUse1', 'type': 'e', 'parammaps': { 'id': this.temp.bigId }}
+      this.postDataPramas.data[2] = { 'name': 'insertBigStockUse1', 'type': 'e', 'parammaps': { }}
+      this.postDataPramas.data[2].parammaps.pastureId = this.temp.pastureId
+      this.postDataPramas.data[2].parammaps.departmentId = this.temp.departmentId
+      this.postDataPramas.data[2].parammaps.maintainId = this.temp.id
+      this.postDataPramas.data[2].parammaps.employeId1 = this.temp.disposeId
+      this.postDataPramas.data[2].parammaps.oddNumber = this.temp.repairNumber
+      this.postDataPramas.data[3] = { 'name': 'insertStockUse', 'resultmaps': { 'list': this.list2 }}
+      this.postDataPramas.data[3].children = []
+      this.postDataPramas.data[3].children[0] = { 'name': 'insertStockUse1', 'type': 'e', 'parammaps': { }}
+      this.postDataPramas.data[3].children[0].parammaps.stockNumber = '@insertStockUse.stockNumber'
+      this.postDataPramas.data[3].children[0].parammaps.stockName = '@insertStockUse.stockName'
+      this.postDataPramas.data[3].children[0].parammaps.specification = '@insertStockUse.specification'
+      this.postDataPramas.data[3].children[0].parammaps.useNumber = '@insertStockUse.amount'
+      this.postDataPramas.data[3].children[0].parammaps.refuseNumber = '@insertStockUse.amount'
+      this.postDataPramas.data[3].children[0].parammaps.bigId = '@insertBigStockUse1.LastInsertId'
+      this.postDataPramas.data[3].children[0].parammaps.maintainId = this.temp.id
+
+      this.postDataPramas.data[4] = { 'name': 'updateMaintainTime', 'type': 'e', 'parammaps': { }}
+      this.postDataPramas.data[4].parammaps.id = this.temp.id
+      this.postDataPramas.data[4].parammaps.jwt_username = '@common.jwt_username'
+      ExecDataByConfig(this.postDataPramas).then(response => {
+        if (response.msg === 'fail') {
           this.$notify({
-            title: '成功',
-            message: '新增成功',
+            title: '保存失败',
+            message: response.data,
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          this.getList()
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '',
+            message: '保存成功',
             type: 'success',
             duration: 2000
           })
-          this.uplodeStockList111(this.list[0].id)
-        })
-      }
+        }
+      })
     },
 
     // 刷新修改过的信息
-    uplodeStockList111(aa) {
+    uplodeStockList111() {
       if (this.list.length > 0) {
         this.requestFilterParams.parammaps = {}
-        this.requestFilterParams.name = 'getStcokUseStockList'
-        this.requestFilterParams.parammaps['partId'] = aa
-        this.requestFilterParams.parammaps['assetTypeId'] = this.assetTypeid
+        this.requestFilterParams.name = 'getRepairStockList'
+        this.requestFilterParams.parammaps['maintainId'] = this.maintainStockUseId
         GetDataByName(this.requestFilterParams).then(response => {
           this.list2 = response.data.list
+          console.log(this.list2)
         })
       }
     },
@@ -1130,86 +1205,23 @@ export default {
     uplodeStockList(row) {
       if (this.list.length > 0) {
         this.requestFilterParams.parammaps = {}
-        this.requestFilterParams.name = 'getStcokUseStockList'
-        this.requestFilterParams.parammaps['partId'] = row.id
-        this.requestFilterParams.parammaps['assetTypeId'] = this.assetTypeid
+        this.requestFilterParams.name = 'getRepairStockList'
+        this.requestFilterParams.parammaps['maintainId'] = row.id
+        this.maintainStockUseId = row.id
         GetDataByName(this.requestFilterParams).then(response => {
           this.list2 = response.data.list
         })
       }
     },
-    stcokUpdate(row) {
-      // 点击备件按钮的时候加载表格信息
-      this.uplodeStockList(row)
-      GetDataByName(this.requestFilterParams).then(response => {
-        this.dialogFormVisible = true
-      })
-    },
 
-    //  维修-备件信息删除保存（修改接口）
-    stockAdd(row) {
-      console.log(row)
-      this.requestParam.parammaps = {}
-      this.requestParam.name = 'updateStcokUseStock1'
-      this.requestParam.parammaps['amount'] = row.amount
-      this.requestParam.parammaps['note'] = row.note
-      this.requestParam.parammaps['id'] = row.id
-      PostDataByName(this.requestParam).then(response => {
-        if (response.msg === 'fail') {
-          this.$notify({
-            title: '失败',
-            message: '保存失败-' + response.data,
-            type: 'warning',
-            duration: 2000
-          })
-          this.uplodeStockList111(row.partId)
-        } else {
-          this.getList()
-          this.dialogFormVisible = false
-          this.$notify({
-            title: '成功',
-            message: '修改成功',
-            type: 'success',
-            duration: 2000
-          })
-          // this.uplodeStockList111(row.partId)
+    stockDel(row) {
+      this.list2.some((item, i) => {
+        if (item.stockNumber === row.stockNumber) {
+          this.list2.splice(i, 1)
+          return true
         }
       })
     },
-    // 维修-备件信息删除
-    stockDel(row) {
-      MessageBox.confirm('确认删除此条信息？', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.requestParam.name = 'deleteStcokUseStock1'
-          this.requestParam.parammaps = {}
-          this.requestParam.parammaps['id'] = row.id
-          PostDataByName(this.requestParam).then(() => {
-            this.getList()
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
-              duration: 2000
-            })
-            setTimeout(() => {
-              this.listLoading = false
-              // this.uplodeStockList111(row.partId)
-            }, 100)
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
-    },
-
     // 模糊查询-报修名称
     formNumberSearch(queryString, cb) {
       this.requestFilterParams.name = 'findAssetMain'
@@ -1228,31 +1240,31 @@ export default {
       })
     },
     handleformNumberSelect(item) {
+      console.log(item.assetNumber)
       this.requestFilterParams.name = 'findAssetMain'
       this.requestFilterParams.parammaps['assetName'] = ''
-      this.requestFilterParams.parammaps['assetNumber'] = this.temp.assetNumber
+      this.requestFilterParams.parammaps['assetNumber'] = item.assetNumber
       GetDataByName(this.requestFilterParams).then(response => {
         this.$nextTick(() => {
           if (response.data.list.length > 0) {
-            // this.temp.assetNumber = response.data.list[0].assetNumber
-            // this.temp.assetName = response.data.list[0].assetName
-            this.temp.assetNumber = item.assetNumber
-            this.temp.assetName = item.assetName
+            console.log('list信息为：' + response.data.list[0].assetNumber + response.data.list[0].assetName)
+            this.temp1.assetNumber = response.data.list[0].assetNumber
+            this.temp1.assetName = response.data.list[0].assetName
           }
         })
       })
     },
     handleformNameSelect(item) {
+      console.log(item.assetName)
       this.requestFilterParams.name = 'findAssetMain'
       this.requestFilterParams.parammaps['assetNumber'] = ''
-      this.requestFilterParams.parammaps['assetName'] = this.temp.assetName
+      this.requestFilterParams.parammaps['assetName'] = item.assetName
       GetDataByName(this.requestFilterParams).then(response => {
         this.$nextTick(() => {
           if (response.data.list.length > 0) {
-            this.temp.assetNumber = item.assetNumber
-            this.temp.assetName = item.assetName
-            // this.temp.assetNumber = response.data.list[0].assetNumber
-            // this.temp.assetName = response.data.list[0].assetName
+            console.log('list信息为：' + response.data.list[0].assetNumber + response.data.list[0].assetName)
+            this.temp1.assetNumber = response.data.list[0].assetNumber
+            this.temp1.assetName = response.data.list[0].assetName
           }
         })
       })
@@ -1282,7 +1294,7 @@ export default {
       GetDataByName(this.getdataListParm).then(response => {
         this.list = response.data.list
         this.isReject = response.data.list
-        console.log(response.data.list)
+        // console.log(response.data.list)
         if (response.data.total) {
           this.total = response.data.total
         }
@@ -1346,50 +1358,63 @@ export default {
       this.resetTemp()
       this.dialogStatusRepair = 'create'
       this.dialogFormVisibleRepair = true
-      this.$nextTick(() => {
+      /*  this.$nextTick(() => {
         this.$refs['temp'].clearValidate()
-      })
+      }) */
     },
     createDataBaoxiu() {
-      this.$refs['temp'].validate(valid => {
-        if (valid) {
-          this.requestParam.name = 'insertRepairs'
-          this.requestParam.parammaps = this.temp
-
-          PostDataByName(this.requestParam).then(response => {
-            console.log(response)
-            if (response.msg === 'fail') {
-              this.$notify({
-                title: '失败',
-                message: '保存失败-' + response.data,
-                type: 'danger',
-                duration: 2000
-              })
-            } else {
-              this.getList()
-              this.dialogFormVisible = false
-              this.$notify({
-                title: '成功',
-                message: '报修成功',
-                type: 'success',
-                duration: 2000
-              })
-            }
+      // this.$refs['temp'].validate(valid => {
+      // if (valid) {
+      this.requestParam.name = 'insertRepairs'
+      this.requestParam.parammaps = this.temp
+      this.requestParam.parammaps['assetNumber'] = this.temp1.assetNumber
+      this.requestParam.parammaps['assetName'] = this.temp1.assetName
+      PostDataByName(this.requestParam).then(response => {
+        console.log(response)
+        if (response.msg === 'fail') {
+          this.$notify({
+            title: '失败',
+            message: '保存失败-' + response.data,
+            type: 'danger',
+            duration: 2000
+          })
+        } else {
+          this.getList()
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '成功',
+            message: '报修成功',
+            type: 'success',
+            duration: 2000
           })
         }
+        // })
+        // }
       })
     },
+
     // 接单
     handleReceipt(row) {
       this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusReceipt = 'receipt'
-      this.dialogFormVisibleReceipt = true
+      if (row.empname === undefined && row.orderTime === undefined) {
+        this.dialogStatusReceipt = 'receipt'
+        this.dialogFormVisibleReceipt = true
+      } else {
+        this.$notify({
+          title: '',
+          message: '此单已经有人接了...',
+          type: 'warning',
+          duration: 2000
+        })
+      }
     },
     updateDataReceipt() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
           this.requestParam.name = 'receivingOrder'
           this.requestParam.parammaps = this.temp
+          this.requestParam.parammaps['assetName'] = this.temp1.assetName
+          this.requestParam.parammaps['assetNumber'] = this.temp1.assetNumber
           PostDataByName(this.requestParam).then(response => {
             console.log(response)
             if (response.msg === 'fail') {
@@ -1413,48 +1438,70 @@ export default {
         }
       })
     },
+
     // 维修
     handleRepair(row) {
       console.log(row.receiveStatue)
-
-      if (row.receiveStatue === '未审核') {
-        if (row.checkResult === '需要备件') {
-          // alert(1)
-        }
-      }else{
-
+      // eslint-disable-next-line eqeqeq
+      if (row.receiveStatue == '未审核' || row.receiveStatue == undefined) {
+        this.$nextTick(() => {
+          this.isDisabled = false
+        })
+      } else {
+        this.$nextTick(() => {
+          this.isDisabled = true
+        })
       }
-      this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusRepairW = 'repairW'
-      this.dialogFormVisibleRepairW = true
-      this.$nextTick(() => {
-        console.log(this.temp.checkResult)
-        // 从后台获取时row.checkResult === '需要备件'
-        if (row.checkResult === '需要备件') {
-          this.shengcheng = true
-        } else {
-          this.display = false
-          this.shengcheng = false
-        }
-      })
+      if (row.empname !== undefined && row.orderTime !== undefined) {
+      // if (row.dealTime == null) {
+        this.uplodeStockList(row)
+        this.temp = Object.assign({}, row) // copy obj
+        this.dialogStatusRepairW = 'repairW'
+        this.dialogFormVisibleRepairW = true
+        this.$nextTick(() => {
+          // 从后台获取时row.checkResult === '需要备件'
+          if (row.checkResult === '需要备件') {
+            this.display = true
+          } else {
+            this.display = false
+          }
+        })
+        this.$message({
+          type: 'warning',
+          message: '此单正在维修...'
+        })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '未接单，不能维修'
+        })
+      }
     },
     // 领用单以及表格显示隐藏
     changeHandler(value) {
-      if (value === '需要备件') {
-        this.shengcheng = true
-      } else {
-        this.shengcheng = false
+      if (value === '无故障' || value === '已处理不需要备件') {
         this.display = false
+        this.requestParam.name = 'clearBigAndStockUse'
+        this.requestParam.parammaps = {}
+        this.requestParam.parammaps['id'] = this.temp.id
+        console.log('asdfghjk:' + this.temp.id)
+        PostDataByName(this.requestParam).then(() => {
+        })
+      } else if (value === '需要备件') {
+        this.display = true
       }
-      console.log(value)
     },
-    handleshengcheng() {
+
+    /*     handleshengcheng() {
       this.display = true
       this.requestParam.name = 'insertBigStockUse1'
       this.requestParam.parammaps = this.temp
       this.requestParam.parammaps.isOrNo = '1'
       GetDataByName(this.requestParam).then(response => {
         console.log(response)
+
+        this.bigsSolrId = response.data.list[0].bigId
+
         if (response.msg === 'fail') {
           this.$notify({
             title: '失败',
@@ -1473,13 +1520,15 @@ export default {
           })
         }
       })
-    },
+    }, */
 
     updateDataRepair() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
           this.requestParam.name = 'updateRepairs'
           this.requestParam.parammaps = this.temp
+          this.requestParam.parammaps['assetName'] = this.temp1.assetName
+          this.requestParam.parammaps['assetNumber'] = this.temp1.assetNumber
           PostDataByName(this.requestParam).then(response => {
             console.log(response)
             if (response.msg === 'fail') {
@@ -1536,6 +1585,8 @@ export default {
         if (valid) {
           this.requestParam.name = 'updateRepairs'
           this.requestParam.parammaps = this.temp
+          this.requestParam.parammaps['assetName'] = this.temp1.assetName
+          this.requestParam.parammaps['assetNumber'] = this.temp1.assetNumber
           PostDataByName(this.requestParam).then(response => {
             console.log(response)
             if (response.msg === 'fail') {
@@ -1561,17 +1612,25 @@ export default {
     },
     // 维修完成
     handeleComplete(row) {
-      this.temp = row
-      // this.temp = Object.assign({}, row); // copy obj
-      console.log(row)
-      this.dialogStatusComplete = 'complete'
-      this.dialogFormVisibleComplete = true
+      if (row.stopTime === undefined) {
+        this.temp = row
+        // this.temp = Object.assign({}, row); // copy obj
+        this.dialogStatusComplete = 'complete'
+        this.dialogFormVisibleComplete = true
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '维修已完成！！'
+        })
+      }
     },
     updateDataComplete() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
           this.requestParam.name = 'finishByIdMaintain'
           this.requestParam.parammaps = this.temp
+          this.requestParam.parammaps['assetName'] = this.temp1.assetName
+          this.requestParam.parammaps['assetNumber'] = this.temp1.assetNumber
           PostDataByName(this.requestParam).then(response => {
             console.log(response)
             if (response.msg === 'fail') {
@@ -1597,9 +1656,16 @@ export default {
     },
     // 审核
     handeleExamine(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusExamine = 'examine'
-      this.dialogFormVisibleExamine = true
+      if (row.stopTime !== undefined && row.auditStatue === '未审核') {
+        this.temp = Object.assign({}, row) // copy obj
+        this.dialogStatusExamine = 'examine'
+        this.dialogFormVisibleExamine = true
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '此条信息已审核！！'
+        })
+      }
     },
     updateDataExamine() {
       this.$refs['temp'].validate(valid => {
@@ -1607,6 +1673,8 @@ export default {
           this.requestParam.name = 'maintainCheck'
           this.requestParam.parammaps = this.temp
           this.requestParam.parammaps['isOrNo'] = '0'
+          this.requestParam.parammaps['assetName'] = this.temp1.assetName
+          this.requestParam.parammaps['assetNumber'] = this.temp1.assetNumber
           PostDataByName(this.requestParam).then(response => {
             console.log(response)
             if (response.msg === 'fail') {

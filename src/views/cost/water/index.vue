@@ -358,6 +358,8 @@ export default {
       },
 
       temp: {
+        measureId: '',
+        pastureId: '',
         pastureName: '',
         useType: '',
         departName: '',
@@ -376,6 +378,7 @@ export default {
       // 校验规则
       rules: {
         endAmount: [{ type: 'number', required: true, validator: (rule, value, callback) => {
+          console.log(rule, value, callback)
           if (!value) {
             callback(new Error('不能为空'))
           }
@@ -561,6 +564,8 @@ export default {
             this.temp.aAmount = response.data.list[0].aAmount
             this.temp.employeName1 = response.data.list[0].employeName
             this.temp.formName = response.data.list[0].formName
+            this.temp.measureId = response.data.list[0].measureId
+            this.temp.pastureId = response.data.list[0].pastureId
             console.log(response.data.list[0])
           }
         })
@@ -579,6 +584,8 @@ export default {
             this.temp.aAmount = response.data.list[0].aAmount
             this.temp.employeName1 = response.data.list[0].employeName
             this.temp.formNumber = response.data.list[0].formNumber
+            this.temp.measureId = response.data.list[0].measureId
+            this.temp.pastureId = response.data.list[0].pastureId
           }
         })
       })
@@ -626,6 +633,8 @@ export default {
       this.temp.employeName1 = ''
       this.temp.formName = ''
       this.temp.formNumber = ''
+      this.temp.measureId = ''
+      this.temp.pastureId = ''
 
       this.temp.DATE = parseTime(new Date(), '{y}-{m}-{d}')
     },
@@ -643,7 +652,7 @@ export default {
           this.requestParam.name = 'insertWater'
           this.requestParam.parammaps = this.temp
 
-          PostDataByName(this.requestParam).then(response => {
+          GetDataByName(this.requestParam).then(response => {
             console.log(response)
             if (response.msg === 'fail') {
               this.$notify({

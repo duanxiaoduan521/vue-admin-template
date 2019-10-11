@@ -38,7 +38,7 @@
         :show-checkbox="multiple"
         :node-key="nodeKey"
         :check-strictly="checkStrictly"
-        default-expand-all
+        :default-expand-all="expandAll"
         :expand-on-click-node="false"
         :check-on-click-node="multiple"
         :highlight-current="true"
@@ -102,6 +102,13 @@ export default {
       type: Boolean,
       default() {
         return false
+      }
+    },
+    // 配置多选时是否将选中值按文字的形式展示
+    expandAll: {
+      type: Boolean,
+      default() {
+        return true
       }
     },
     nodeKey: {

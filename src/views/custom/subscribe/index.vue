@@ -50,27 +50,18 @@
       class="elTable"
     >
       <!-- table表格 -->
-      <el-table-column label="牧场/部门" min-width="150px" align="center">
+      <el-table-column label="牧场/部门" min-width="130px" align="center">
         <template slot-scope="scope">
           <span style="float:left;"><span style="font-weight:bold;">牧场：</span>{{ scope.row.pastureName }}</span><br>
           <span style="float:left;"><span style="font-weight:bold;">部门：</span>{{ scope.row.departName }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="名称" width="150px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.stockName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="单位" min-width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.unit }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="库存" min-width="110px" align="center">
+      <el-table-column label="库存/单位" min-width="120px" align="center">
         <template slot-scope="scope">
           <span style="float:left;"><span style="font-weight:bold;">当前库存：</span>{{ scope.row.repertory }}</span><br>
           <span style="float:left;"><span style="font-weight:bold;">最低库存：</span>{{ scope.row.minRepertory }}</span><br>
           <span style="float:left;"><span style="font-weight:bold;">最高库存：</span>{{ scope.row.maxRepertory }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">单位：</span>{{ scope.row.unit }}</span><br>
         </template>
       </el-table-column>
       <el-table-column label="申购" min-width="150px" align="center">
@@ -78,6 +69,11 @@
           <span style="float:left;"><span style="font-weight:bold;">申购单号：</span>{{ scope.row.purchaseNumber }}</span><br>
           <span style="float:left;"><span style="font-weight:bold;">申购数量：</span>{{ scope.row.purchaseNumber }}</span><br>
           <span style="float:left;"><span style="font-weight:bold;">申购人：</span>{{ scope.row.employeName }}</span><br>
+        </template>
+      </el-table-column>
+      <el-table-column label="名称" width="130px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.stockName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="供应商" min-width="110px" align="center">
@@ -90,7 +86,7 @@
           <span>{{ scope.row.purpose }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" min-width="110px" align="center">
+      <el-table-column label="状态" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.statue }}</span>
         </template>
@@ -132,12 +128,12 @@
         style="width: 800px; margin-left:50px;"
       >
         <el-row>
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="申购单编号" prop="assetNumber">
               <el-input ref="assetNumber" v-model="temp.assetNumber" />
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="12">
             <el-form-item label="是否加急" prop="assetNumber">
               <el-switch v-model="value" active-color="#13ce66" inactive-color="#eee" />
             </el-form-item>
@@ -150,7 +146,7 @@
                 class="inline-input"
                 :fetch-suggestions="providerSearch"
                 placeholder="请输入名称或编号新增备件"
-                style="width:200px"
+                style="width:300px"
                 @select="handleSelect"
               />
             </el-form-item>
@@ -270,12 +266,12 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button
+        <!-- <el-button
           v-if="dialogStatus==='create'"
           ref="createb"
           type="success"
           @click="createData_again()"
-        >确认新增</el-button>
+        >确认新增</el-button> -->
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确认</el-button>
         <el-button @click="dialogFormVisible = false">关闭</el-button>
       </div>
@@ -322,6 +318,14 @@ export default {
           pastureName: '',
           status: ''
         }
+      },
+      getdataListParmCreate: {
+        name: 'createSubscriptionNumber',
+        page: 0,
+        offset: 0,
+        pagecount: 0,
+        returntype: 'Map',
+        parammaps: {}
       },
       // 2-3：下拉框请求后数据加入[]
       findAllProvider: [],
@@ -435,8 +439,13 @@ export default {
       this.resetTemp()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['temp'].clearValidate()
+      GetDataByName(this.getdataListParmCreate).then(response => {
+        this.listCreate = response.data.list
+        this.$nextTick(() => {
+          this.$refs['assetNumber'].$el.children[0].value = this.listCreate[0].subNumber
+          console.log(this.listCreate[0].subNumber)
+          console.log(this.$refs['assetNumber'].$el.children[0])
+        })
       })
     },
     createData() {

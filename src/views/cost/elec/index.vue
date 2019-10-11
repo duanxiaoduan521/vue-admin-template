@@ -224,26 +224,37 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+        </el-row>
+        <el-row>
+          <el-col :span="8">
             <el-form-item label="类型：">
               <span>{{ temp.useType }}</span>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="牧场：">
               <span>{{ temp.pastureName }}</span>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="部门：">
               <span>{{ temp.departName }}</span>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+        </el-row>
+        <el-row>
+          <el-col :span="8">
             <el-form-item label="责任人：">
               <span>{{ temp.employeName1 }}</span>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item label="倍率：">
+              <span>{{ temp.rate }}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="当前值(m³)：" prop="endAmount">
               <el-input
@@ -269,6 +280,8 @@
               />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="当前时间：" prop="DATE">
               <el-date-picker
@@ -378,12 +391,15 @@ export default {
       },
 
       temp: { pastureName: '',
+        measureId: '',
+        pastureId: '',
         useType: '',
         departName: '',
         aAmount: '',
         employeName1: '',
         formName: '',
-        formNumber: ''
+        formNumber: '',
+        rate: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -580,7 +596,9 @@ export default {
             this.temp.aAmount = response.data.list[0].aAmount
             this.temp.employeName1 = response.data.list[0].employeName
             this.temp.formName = response.data.list[0].formName
-            console.log(response.data.list[0])
+            this.temp.measureId = response.data.list[0].measureId
+            this.temp.pastureId = response.data.list[0].pastureId
+            this.temp.rate = response.data.list[0].rate
           }
         })
       })
@@ -598,6 +616,8 @@ export default {
             this.temp.aAmount = response.data.list[0].aAmount
             this.temp.employeName1 = response.data.list[0].employeName
             this.temp.formNumber = response.data.list[0].formNumber
+            this.temp.measureId = response.data.list[0].measureId
+            this.temp.pastureId = response.data.list[0].pastureId
           }
         })
       })
@@ -645,6 +665,7 @@ export default {
       this.temp.employeName1 = ''
       this.temp.formName = ''
       this.temp.formNumber = ''
+      this.temp.rate = ''
 
       this.temp.DATE = parseTime(new Date(), '{y}-{m}-{d}')
     },
@@ -662,7 +683,7 @@ export default {
           this.requestParam.name = 'insertElectricity'
           this.requestParam.parammaps = this.temp
 
-          PostDataByName(this.requestParam).then(response => {
+          GetDataByName(this.requestParam).then(response => {
             console.log(response)
             if (response.msg === 'fail') {
               this.$notify({

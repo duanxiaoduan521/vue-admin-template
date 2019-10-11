@@ -1,4 +1,5 @@
 import { login, logout, getInfo } from '@/api/user'
+import { GetDataByName } from '@/api/common'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import { Message } from 'element-ui'
@@ -7,7 +8,8 @@ const state = {
   token: getToken(),
   name: '',
   avatar: '',
-  roles: []
+  roles: [],
+  buttons: []
 }
 
 const mutations = {
@@ -22,6 +24,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_BUTTONS: (state, buttons) => {
+    state.buttons = buttons
   }
 }
 
@@ -65,7 +70,9 @@ const actions = {
         if (!role || role.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
-
+        GetDataByName({ 'name': 'getUserButtons', 'parammaps': { 'jwt_username': username }}).then(response => {
+          commit('SET_BUTTONS', response.data.list)
+        })
         commit('SET_ROLES', role)
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)

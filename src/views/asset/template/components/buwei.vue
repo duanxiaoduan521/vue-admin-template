@@ -106,7 +106,7 @@
         style="width: 800px; margin-left:50px;"
       >
         <el-row>
-          <el-col :span="8">
+          <el-col :span="30">
             <el-form-item label="编号/名称：" prop="stockA">
               <el-autocomplete
                 v-model="stockAAA.stockA"
@@ -240,8 +240,8 @@ export default {
       },
       getdataListParm: {
         name: 'getPartList',
-        offset: 1,
-        pagecount: 8,
+        offset: 0,
+        pagecount: 0,
         params: []
       },
       rules: {
@@ -295,8 +295,10 @@ export default {
 
   watch: {
     assetTypeid(val) {
-      this.getdataListParm.params = [this.assetTypeid]
-      this.getList()
+      if (this.assetTypeid != null) {
+        this.getdataListParm.params = [this.assetTypeid]
+        this.getList()
+      }
     }
   },
   created() {
@@ -318,31 +320,30 @@ export default {
       })
     },
 
-    handleSelect(item) {
-      GetDataByName(this.requestFilterParams).then(response => {
-        this.$nextTick(() => {
-          if (response.data.list.length > 0) {
-            console.log(response.data.list)
-            console.log(item.stockNumber)
-            this.stockAAA = {}
-            this.stockAAA.stockNumber = item.stockNumber
-            this.stockAAA.stockName = item.stockName
-            this.stockAAA.specification = item.specification
-            this.stockAAA.amount = item.amount
-            this.stockAAA.note = item.note
-            this.stockAAA.partId = item.partId
-            this.createSearch()
-            // this.stockAAA = {}
-            // this.stockAAA.stockNumber = response.data.list[0].stockNumber
-            // this.stockAAA.stockName = response.data.list[0].stockName
-            // this.stockAAA.specification = response.data.list[0].specification
-            // this.stockAAA.amount = response.data.list[0].amount
-            // this.stockAAA.note = response.data.list[0].note
-            // this.stockAAA.partId = response.data.list[0].partId
-            // this.createSearch()
+    handleSelect(item1) {
+      var tempval = 0
+      if (this.list2 !== null) {
+        for (let i = 0; i < this.list2.length; i++) {
+          if (this.list2[i].stockNumber === item1.stockNumber) {
+            tempval = 1
+            this.$message({
+              type: 'info',
+              message: '已存在此备件'
+            })
+            break
           }
-        })
-      })
+        }
+      }
+      if (tempval === 0) {
+        this.stockAAA = {}
+        this.stockAAA.stockNumber = item1.stockNumber
+        this.stockAAA.stockName = item1.stockName
+        this.stockAAA.specification = item1.specification
+        this.stockAAA.amount = item1.amount
+        this.stockAAA.note = item1.note
+        this.stockAAA.partId = item1.partId
+        this.createSearch()
+      }
     },
 
     // 模糊查询保存接口
@@ -370,7 +371,7 @@ export default {
       }
     },
 
-    // 刷新活的信息
+    // 刷新修改过的信息
     uplodeStockList111(aa) {
       if (this.list.length > 0) {
         this.requestFilterParams.parammaps = {}
@@ -523,6 +524,7 @@ export default {
 
     handleEnableChange(index, row) {
       this.requestParam.name = 'updatePart'
+      this.requestParam.parammaps = {}
       this.requestParam.params = []
       this.requestParam.params[0] = row.partName
       this.requestParam.params[1] = row.note

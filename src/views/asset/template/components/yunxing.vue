@@ -152,7 +152,8 @@ export default {
       listLoading: true,
       requestParam: {
         name: '',
-        params: []
+        // params: [],
+        parammaps: {}
       },
       startForm: {
         partId: '',
@@ -163,8 +164,8 @@ export default {
         note: ''
       },
       getdataListParm: { name: 'getStartTemplateList',
-        offset: 1,
-        pagecount: 8,
+        offset: 0,
+        pagecount: 0,
         params: [] },
       rules: {
         label: [{ type: 'string', required: true, message: '名称必填', trigger: 'change' }],
@@ -197,12 +198,13 @@ export default {
 
   watch: {
     assetTypeid(val) {
-      this.getdataListParm.params = [this.assetTypeid]
-      this.getList()
+      if (this.assetTypeid != null) {
+        this.getdataListParm.params = [this.assetTypeid]
+        this.getList()
+      }
     }
   },
   created() {
-    this.getList()
   },
   methods: {
     jump() {
@@ -242,7 +244,7 @@ export default {
       this.startForm.bigClass = ''
       this.startForm.smallClass = ''
       this.startForm.valueType = ''
-      this.startForm.assetTypeId = ''
+      this.startForm.assetTypeid = ''
     },
     handleCreate() {
       this.resetRequestParam()
@@ -255,9 +257,8 @@ export default {
     createData() {
       this.$refs['startForm'].validate((valid) => {
         if (valid) {
-          this.requestParam.name = 'insertPart'
-
-          this.requestParam.parammaps = []
+          this.requestParam.name = 'insertStartTemplate'
+          this.requestParam.parammaps = {}
           this.startForm.assetTypeid = this.getdataListParm.params[0]
           this.requestParam.parammaps = this.startForm
 
@@ -277,8 +278,8 @@ export default {
     createData_again() {
       this.$refs['startForm'].validate((valid) => {
         if (valid) {
-          this.requestParam.name = 'insertPart'
-          this.requestParam.parammaps = []
+          this.requestParam.name = 'insertStartTemplate'
+          this.requestParam.parammaps = {}
           this.startForm.assetTypeid = this.getdataListParm.params[0]
           this.requestParam.parammaps = this.startForm
 
@@ -315,12 +316,14 @@ export default {
     updateData() {
       this.$refs['startForm'].validate((valid) => {
         if (valid) {
+          this.requestParam.name = 'updateStartTemplate'
           this.requestParam.parammaps = {}
+
           this.requestParam.parammaps['partId'] = this.startForm.partId
           this.requestParam.parammaps['partName'] = this.startForm.partName
           this.requestParam.parammaps['valueType'] = this.startForm.valueType
           this.requestParam.parammaps['note'] = this.startForm.note
-          this.requestParam.parammaps['bidClass'] = this.startForm.bidClass
+          this.requestParam.parammaps['bigClass'] = this.startForm.bigClass
           this.requestParam.parammaps['smallClass'] = this.startForm.smallClass
           this.requestParam.parammaps['id'] = this.startForm.id
           PostDataByName(this.requestParam).then(() => {
@@ -339,14 +342,14 @@ export default {
     },
 
     handleEnableChange(index, row) {
-      this.requestParam.name = 'updatePart'
+      this.requestParam.name = 'updateStartTemplate'
 
       this.requestParam.parammaps = {}
       this.requestParam.parammaps['partId'] = row.partId
       this.requestParam.parammaps['partName'] = row.partName
       this.requestParam.parammaps['valueType'] = row.valueType
       this.requestParam.parammaps['note'] = row.note
-      this.requestParam.parammaps['bidClass'] = row.bidClass
+      this.requestParam.parammaps['bigClass'] = row.bigClass
       this.requestParam.parammaps['smallClass'] = row.smallClass
       this.requestParam.parammaps['id'] = row.id
       PostDataByName(this.requestParam).then(() => {
@@ -364,7 +367,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.requestParam.name = 'deletePart'
+        this.requestParam.name = 'deleteStartTemplate'
 
         this.requestParam.parammaps = {}
         this.requestParam.parammaps['id'] = row.id

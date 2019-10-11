@@ -66,22 +66,13 @@
           <span>{{ scope.row.pastureName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="设备编号" prop="id" align="center" width="150">
+      <el-table-column label="编号/名称" prop="id" align="center" width="230">
         <template slot-scope="scope">
-          <span>{{ scope.row.assetNumber }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">设备编号：</span>{{ scope.row.assetNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">牧场设备编号：</span>{{ scope.row.equipmentNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">设备名称：</span>{{ scope.row.equipmentName }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="牧场设备编号" width="150px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.equipmentNumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="设备名称" width="150px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.equipmentName }}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column label="规格" min-width="110px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.specification }}</span>
@@ -92,7 +83,7 @@
           <span>{{ scope.row.providerName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" min-width="110px" align="center">
+      <el-table-column label="状态" min-width="80px" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.status }}</span>
         </template>
@@ -303,8 +294,22 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
+          <el-col :span="24">
             <el-form-item label="设备类别" prop="typeName">
+              <tree-select
+                :height="500"
+                :width="330"
+                size="small"
+                expand-all="false"
+                :data="parentClass"
+                :default-props="defaultProps"
+                :node-key="nodeKey"
+                :checked-keys="defaultCheckedKeys"
+                style="width:330px;"
+                @popoverHide="popoverHide"
+              />
+            </el-form-item>
+            <!--  <el-form-item label="设备类别" prop="typeName">
               <el-select v-model="temp.assTypeId" placeholder="设备类别" class="filter-item">
                 <el-option
                   v-for="item in findAllAssetType"
@@ -313,7 +318,7 @@
                   :value="item.id"
                 />
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
           </el-col>
           <el-col :span="8">
             <el-form-item label="财务编号" prop="financeNumber">
@@ -323,8 +328,7 @@
                 @keyup.enter.native="deptenter"
               />
             </el-form-item>
-          </el-col>
-          <el-col :span="8">
+          </el-col> <el-col :span="8">
             <el-form-item label="录入时间" prop="inputDatetime">
               <el-date-picker
                 v-model="temp.inputDatetime"
@@ -338,6 +342,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button
@@ -355,16 +360,17 @@
 
 <script>
 // 引入
-import { GetDataByName, GetDataByNames, PostDataByName } from '@/api/common'
+import { GetDataByName, GetDataByNames, PostDataByName, getRecuData } from '@/api/common'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils/index.js'
 // eslint-disable-next-line no-unused-vars
 import { validateEMail } from '@/utils/validate.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
+import TreeSelect from '@/components/TreeSelect'
 export default {
   name: 'Basics',
-  components: { Pagination },
+  components: { Pagination, TreeSelect },
   directives: { waves },
   data() {
     return {
@@ -372,6 +378,10 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
+
+      getRecuListParm: { name: 'getAssetTypeList',
+        idname: 'id',
+        params: [-1] },
       requestParam: {
         name: 'insertAsset',
         offset: 0,
@@ -427,11 +437,20 @@ export default {
         equipmentName: [{ required: true, message: '必填', trigger: 'blur' }]
       },
       rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
-      cellStyle: { padding: 0 + 'px' }
+      cellStyle: { padding: 0 + 'px' },
+      parentClass: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
+      nodeKey: 'id',
+      defaultCheckedKeys: [],
+      Classid: ''
     }
   },
   created() {
     this.getDownList()
+    this.getDownClassList()
     this.getList()
   },
 
@@ -478,6 +497,15 @@ export default {
         this.findAllDepart = response.data.findAllDepart.list
         this.findAllEmploye = response.data.findAllEmploye.list
         this.getDictByName = response.data.getDictByName.list
+      })
+    },
+
+    popoverHide(checkedIds, checkedData) {
+      this.temp.assTypeId = checkedIds
+    },
+    getDownClassList() {
+      getRecuData(this.getRecuListParm).then(response => {
+        this.parentClass = response.data
       })
     },
     handleFilter() {
@@ -536,6 +564,7 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
+      this.defaultCheckedKeys = [this.temp.assTypeId]
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {

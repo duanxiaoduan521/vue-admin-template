@@ -41,6 +41,14 @@ export function PostDataByNames(data) {
   })
 }
 
+export function ExecDataByConfig(data) {
+  return request({
+    url: '/authdata/ExecDataByConfig',
+    method: 'post',
+    data
+  })
+}
+
 export function removeimage(data) {
   return request({
     url: '/authdata/removeimage',
@@ -62,6 +70,20 @@ export function UpdateDataRelation(data) {
     method: 'post',
     data
   })
+}
+
+export function checkButtons(buttonsList, baoxiu) {
+  console.log(buttonsList)
+  for (var i = 0; i < buttonsList.length; i++) {
+    console.log(buttonsList[i].path)
+    if (buttonsList[i].path !== '' && buttonsList[i].menu_id !== '') {
+      // return isShow === true
+    }
+    // if (buttonsList[i].path !== '') {
+    //   console.log(1)
+    // }
+  }
+  return true
 }
 
 export function DownloadExcel(data, filename) {

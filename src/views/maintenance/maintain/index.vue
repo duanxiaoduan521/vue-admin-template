@@ -16,6 +16,14 @@
         format="yyyy-MM-dd"
         value-format="yyyy-MM-dd"
       />
+      <el-select v-model="getdataListParm.parammaps.status" clearable placeholder="设备类别" class="filter-item">
+        <el-option
+          v-for="item in findAllAssetType"
+          :key="item.id"
+          :label="item.label"
+          :value="item.typeName"
+        />
+      </el-select>
       <el-button
         v-waves
         class="filter-item"
@@ -51,40 +59,18 @@
           <span>{{ scope.row.pastureName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="资产编号" prop="id" sortable="custom" align="center" width="150">
+      <el-table-column label="资产信息" min-width="245px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.assetNumber }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">资产编号：</span>{{ scope.row.assetNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">牧场设备编号：</span>{{ scope.row.equipmentNumber }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">设备名称：</span>{{ scope.row.assetName }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">设备类型：</span>{{ scope.row.typeName }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="设备编号" width="150px" align="center">
+      <el-table-column label="保养信息" min-width="150px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.equipmentNumber }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="设备名称" width="150px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.assetName }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="设备类型" width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.typeName }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="保养周期" width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.mode }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="点检结果" width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.inspectionResults }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="保养项目" width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.baoYang }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">保养周期：</span>{{ scope.row.mode }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">保养项目：</span>{{ scope.row.baoYang }}</span><br>
         </template>
       </el-table-column>
       <el-table-column label="计划保养时间" width="110px" align="center">
@@ -92,27 +78,19 @@
           <span>{{ scope.row.pdate }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="保养人" width="110px" align="center">
+      <el-table-column label="保养" min-width="245px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.upkeepPerson }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">保养人：</span>{{ scope.row.upkeepPerson }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">保养时间：</span>{{ scope.row.actualTime }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="保养时间" width="110px" align="center">
+      <el-table-column label="审核" min-width="245px" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.actualTime }}</span>
+          <span style="float:left;"><span style="font-weight:bold;">审核人：</span>{{ scope.row.auditPerson }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">审核时间：</span>{{ scope.row.auditTime }}</span><br>
         </template>
       </el-table-column>
-      <el-table-column label="审核人" width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.auditPerson }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="审核时间" width="110px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.auditTime }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="200px" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <!-- <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(row)">删除</el-button>-->

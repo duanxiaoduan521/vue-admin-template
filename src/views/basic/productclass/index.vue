@@ -21,24 +21,19 @@
         default-expand-all
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
-        <el-table-column label="产品分类" header-align="center" min-width="150px" align="center">
+        <el-table-column label="牧场编号" header-align="center" min-width="150px" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.productclass }}</span>
+            <span>{{ scope.row.pastureNumber }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="顺序" min-width="80px" header-align="center" align="center">
+        <el-table-column label="牧场名称" min-width="80px" header-align="center" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.sort }}</span>
+            <span>{{ scope.row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="启用" min-width="80px" header-align="center" align="center">
+        <el-table-column label="地址" min-width="80px" header-align="center" align="center">
           <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.enable"
-              :active-value="1"
-              :inactive-value="0"
-              @change="handleEnableChange(scope.$index, scope.row)"
-            />
+            <span>{{ scope.row.address }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" header-align="center" align="center" width="260" class-name="small-padding fixed-width">
@@ -56,24 +51,22 @@
 
       <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :close-on-click-modal="false">
         <el-form ref="dataForm" v-enterToNext="true" :rules="rules" :model="dataform" label-position="left" label-width="100px" style="width: 600px; margin-left:50px;">
-          <el-form-item label="产品分类" prop="productclass">
+          <el-form-item label="牧场编号" prop="pastureNumber">
             <el-input
-              ref="productclass"
-              v-model="dataform.productclass"
+              ref="pastureNumber"
+              v-model="dataform.pastureNumber"
             />
           </el-form-item>
-          <el-form-item label="顺序" prop="sort">
+          <el-form-item label="牧场名称" prop="name">
             <el-input
-              ref="sort"
-              v-model="dataform.sort"
+              ref="name"
+              v-model="dataform.name"
             />
           </el-form-item>
-          <el-form-item label="启用" prop="enable">
-            <el-switch
-              ref="enable"
-              v-model="dataform.enable"
-              :active-value="1"
-              :inactive-value="0"
+          <el-form-item label="地址" prop="address">
+            <el-input
+              ref="address"
+              v-model="dataform.address"
             />
           </el-form-item>
         </el-form>
@@ -125,7 +118,7 @@ export default {
         sort: '',
         enable: ''
       },
-      getdataListParm: { name: 'getProductclassAll',
+      getdataListParm: { name: 'getPastureList',
         offset: 1,
         pagecount: 10,
         params: [] },
@@ -179,11 +172,11 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.requestParam.name = 'insertProductclass'
+          this.requestParam.name = 'insertPasture'
           this.requestParam.params = []
-          this.requestParam.params[0] = this.dataform.productclass
-          this.requestParam.params[1] = this.dataform.sort
-          this.requestParam.params[2] = this.dataform.enable
+          this.requestParam.params[0] = this.dataform.pastureNumber
+          this.requestParam.params[1] = this.dataform.name
+          this.requestParam.params[2] = this.dataform.address
           PostDataByName(this.requestParam).then(() => {
             this.getList()
             this.dialogFormVisible = false
@@ -200,11 +193,11 @@ export default {
     createData_again() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.requestParam.name = 'insertProductclass'
+          this.requestParam.name = 'insertPasture'
           this.requestParam.params = []
-          this.requestParam.params[0] = this.dataform.productclass
-          this.requestParam.params[1] = this.dataform.sort
-          this.requestParam.params[2] = this.dataform.enable
+          this.requestParam.params[0] = this.dataform.pastureNumber
+          this.requestParam.params[1] = this.dataform.name
+          this.requestParam.params[2] = this.dataform.address
           PostDataByName(this.requestParam).then(() => {
             this.$nextTick(() => {
               this.$refs['productclass'].focus()
@@ -223,9 +216,9 @@ export default {
     },
     handleUpdate(row) {
       this.dataform.id = row.id
-      this.dataform.productclass = row.productclass
-      this.dataform.sort = row.sort
-      this.dataform.enable = row.enable
+      this.dataform.pastureNumber = row.pastureNumber
+      this.dataform.name = row.name
+      this.dataform.address = row.address
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -238,9 +231,9 @@ export default {
         if (valid) {
           this.requestParam.name = 'updateProductclass'
           this.requestParam.params = []
-          this.requestParam.params[0] = this.dataform.productclass
-          this.requestParam.params[1] = this.dataform.sort
-          this.requestParam.params[2] = this.dataform.enable
+          this.requestParam.params[0] = this.dataform.pastureNumber
+          this.requestParam.params[1] = this.dataform.name
+          this.requestParam.params[2] = this.dataform.address
           this.requestParam.params[3] = this.dataform.id
           PostDataByName(this.requestParam).then(() => {
             this.getList()
@@ -257,11 +250,11 @@ export default {
       })
     },
     handleEnableChange(index, row) {
-      this.requestParam.name = 'updateProductclass'
+      this.requestParam.name = 'updatePasture'
       this.requestParam.params = []
-      this.requestParam.params[0] = row.productclass
-      this.requestParam.params[1] = row.sort
-      this.requestParam.params[2] = row.enable
+      this.requestParam.params[0] = row.pastureNumber
+      this.requestParam.params[1] = row.name
+      this.requestParam.params[2] = row.address
       this.requestParam.params[3] = row.id
       PostDataByName(this.requestParam).then(() => {
         this.$notify({
@@ -278,7 +271,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.requestParam.name = 'deleteProductclass'
+        this.requestParam.name = 'deletePasture'
         this.requestParam.params = []
         this.requestParam.params[0] = row.id
         PostDataByName(this.requestParam).then(() => {

@@ -176,7 +176,7 @@
         </el-table-column>
         <el-table-column label="数量" min-width="80px" header-align="center" align="center">
           <template slot-scope="scope">
-            <input v-model="scope.row.amout" type="text" style="width:50px;border:none;">
+            <input v-model="scope.row.amount" type="text" style="width:50px;border:none;">
           </template>
         </el-table-column>
         <el-table-column label="备注" min-width="80px" header-align="center" align="center">
@@ -224,6 +224,7 @@ export default {
         children: 'children',
         label: 'name'
       },
+      gzId: '',
       dictid: 0,
       list: [],
       list2: [],
@@ -231,8 +232,8 @@ export default {
       listLoading: true,
       requestParam: {
         name: '',
-        //  parammaps: []
-        params: []
+        parammaps: {}
+        // params: []
       },
       troubleFrom: {
         partId: '',
@@ -240,21 +241,24 @@ export default {
         appearanceName: '',
         note: ''
       },
+
       stockAAA: {
         stockA: '',
         stockNumber: '',
         stockName: '',
         specification: '',
         amount: '',
-        note: ''
+        note: '',
+        appearanceId: '',
+        partIdA: ''
       },
       requestFilterParams: {
         returntype: 'Map',
         parammaps: {}
       },
       getdataListParm: { name: 'getAppearanceList',
-        offset: 1,
-        pagecount: 8,
+        offset: 0,
+        pagecount: 0,
         params: [] },
       rules: {
         label: [{ type: 'string', required: true, message: '名称必填', trigger: 'change' }],
@@ -288,15 +292,16 @@ export default {
 
   watch: {
     assetTypeid(val) {
-      this.getdataListParm.params = [this.assetTypeid]
-      this.getList()
+      if (this.assetTypeid != null) {
+        this.getdataListParm.params = [this.assetTypeid]
+        this.getList()
+      }
     }
   },
   created() {
-    this.getList()
   },
-  methods: {
 
+  methods: {
     // 模糊查询
     stockSearch(queryString, cb) {
       this.requestFilterParams.name = 'findUpkeepSBOM'
@@ -309,30 +314,41 @@ export default {
       })
     },
 
-    handleSelect() {
-      GetDataByName(this.requestFilterParams).then(response => {
-        this.stockAAA.stockNumber = response.data.list[0].stockNumber
-        this.stockAAA.stockName = response.data.list[0].stockName
-        this.stockAAA.specification = response.data.list[0].specification
-        this.stockAAA.amount = response.data.list[0].amount
-        this.stockAAA.note = response.data.list[0].note
-
-        this.createSearch()
-      })
+    handleSelect(item) {
+      var tempval = 0
+      if (this.list2 !== null) {
+        for (let i = 0; i < this.list2.length; i++) {
+          if (this.list2[i].stockNumber === item.stockNumber) {
+            tempval = 1
+            this.$message({
+              type: 'info',
+              message: '已存在此备件'
+            })
+            break
+          }
+        }
+      }
+      if (tempval === 0) {
+        this.stockAAA = {}
+        this.stockAAA.stockNumber = item.stockNumber
+        this.stockAAA.stockName = item.stockName
+        this.stockAAA.specification = item.specification
+        this.stockAAA.amount = item.amount
+        this.stockAAA.note = item.note
+        this.stockAAA.appearanceId = item.appearanceId
+        this.stockAAA.partIdA = item.partIdA
+        this.createAppearanceStock()
+      }
     },
 
     // 模糊查询保存接口
-    createSearch() {
+    createAppearanceStock() {
       if (this.list.length > 0) {
         this.requestParam.name = 'insertAppearanceStock1'
-        this.requestParam.params = []
-        this.requestParam.params[0] = this.stockAAA.stockNumber
-        this.requestParam.params[1] = this.stockAAA.stockName
-        this.requestParam.params[2] = this.stockAAA.amount
-        this.requestParam.params[3] = this.stockAAA.note
-        this.requestParam.params[4] = this.list[0].id
-        this.requestParam.params[5] = this.stockAAA.specification
-        this.requestParam.params[6] = this.stockAAA.stockNumber
+        this.requestParam.parammaps = {}
+        this.requestParam.parammaps = this.stockAAA
+        this.requestParam.parammaps['appearanceId'] = this.gzId
+
         PostDataByName(this.requestParam).then(() => {
           // this.dialogFormVisible_bw = false
           this.$notify({
@@ -343,19 +359,37 @@ export default {
           })
           setTimeout(() => {
             this.listLoading = false
-            this.uplodeStockList()
+            this.uplodeStockList111()
           }, 100)
+        })
+      }
+    },
+
+    // 刷新活的信息
+    uplodeStockList111() {
+      if (this.list2.length > 0) {
+        this.requestFilterParams.parammaps = {}
+        this.requestFilterParams.name = 'getAppearanceStock1'
+        this.requestFilterParams.parammaps['assetTypeid'] = this.assetTypeid
+        this.requestFilterParams.parammaps['appearanceId'] = this.gzId
+        GetDataByName(this.requestFilterParams).then(response => {
+          this.list2 = response.data.list
         })
       }
     },
 
     // 加载备件列表信息
     uplodeStockList(row) {
+      console.log(row)
+      console.log(row.partId)
       if (this.list.length > 0) {
         this.requestFilterParams.parammaps = {}
+        this.requestFilterParams.parammaps['partIdA'] = row.partId
         this.requestFilterParams.name = 'getAppearanceStock1'
-        this.requestFilterParams.parammaps['assetTypeId'] = this.assetTypeid
-        this.requestFilterParams.parammaps['partId'] = row.id
+        this.requestFilterParams.parammaps['assetTypeid'] = this.assetTypeid
+        this.requestFilterParams.parammaps['appearanceId'] = row.id
+        this.gzId = row.id
+        this.requestFilterParams.parammaps['partId'] = row.partId
         GetDataByName(this.requestFilterParams).then(response => {
           this.list2 = response.data.list
         })
@@ -406,7 +440,7 @@ export default {
       this.troubleFrom.partName = ''
       this.troubleFrom.appearanceName = ''
       this.troubleFrom.note = ''
-      this.troubleFrom.assetTypeId = ''
+      this.troubleFrom.assetTypeid = ''
     },
     handleCreate() {
       this.resetRequestParam()
@@ -420,10 +454,13 @@ export default {
       this.$refs['troubleFrom'].validate((valid) => {
         if (valid) {
           this.requestParam.name = 'insertAppearance'
-
-          this.requestParam.params = []
+          this.requestFilterParams.parammaps = {}
           this.troubleFrom.assetTypeid = this.getdataListParm.params[0]
-          this.requestParam.params = this.troubleFrom
+          this.requestParam.parammaps = this.troubleFrom
+
+          /*   this.requestParam.params = []
+          this.troubleFrom.assetTypeid = this.getdataListParm.params[0]
+          this.requestParam.params = this.troubleFrom */
 
           PostDataByName(this.requestParam).then(() => {
             this.getList()
@@ -443,9 +480,13 @@ export default {
         if (valid) {
           this.requestParam.name = 'insertAppearance'
 
-          this.requestParam.params = []
+          this.requestParam.parammaps = {}
           this.troubleFrom.assetTypeid = this.getdataListParm.params[0]
-          this.requestParam.params = this.troubleFrom
+          this.requestParam.parammaps = this.troubleFrom
+
+          /*  this.requestParam.params = []
+          this.troubleFrom.assetTypeid = this.getdataListParm.params[0]
+          this.requestParam.params = this.troubleFrom*/
 
           PostDataByName(this.requestParam).then(() => {
             this.getList()
@@ -558,7 +599,7 @@ export default {
             type: 'warning',
             duration: 2000
           })
-          this.uplodeStockList()
+          this.uplodeStockList111()
         } else {
           this.getList()
           this.dialogFormVisible = false
@@ -568,7 +609,7 @@ export default {
             type: 'success',
             duration: 2000
           })
-          this.uplodeStockList()
+          this.uplodeStockList111()
         }
       })
     },
@@ -594,7 +635,7 @@ export default {
             })
             setTimeout(() => {
               this.listLoading = false
-              this.uplodeStockList()
+              this.uplodeStockList111()
             }, 100)
           })
         })

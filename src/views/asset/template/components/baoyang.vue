@@ -266,6 +266,7 @@ export default {
       dictid: 0,
       list: [],
       list2: [],
+      upkeepTempId: '',
       total: 0,
       listLoading: true,
       requestParam: {
@@ -299,8 +300,8 @@ export default {
         parammaps: {}
       },
       getdataListParm: { name: 'getUpkeepTemplateList',
-        offset: 1,
-        pagecount: 8,
+        offset: 0,
+        pagecount: 0,
         params: [] },
       rules: {
         label: [{ type: 'string', required: true, message: '名称必填', trigger: 'change' }],
@@ -334,25 +335,23 @@ export default {
 
   watch: {
     assetTypeid(val) {
-      this.getdataListParm.params = [this.assetTypeid]
-      this.getList()
+      if (this.assetTypeid != null) {
+        this.getdataListParm.params = [this.assetTypeid]
+        this.getList()
+      }
     }
   },
   created() {
-    this.getList()
   },
 
   // 设置变量
   aa: '',
-
   methods: {
-
     // 模糊查询
     stockSearch(queryString, cb) {
-      this.requestFilterParams.name = 'findUpkeepSBOM1'
+      this.requestFilterParams.name = 'findUpkeepSBOM'
       this.requestFilterParams.parammaps = {}
       this.requestFilterParams.parammaps['stockA'] = queryString
-      // this.requestFilterParams.parammaps['partId'] = ''
 
       GetDataByName(this.requestFilterParams).then(response => {
         console.log(response.data.list)
@@ -361,8 +360,21 @@ export default {
     },
 
     handleSelect(item) {
-      console.log(item)
-      GetDataByName(this.requestFilterParams).then(response => {
+      var tempval = 0
+      if (this.list2 !== null) {
+        for (let i = 0; i < this.list2.length; i++) {
+          if (this.list2[i].stockNumber === item.stockNumber) {
+            tempval = 1
+            this.$message({
+              type: 'info',
+              message: '已存在此备件'
+            })
+            break
+          }
+        }
+      }
+      if (tempval === 0) {
+        this.stockAAA = {}
         this.stockAAA.stockNumber = item.stockNumber
         this.stockAAA.stockName = item.stockName
         this.stockAAA.specification = item.specification
@@ -370,18 +382,17 @@ export default {
         this.stockAAA.note = item.note
         this.stockAAA.upkeepTemplateId = item.upkeepTemplateId
         this.stockAAA.partIdA = item.partIdA
-        this.createSearch()
-      })
+        this.createUpkeepTempStock()
+      }
     },
 
     // 模糊查询保存接口
-    createSearch() {
+    createUpkeepTempStock() {
       if (this.list.length > 0) {
         this.requestParam.name = 'insertUpkeepSBOM1'
         this.requestParam.parammaps = {}
         this.requestParam.parammaps = this.stockAAA
-        this.requestParam.parammaps['upkeepTemplateId'] = this.list[0].id
-
+        this.requestParam.parammaps['upkeepTemplateId'] = this.upkeepTempId
         PostDataByName(this.requestParam).then(() => {
           // this.dialogFormVisible_bw = false
           this.$notify({
@@ -390,18 +401,18 @@ export default {
             type: 'success',
             duration: 2000
           })
-          this.uplodeStockList111(this.list[0].id)
+          this.uplodeStockList111()
         })
       }
     },
 
     // 刷新活的信息
-    uplodeStockList111(row) {
-      if (this.list.length > 0) {
+    uplodeStockList111() {
+      if (this.list2.length > 0) {
         this.requestFilterParams.parammaps = {}
         this.requestFilterParams.name = 'getUpkeepSBOM1'
         this.requestFilterParams.parammaps['assetTypeId'] = this.assetTypeid
-        this.requestFilterParams.parammaps['upkeepTempId'] = this.upkeepTempid
+        this.requestFilterParams.parammaps['upkeepTempId'] = this.upkeepTempId
         GetDataByName(this.requestFilterParams).then(response => {
           this.list2 = response.data.list
         })
@@ -410,14 +421,15 @@ export default {
 
     // 加载备件列表信息
     uplodeStockList(row) {
-      console.log(row)
-      console.log(row.partId)
+      // console.log(row)
+      // console.log(row.partId)
       if (this.list.length > 0) {
         this.requestFilterParams.parammaps = {}
         this.requestFilterParams.parammaps['partIdA'] = row.partId
         this.requestFilterParams.name = 'getUpkeepSBOM1'
         this.requestFilterParams.parammaps['assetTypeId'] = this.assetTypeid
         this.requestFilterParams.parammaps['upkeepTempId'] = row.id
+        this.upkeepTempId = row.id
         this.requestFilterParams.parammaps['partId'] = row.partId
         GetDataByName(this.requestFilterParams).then(response => {
           this.list2 = response.data.list
@@ -631,7 +643,7 @@ export default {
             type: 'warning',
             duration: 2000
           })
-          this.uplodeStockList111(row.upkeepTemplateId)
+          this.uplodeStockList111()
         } else {
           this.getList()
           this.dialogFormVisible = false
@@ -641,7 +653,7 @@ export default {
             type: 'success',
             duration: 2000
           })
-          this.uplodeStockList111(row.upkeepTemplateId)
+          this.uplodeStockList111()
         }
       })
     },
@@ -667,7 +679,7 @@ export default {
             })
             setTimeout(() => {
               this.listLoading = false
-              this.uplodeStockList111(row.upkeepTemplateId)
+              this.uplodeStockList111()
             }, 100)
           })
         })

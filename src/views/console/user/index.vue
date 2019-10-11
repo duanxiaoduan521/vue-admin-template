@@ -363,9 +363,9 @@ export default {
 
       if (this.list.length > 0) {
         this.defaultCheckedKeys = [this.list[0].id]
-        this.deptform.deptid = this.list[0].id
+        this.dataform.empid = this.list[0].id
       } else {
-        this.deptform.deptid = -1
+        this.dataform.empid = -1
       }
       this.dialogStatus = 'create'
       this.dialogFormVisible = true

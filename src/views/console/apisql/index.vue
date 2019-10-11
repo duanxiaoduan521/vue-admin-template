@@ -391,7 +391,7 @@ export default {
       this.requestParam.params[4] = row.remark
       this.requestParam.params[5] = row.sort
       this.requestParam.params[6] = row.enable
-      this.requestParam.params[7] = row.sqlid
+      this.requestParam.params[7] = row.id
       PostDataByName(this.requestParam).then(() => {
         this.$notify({
           title: '成功',

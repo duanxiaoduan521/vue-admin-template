@@ -194,6 +194,7 @@ export function isInteger(rule, value, callback) {
     }
   }, 0)
 }
+
 // 验证是否整数
 export function isIntegerZero(rule, value, callback) {
   if (value === '' || value === undefined || value === null) {

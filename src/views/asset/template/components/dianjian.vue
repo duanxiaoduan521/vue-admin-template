@@ -68,7 +68,7 @@
         <el-form-item label="部位：" prop="part">
           <el-select v-model="spotCheckForm.partId" placeholder="部位" class="filter-item">
             <el-option
-              v-for="item in findAllPart"
+              v-for="item in findAllPartByAssTypeId"
               :key="item.id"
               :label="item.partName"
               :value="item.id"
@@ -141,8 +141,8 @@ export default {
         partName: ''
       },
       getdataListParm: { name: 'getSpotCheckTemplateList',
-        offset: 1,
-        pagecount: 8,
+        offset: 0,
+        pagecount: 0,
         params: [] },
       rules: {
         label: [{ type: 'string', required: true, message: '名称必填', trigger: 'change' }],
@@ -154,10 +154,10 @@ export default {
       dialogStatus: '',
 
       // 2-3：下拉框请求后数据加入[]
-      findAllPart: [],
+      findAllPartByAssTypeId: [],
       // 2-1.请求下拉框接口
       requestParams: [
-        { name: 'findAllPart', offset: 0, pagecount: 0, params: [] }
+        { name: 'findAllPartByAssTypeId', offset: 0, pagecount: 0, params: { 'assetTypeid': 115 }}
       ],
 
       textMap: {
@@ -172,12 +172,15 @@ export default {
 
   watch: {
     assetTypeid(val) {
-      this.getdataListParm.params = [this.assetTypeid]
-      this.getList()
+      if (this.assetTypeid != null) {
+        console.log(this.assetTypeid)
+        // this.getdataListParm.params = [this.assetTypeid]
+        // this.requestParams.parammaps['assetTypeid'] = this.assetTypeid
+        this.getList()
+      }
     }
   },
   created() {
-    this.getList()
   },
   methods: {
     jump() {
@@ -190,8 +193,9 @@ export default {
 
     // 下拉框
     getDownList() {
+      console.log(this.assetTypeid)
       GetDataByNames(this.requestParams).then(response => {
-        this.findAllPart = response.data.findAllPart.list
+        this.findAllPartByAssTypeId = response.data.findAllPartByAssTypeId.list
       })
     },
 
@@ -213,7 +217,7 @@ export default {
       this.spotCheckForm.partId = ''
       this.spotCheckForm.examine = ''
       this.spotCheckForm.standard = ''
-      this.spotCheckForm.assetTypeid = ''
+      // this.spotCheckForm.assetTypeid = ''
     },
     handleCreate() {
       this.resetRequestParam()

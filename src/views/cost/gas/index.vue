@@ -378,6 +378,8 @@ export default {
       },
 
       temp: { pastureName: '',
+        measureId: '',
+        pastureId: '',
         useType: '',
         departName: '',
         aAmount: '',
@@ -580,7 +582,8 @@ export default {
             this.temp.aAmount = response.data.list[0].aAmount
             this.temp.employeName1 = response.data.list[0].employeName
             this.temp.formName = response.data.list[0].formName
-            console.log(response.data.list[0])
+            this.temp.measureId = response.data.list[0].measureId
+            this.temp.pastureId = response.data.list[0].pastureId
           }
         })
       })
@@ -598,6 +601,8 @@ export default {
             this.temp.aAmount = response.data.list[0].aAmount
             this.temp.employeName1 = response.data.list[0].employeName
             this.temp.formNumber = response.data.list[0].formNumber
+            this.temp.measureId = response.data.list[0].measureId
+            this.temp.pastureId = response.data.list[0].pastureId
           }
         })
       })
@@ -662,7 +667,7 @@ export default {
           this.requestParam.name = 'insertGas'
           this.requestParam.parammaps = this.temp
 
-          PostDataByName(this.requestParam).then(response => {
+          GetDataByName(this.requestParam).then(response => {
             console.log(response)
             if (response.msg === 'fail') {
               this.$notify({

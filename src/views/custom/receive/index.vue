@@ -80,10 +80,13 @@
       </el-table-column>
       <el-table-column label="审核状态" min-width="50px" align="center">
         <template slot-scope="scope">
-          <span style="float:left;"><span style="font-weight:bold;">审核状态：</span>{{ scope.row.checkStatue }}</span><br>
-          <span style="float:left;"><span style="font-weight:bold;">主管审核：</span>{{ scope.row.auditorName }}</span><br>
-          <span style="float:left;"><span style="font-weight:bold;">审核：</span>{{ scope.row.employeName }}</span><br>
-          <span style="float:left;"><span style="font-weight:bold;">审核时间：</span>{{ scope.row.auditTime }}</span><br>
+          <!-- <span style="float:left;"><span style="font-weight:bold;">审核状态：</span>{{ scope.row.checkStatue }}</span><br> -->
+          <span style="float:left;"><span style="font-weight:bold;">主管审核：</span>{{ scope.row.auditorName }}</span>
+          <span style="float:right;"><span style="font-weight:bold;">主管审核状态：</span>{{ scope.row.receiveStatue }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">主管审核时间：</span>{{ scope.row.auditTime }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">审核：</span>{{ scope.row.employeeName }}</span>
+          <span style="float:right;"><span style="font-weight:bold;">审核状态：</span>{{ scope.row.employeeStatus }}</span><br>
+          <span style="float:left;"><span style="font-weight:bold;">审核时间：</span>{{ scope.row.employeeTime }}</span><br>
         </template>
       </el-table-column>
 
@@ -178,23 +181,31 @@
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
+            <!--             <el-col :span="8">
               <el-button style="margin-left:30px;" @click="handleshengcheng">生成领用单</el-button>
-            </el-col>
+            </el-col> -->
           </el-row>
           <el-row>
-
-            <el-col v-if="display" :span="12">
-              <el-form-item label="名称" prop="providerId">
+            <el-col v-if="display" :span="8">
+              <el-form-item label="编号/名称：" prop="stockA">
                 <el-autocomplete
-                  v-model="temp.providerName"
-                  value-key="name"
-                  class="inline-input"
-                  :fetch-suggestions="providerSearch"
-                  placeholder="请输入名称或编号新增备件"
-                  style="width:200px"
-                  @select="handleSelect"
-                />
+                  v-model="stockAAA.stockA"
+                  style="width:430px;"
+                  class="inline-input mediaInput"
+                  :fetch-suggestions="stockSearch"
+                  placeholder="请输入备件编号或者备件名称"
+                  :disabled="dialogStatus==='update'"
+                  :trigger-on-focus="false"
+                  @select="handleStockSelect"
+                >
+                  <template slot-scope="{ item }">
+                    <div class="name" style="display: inline;">{{ item.stockNumber }}</div>
+                    <span class="addr">{{ item.stockName }}</span>&nbsp; &nbsp; 库存数量：<span class="addr">{{ item.repertory }}</span>
+                  </template>
+                </el-autocomplete>
+                <div slot="footer" class="dialog-footer">
+                  <el-button @click="dialogFormVisible = false">关闭</el-button>
+                </div>
               </el-form-item>
             </el-col>
           </el-row>
@@ -204,7 +215,7 @@
           :key="tableKey"
           v-loading="listLoading"
           element-loading-text="给我一点时间"
-          :data="list"
+          :data="list2"
           border
           fit
           highlight-current-row
@@ -213,51 +224,43 @@
           :cell-style="cellStyle"
           class="elTable"
         >
-          <el-table-column label="类型" min-width="110px" align="center">
+          <el-table-column label="名称" min-width="110px" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.pastureName }}</span>
+              <span>{{ scope.row.stockName }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="名称" prop="id" align="center" width="150">
+          <el-table-column label="编码" min-width="110px" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.assetNumber }}</span>
+              <span>{{ scope.row.stockNumber }}</span>
             </template>
           </el-table-column>
           <el-table-column label="规格" min-width="110px" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.pastureName }}</span>
+              <span>{{ scope.row.specification }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="单位" prop="id" align="center" width="150">
+          <el-table-column label="数量" min-width="110px" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.assetNumber }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="数量" prop="id" align="center" width="150">
-            <template slot-scope="scope">
-              <span>{{ scope.row.assetNumber }}</span>
+              <el-form :model="scope.row" :rules="rules">
+                <el-form-item prop="amount">
+                  <el-input v-show="true" v-model="scope.row.amount" style="width:80px;border:none;margin-top:25px;height:30px" />
+                </el-form-item>
+              </el-form>
             </template>
           </el-table-column>
           <el-table-column
             label="操作"
             align="center"
-            width="150"
+            width="200px"
             class-name="small-padding fixed-width"
           >
             <template slot-scope="{row}">
-              <el-button type="success" size="mini" @click="handleUpdate(row)">编辑</el-button>
-              <el-button type="danger" size="mini" @click="handleDelete(row)">删除</el-button>
+              <el-button type="danger" size="mini" @click="stockDel(row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
-          <el-button
-            v-if="dialogStatus==='create'"
-            ref="createb"
-            type="success"
-            @click="createData_again()"
-          >确认新增</el-button>
-          <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">确认</el-button>
+          <el-button type="primary" @click="dialogStatus==='create'?createDataReCeiveW():createDataReCeiveW()">确认</el-button>
           <el-button @click="dialogFormVisible = false">关闭</el-button>
         </div>
       </div>
@@ -404,12 +407,12 @@
           </el-table-column>
           <el-table-column label="驳回原因" min-width="110px" align="center">
             <template slot-scope="scope">
-              <input v-model="scope.row.note" type="text" value="scope.row.note" style="width:50px;">
+              <input v-model="scope.row.auditorNote" type="text" value="scope.row.auditorNote" style="width:50px;">
             </template>
           </el-table-column>
-          <el-table-column label="是否驳回" property="isOver" min-width="110px" align="center">
+          <el-table-column label="是否驳回" property="isReject" min-width="110px" align="center">
             <template slot-scope="scope">
-              <el-switch v-model="scope.row.isOver" active-color="#13ce66" inactive-color="#ff4949" active-value="0" inactive-value="1" />
+              <el-switch v-model="scope.row.isReject" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0" />
             </template>
           </el-table-column>
         </el-table>
@@ -487,12 +490,12 @@
           </el-table-column>
           <el-table-column label="驳回原因" min-width="110px" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.note }}</span>
+              <input v-model="scope.row.auditNote" type="text" value="scope.row.auditNote" style="width:50px;">
             </template>
           </el-table-column>
-          <el-table-column label="是否驳回" property="isReject" min-width="110px" align="center">
+          <el-table-column label="是否驳回" property="isOver" min-width="110px" align="center">
             <template slot-scope="scope">
-              <el-switch v-model="scope.row.isReject" active-color="#13ce66" inactive-color="#ff4949" active-value="0" inactive-value="1" />
+              <el-switch v-model="scope.row.isOver" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0" />
             </template>
           </el-table-column>
         </el-table>
@@ -546,17 +549,7 @@
           </el-table-column>
           <el-table-column label="领用数量" min-width="110px" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.auditNumber }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="单价" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.price }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="总价" min-width="110px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.sumPrice }}</span>
+              <span>{{ scope.row.useNumber }}</span>
             </template>
           </el-table-column>
           <el-table-column label="单位" min-width="110px" align="center">
@@ -564,20 +557,35 @@
               <span>{{ scope.row.unit }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="是否有旧品" property="isRefuse" min-width="110px" align="center">
+          <el-table-column label="单价(元)" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.price }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="总价(元)" min-width="110px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.sumPrice }}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="是否有旧品" min-width="110px" header-align="center" align="center">
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.isRefuse"
+                :active-value="1"
+                :inactive-value="0"
+                @change="handleEnableChange(scope.$index, scope.row)"
+              />
+            </template>
+          </el-table-column>
+          <!--           <el-table-column label="是否有旧品" property="isRefuse" min-width="110px" align="center">
             <template slot-scope="scope">
               <el-switch v-model="scope.row.isRefuse" active-color="#13ce66" inactive-color="#ff4949" active-value="0" inactive-value="1" disabled />
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
         <div slot="footer" class="dialog-footer">
-          <el-button
-            v-if="dialogStatus==='create'"
-            ref="createb"
-            type="success"
-            @click="createData_again()"
-          >确认新增</el-button>
-          <el-button type="primary" @click="dialogStatusUse==='create'?createData():updateDataUse()">确认</el-button>
+          <el-button type="primary" @click="dialogStatusUse==='create'?updateDataUse():updateDataUse()">确认</el-button>
           <el-button @click="dialogFormVisibleUse = false">关闭</el-button>
         </div>
       </div>
@@ -641,7 +649,7 @@
           </el-table-column>
           <el-table-column label="应入数量" min-width="110px" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.auditNumber }}</span>
+              <span>{{ scope.row.useNumber }}</span>
             </template>
           </el-table-column>
           <el-table-column label="实入数量" min-width="110px" align="center">
@@ -656,12 +664,6 @@
           </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
-          <el-button
-            v-if="dialogStatusOld==='create'"
-            ref="createb"
-            type="success"
-            @click="createData_again()"
-          >确认新增</el-button>
           <el-button type="primary" @click="dialogStatusOld==='create'?createData():updateDataOld()">确认</el-button>
           <el-button @click="dialogFormVisibleOld = false">关闭</el-button>
         </div>
@@ -672,7 +674,7 @@
 
 <script>
 // / 引入
-import { GetDataByName, GetDataByNames, PostDataByName } from '@/api/common'
+import { GetDataByName, GetDataByNames, PostDataByName, ExecDataByConfig } from '@/api/common'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils/index.js'
 // eslint-disable-next-line no-unused-vars
@@ -685,9 +687,11 @@ export default {
   directives: { waves },
   data() {
     return {
-      display: false,
+      display: true,
       tableKey: 0,
       list: [],
+      list2: [],
+      // disabled
       listUpdate: [],
       listExamine: [],
       listZGExamine: [],
@@ -704,6 +708,10 @@ export default {
         pagecount: 0,
         parammaps: {}
       },
+      requestFilterParams: {
+        returntype: 'Map',
+        parammaps: {}
+      },
       // 1-2:table&搜索传参
       getdataListParm: {
         name: 'getBigStockUseList',
@@ -718,65 +726,56 @@ export default {
           status: ''
         }
       },
-      // 生成领用单
-      getdataListParmshengcheng: {
-        name: 'insertBigStockUse1',
-        page: 1,
-        offset: 1,
-        pagecount: 10,
-        returntype: 'Map',
-        parammaps: {}
-      },
       getdataListParmCreate: {
         name: 'createOddNumber',
-        page: 1,
-        offset: 1,
-        pagecount: 10,
+        page: 0,
+        offset: 0,
+        pagecount: 0,
         returntype: 'Map',
         parammaps: {}
       },
       // 修改
       getdataListParmUpdate: {
         name: 'findByIdStockUses',
-        page: 1,
-        offset: 1,
-        pagecount: 10,
+        page: 0,
+        offset: 0,
+        pagecount: 0,
         returntype: 'Map',
         parammaps: {}
       },
       // 主管审核
       getdataListParmZGExamine: {
         name: 'findByIdStockUses',
-        page: 1,
-        offset: 1,
-        pagecount: 10,
+        page: 0,
+        offset: 0,
+        pagecount: 0,
         returntype: 'Map',
         parammaps: {}
       },
       // 审核
       getdataListParmExamine: {
         name: 'findByIdStockUses_Auditor',
-        page: 1,
-        offset: 1,
-        pagecount: 10,
+        page: 0,
+        offset: 0,
+        pagecount: 0,
         returntype: 'Map',
         parammaps: {}
       },
       // 确认领用
       getdataListParmUse: {
         name: 'findByIdStockUses_OK',
-        page: 1,
-        offset: 1,
-        pagecount: 10,
+        page: 0,
+        offset: 0,
+        pagecount: 0,
         returntype: 'Map',
         parammaps: {}
       },
       // 旧品录入
       getdataListParmOld: {
         name: 'findByIdStockUses_OK',
-        page: 1,
-        offset: 1,
-        pagecount: 10,
+        page: 0,
+        offset: 0,
+        pagecount: 0,
         returntype: 'Map',
         parammaps: {}
       },
@@ -796,9 +795,20 @@ export default {
         { name: 'findAllEmploye', offset: 0, pagecount: 0, params: [] },
         { name: 'getDictByName', offset: 0, pagecount: 0, params: ['资产状态'] }
       ],
+      stockAAA: {
+        stockA: '',
+        stockNumber: '',
+        stockName: '',
+        specification: '',
+        amount: '',
+        note: ''
+      },
+      postDataPramas: {
 
+      },
       temp: {},
       tempExamine: {},
+      dialogFormVisible_StockAdd: false,
       dialogFormVisible: false,
       dialogFormVisibleUpdate: false,
       dialogFormVisibleExamine: false,
@@ -821,6 +831,35 @@ export default {
       },
       dialogPvVisible: false,
       // 校验规则
+      rules: {
+        amount: [{ type: 'number', required: true, validator: (rule, value, callback) => {
+          console.log(this.list2)
+          console.log(this.list2[this.list2.length - 1].repertory)
+          if (!value) {
+            callback(new Error('不能为空'))
+          }
+          if (value < 0) {
+            callback(new Error('必须大于0'))
+          } else if (value > this.list2[this.list2.length - 1].repertory) {
+            this.$message({
+              type: 'warning',
+              message: '输入的值不能大于当前库存'
+            })
+          }
+          setTimeout(() => {
+            const re = /^\d+$/ // /^[0-9]*[1-9][0-9]*$/
+            const rsCheck = re.test(value)
+            if (!rsCheck) {
+              this.$message({
+                type: 'warning',
+                message: '请输入正整数'
+              })
+            } else {
+              callback()
+            }
+          }, 0)
+        }, trigger: 'blur' }]
+      },
       rowStyle: { maxHeight: 50 + 'px', height: 45 + 'px' },
       cellStyle: { padding: 0 + 'px' }
     }
@@ -831,6 +870,163 @@ export default {
   },
 
   methods: {
+
+    // 备件模糊搜索
+    stockSearch(queryString, cb) {
+      this.requestFilterParams.parammaps = {}
+      this.requestFilterParams.name = 'findByDimStock'
+      this.requestFilterParams.parammaps['stockA'] = queryString
+
+      GetDataByName(this.requestFilterParams).then(response => {
+        // console.log(response.data.list)
+        cb(response.data.list)
+      })
+    },
+
+    handleStockSelect(item) {
+      var ss = 0
+      GetDataByName(this.requestFilterParams).then(response => {
+        this.$nextTick(() => {
+          if (response.data.list.length > 0) {
+            this.stockAAA = {}
+            if (item.repertory <= 0) {
+              this.$notify({
+                title: '添加失败',
+                message: '此备件无库存了，请联系库管尽快补货哦...',
+                type: 'warning',
+                duration: 2000
+              })
+            } else {
+              if (this.list2 === null) {
+                this.list2 = []
+              }
+              this.list2.some((item1, i) => {
+                if (item1.stockNumber === item.stockNumber) {
+                  ss = 1
+                }
+              })
+              if (ss === 0) { this.list2.push(item) }
+            }
+          }
+        })
+      })
+    },
+
+    // 备件信息保存接口
+    createDataReCeiveW() {
+      this.postDataPramas.common = { 'returnmap': '0' }
+      this.postDataPramas.data = []
+      // this.postDataPramas.data[0] = { 'name': 'deleteStockUse1', 'type': 'e', 'parammaps': { 'bigId': this.temp.bigId }}
+      // this.postDataPramas.data[1] = { 'name': 'deleteBigStockUse1', 'type': 'e', 'parammaps': { 'id': this.temp.bigId }}
+      this.postDataPramas.data[0] = { 'name': 'insertBigStockUse_LY', 'type': 'e', 'parammaps': { }}
+      this.postDataPramas.data[0].parammaps.useForm = this.$refs['temp'].$el[0].value
+      this.postDataPramas.data[0].parammaps.pastureId = this.temp.pastureId
+      this.postDataPramas.data[0].parammaps.departmentId = this.temp.departmentId
+      this.postDataPramas.data[0].parammaps.employeId = this.temp.employeId
+      this.postDataPramas.data[1] = { 'name': 'insertStockUse', 'resultmaps': { 'list': this.list2 }}
+      this.postDataPramas.data[1].children = []
+      this.postDataPramas.data[1].children[0] = { 'name': 'insertStockUse1', 'type': 'e', 'parammaps': { }}
+      this.postDataPramas.data[1].children[0].parammaps.stockNumber = '@insertStockUse.stockNumber'
+      this.postDataPramas.data[1].children[0].parammaps.stockName = '@insertStockUse.stockName'
+      this.postDataPramas.data[1].children[0].parammaps.specification = '@insertStockUse.specification'
+      this.postDataPramas.data[1].children[0].parammaps.useNumber = '@insertStockUse.amount'
+      this.postDataPramas.data[1].children[0].parammaps.refuseNumber = '@insertStockUse.amount'
+      this.postDataPramas.data[1].children[0].parammaps.bigId = '@insertBigStockUse_LY.LastInsertId'
+      this.postDataPramas.data[1].children[0].parammaps.maintainId = '0'
+      ExecDataByConfig(this.postDataPramas).then(response => {
+        if (response.msg === 'fail') {
+          this.$notify({
+            title: '保存失败',
+            message: response.data,
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          this.getList()
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '',
+            message: '保存成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+
+    // 加载备件列表信息
+    uplodeStockList() {
+      if (this.list.length > 0) {
+        this.requestFilterParams.parammaps = {}
+        this.requestFilterParams.name = 'getOtherStockList'
+        this.requestFilterParams.parammaps['bigId'] = this.bigsSolrId
+        GetDataByName(this.requestFilterParams).then(response => {
+          this.list2 = response.data.list
+        })
+      }
+    },
+
+    //  维修-备件信息删除保存（修改接口）
+    stockAdd(row) {
+      console.log(row)
+      this.requestParam.parammaps = {}
+      this.requestParam.name = 'updateStcokUseStock1'
+      this.requestParam.parammaps['useNumber'] = row.amount
+      this.requestParam.parammaps['id'] = row.stockUseId
+      PostDataByName(this.requestParam).then(response => {
+        if (response.msg === 'fail') {
+          this.$notify({
+            title: '失败',
+            message: '保存失败-' + response.data,
+            type: 'warning',
+            duration: 2000
+          })
+          this.uplodeStockList()
+        } else {
+          this.getList()
+          this.dialogFormVisible_StockAdd = false
+          this.$notify({
+            title: '成功',
+            message: '修改成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.uplodeStockList()
+        }
+      })
+    },
+
+    // 维修-备件信息删除
+    stockDel(row) {
+      MessageBox.confirm('确认删除此条信息？', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.requestParam.name = 'deleteStcokUseStock1'
+          this.requestParam.parammaps = {}
+          this.requestParam.parammaps['id'] = row.stockUseId
+          PostDataByName(this.requestParam).then(() => {
+            this.getList()
+            this.dialogFormVisible_StockAdd = false
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.uplodeStockList()
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
+
     // 供应商模糊查询
     providerSearch(queryString, cb) {
       var returnList = this.findAllProvider
@@ -846,7 +1042,7 @@ export default {
       }
     },
     handleSelect(item) {
-      console.log(item)
+      // console.log(item)
       this.temp.providerId = item.id
       this.temp.providerName = item.name
     },
@@ -896,40 +1092,21 @@ export default {
         inputDatetime: parseTime(new Date(), '{y}-{m}-{d}')
       }
     },
-    // 新增
-    handleshengcheng() {
-      this.display = true
-      this.$nextTick(() => {
-        this.getdataListParmshengcheng.parammaps.id = '0'
-        this.getdataListParmshengcheng.parammaps.isOrNo = '0'
-        this.getdataListParmshengcheng.parammaps.pastureId = this.$refs['temp'].model.pastureId
-        this.getdataListParmshengcheng.parammaps.departmentId = this.$refs['temp'].model.departmentId
-        this.getdataListParmshengcheng.parammaps.employeId = this.$refs['temp'].model.employeId
-        this.getdataListParmshengcheng.parammaps.repairNumber = this.listCreate[0].repairNumber
-        PostDataByName(this.getdataListParmshengcheng).then(response => {
-          this.listshengcheng = response.data.list
-          if (response.data.total) {
-            this.total = response.data.total
-          }
-          setTimeout(() => {
-            this.listLoading = false
-          }, 100)
-        })
-      })
-    },
+
     handleCreate() {
       this.resetTemp()
+
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
       GetDataByName(this.getdataListParmCreate).then(response => {
         this.listCreate = response.data.list
         this.$nextTick(() => {
           this.$refs['temp'].$el[0].value = this.listCreate[0].repairNumber
-          console.log(this.$refs['temp'].$el[0])
+          // console.log(this.$refs['temp'].$el[0])
         })
-        // console.log(this.listCreate[0].oddNumber)
       })
     },
+
     createData() {
       this.$refs['temp'].validate(valid => {
         if (valid) {
@@ -962,22 +1139,30 @@ export default {
     },
     // 修改
     handleUpdate(row) {
-      console.log(row.id)
-      // this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusUpdate = 'update'
-      this.dialogFormVisibleUpdate = true
-      this.getdataListParmUpdate.parammaps.id = row.id
-      GetDataByName(this.getdataListParmUpdate).then(response => {
-        this.listUpdate = response.data.list
-        // console.log(response.data.list)
-        if (response.data.total) {
-          this.total = response.data.total
-        }
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 100)
-      })
+      console.log(row.receiveStatue)
+      // eslint-disable-next-line eqeqeq
+      if (row.receiveStatue == '未审核') {
+        // this.temp = Object.assign({}, row) // copy obj
+        this.dialogStatusUpdate = 'update'
+        this.dialogFormVisibleUpdate = true
+        this.getdataListParmUpdate.parammaps.id = row.id
+        GetDataByName(this.getdataListParmUpdate).then(response => {
+          this.listUpdate = response.data.list
+          // console.log(response.data.list)
+          if (response.data.total) {
+            this.total = response.data.total
+          }
+          // Just to simulate the time of the request
+          setTimeout(() => {
+            this.listLoading = false
+          }, 100)
+        })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '已经审核，不能再次编辑'
+        })
+      }
     },
     // 修改单条保存
     handleUpdateSave(row) {
@@ -1032,41 +1217,60 @@ export default {
     },
     // 主管审核
     handleZGExamine(row) {
-      this.dialogStatusZGExamine = 'zgexamine'
-      this.dialogFormVisibleZGExamine = true
-      this.getdataListParmZGExamine.parammaps.id = row.id
-      GetDataByName(this.getdataListParmZGExamine).then(response => {
-        this.listExamine = response.data.list
-        // console.log(response.data.list)
-        if (response.data.total) {
-          this.total = response.data.total
-        }
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 100)
-      })
+      // console.log(row.receiveStatue)
+      // eslint-disable-next-line eqeqeq
+      if (row.receiveStatue == '未审核') {
+        this.dialogStatusZGExamine = 'zgexamine'
+        this.dialogFormVisibleZGExamine = true
+        this.getdataListParmZGExamine.parammaps.id = row.id
+        GetDataByName(this.getdataListParmZGExamine).then(response => {
+          this.listExamine = response.data.list
+          // console.log(response.data.list)
+          if (response.data.total) {
+            this.total = response.data.total
+          }
+          // Just to simulate the time of the request
+          setTimeout(() => {
+            this.listLoading = false
+          }, 100)
+        })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '不能重复审核'
+        })
+      }
     },
     // 主管审核保存
     updateDataZGExamine() {
-      this.requestParam.name = 'verifyStockUse'
-      console.log(this.requestParam.parammaps)
-      this.requestParam.parammaps['fsion'] = this.listExamine
-      PostDataByName(this.requestParam).then(response => {
-        // console.log(response)
+      this.postDataPramas.common = { 'returnmap': '0' }
+      this.postDataPramas.data = []
+
+      this.postDataPramas.data[0] = { 'name': 'insertSpotList', 'resultmaps': { 'list': [] }}
+      this.postDataPramas.data[0].resultmaps.list = this.listExamine
+      this.postDataPramas.data[0].children = []
+      this.postDataPramas.data[0].children[0] = { 'name': 'verifyStockUse_Audit', 'type': 'e', 'parammaps': { }}
+      this.postDataPramas.data[0].children[0].parammaps.isOver = '@insertSpotList.isOver'
+      this.postDataPramas.data[0].children[0].parammaps.auditNote = '@insertSpotList.auditNote'
+      this.postDataPramas.data[0].children[0].parammaps.id = '@insertSpotList.stockUseId'
+      this.postDataPramas.data[0].children[1] = { 'name': 'updateBigStockUse_Audit', 'type': 'e', 'parammaps': { }}
+      this.postDataPramas.data[0].children[1].parammaps.bigId = '@insertSpotList.bigId'
+      this.postDataPramas.data[0].children[1].parammaps.jwt_username = '@common.jwt_username'
+
+      ExecDataByConfig(this.postDataPramas).then(response => {
         if (response.msg === 'fail') {
           this.$notify({
-            title: '失败',
-            message: '保存失败-' + response.data,
+            title: '保存失败',
+            message: response.data,
             type: 'warning',
             duration: 2000
           })
         } else {
           this.getList()
-          this.dialogFormVisibleZGExamine = false
+          this.dialogFormVisible = false
           this.$notify({
-            title: '成功',
-            message: '修改成功',
+            title: '',
+            message: '保存成功',
             type: 'success',
             duration: 2000
           })
@@ -1075,28 +1279,151 @@ export default {
     },
     // 审核
     handleExamine(row) {
-      this.dialogStatusExamine = 'examine'
-      this.dialogFormVisibleExamine = true
-      this.getdataListParmExamine.parammaps.id = row.id
-      GetDataByName(this.getdataListParmExamine).then(response => {
-        this.listExamine = response.data.list
-        // console.log(response.data.list)
-        if (response.data.total) {
-          this.total = response.data.total
-        }
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 100)
-      })
+      // console.log(row.employeeStatus)
+      // eslint-disable-next-line no-empty
+      if (row.employeeStatus === '未审核') {
+        this.dialogStatusExamine = 'examine'
+        this.dialogFormVisibleExamine = true
+        this.getdataListParmExamine.parammaps.id = row.id
+        GetDataByName(this.getdataListParmExamine).then(response => {
+          this.listExamine = response.data.list
+          // console.log(response.data.list)
+          if (response.data.total) {
+            this.total = response.data.total
+          }
+          // Just to simulate the time of the request
+          setTimeout(() => {
+            this.listLoading = false
+          }, 100)
+        })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '不能重复审核'
+        })
+      }
     },
     // 审核保存
     updateDataExamine() {
-      this.requestParam.name = 'verifyStockUse_Auditor'
+      this.postDataPramas.common = { 'returnmap': '0' }
+      this.postDataPramas.data = []
+
+      this.postDataPramas.data[0] = { 'name': 'insertSpotList', 'resultmaps': { 'list': [] }}
+      this.postDataPramas.data[0].resultmaps.list = this.listExamine
+      this.postDataPramas.data[0].children = []
+      this.postDataPramas.data[0].children[0] = { 'name': 'verifyStockUse_Auditor', 'type': 'e', 'parammaps': { }}
+      this.postDataPramas.data[0].children[0].parammaps.isReject = '@insertSpotList.isReject'
+      this.postDataPramas.data[0].children[0].parammaps.auditorNote = '@insertSpotList.auditorNote'
+      this.postDataPramas.data[0].children[0].parammaps.id = '@insertSpotList.stockUseId'
+      this.postDataPramas.data[0].children[1] = { 'name': 'updateBigStockUse_Auditor', 'type': 'e', 'parammaps': { }}
+      this.postDataPramas.data[0].children[1].parammaps.bigId = '@insertSpotList.bigId'
+      this.postDataPramas.data[0].children[1].parammaps.jwt_username = '@common.jwt_username'
+
+      ExecDataByConfig(this.postDataPramas).then(response => {
+        if (response.msg === 'fail') {
+          this.$notify({
+            title: '保存失败',
+            message: response.data,
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          this.getList()
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '',
+            message: '保存成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+    // 确认领用
+    handleUse(row) {
+      // console.log(row.useStatus)
+      if (row.useStatus === '未领用') {
+        // this.temp = Object.assign({}, row) // copy obj
+        this.dialogStatusUse = 'use'
+        this.dialogFormVisibleUse = true
+        this.getdataListParmUse.parammaps.id = row.id
+        GetDataByName(this.getdataListParmUse).then(response => {
+          this.listUse = response.data.list
+          if (response.data.total) {
+            this.total = response.data.total
+          }
+        })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '已经领用，不能再次领用'
+        })
+      }
+    },
+    // 旧品录入
+    handleOld(row) {
+      if (row.refuseStatue) {
+        this.temp = Object.assign({}, row) // copy obj
+        this.dialogStatusOld = 'old'
+        this.dialogFormVisibleOld = true
+        this.getdataListParmOld.parammaps.id = row.id
+        GetDataByName(this.getdataListParmOld).then(response => {
+          this.listOld = response.data.list
+          if (response.data.total) {
+            this.total = response.data.total
+          }
+        })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '旧品已回收'
+        })
+      }
+    },
+    // 旧品录入保存
+    updateDataOld() {
+      this.postDataPramas.common = { 'returnmap': '0' }
+      this.postDataPramas.data = []
+      this.postDataPramas.data[0] = { 'name': 'insertSpotList', 'resultmaps': { 'list': [] }}
+      this.postDataPramas.data[0].resultmaps.list = this.listOld
+      this.postDataPramas.data[0].children = []
+      this.postDataPramas.data[0].children[0] = { 'name': 'okSAOrRefuse', 'type': 'e', 'parammaps': { }}
+      this.postDataPramas.data[0].children[0].parammaps.useForm = '@insertSpotList.useForm'
+      this.postDataPramas.data[0].children[0].parammaps.listType = '@insertSpotList.listType'
+      this.postDataPramas.data[0].children[0].parammaps.stockNumber = '@insertSpotList.stockNumber'
+      this.postDataPramas.data[0].children[0].parammaps.stockName = '@insertSpotList.stockName'
+      this.postDataPramas.data[0].children[0].parammaps.pastureId = '@insertSpotList.pastureId'
+      this.postDataPramas.data[0].children[0].parammaps.departmentId = '@insertSpotList.departmentId'
+      this.postDataPramas.data[0].children[0].parammaps.price = '@insertSpotList.price'
+      this.postDataPramas.data[0].children[0].parammaps.specification = '@insertSpotList.specification'
+      this.postDataPramas.data[0].children[0].parammaps.unit = '@insertSpotList.unit'
+      this.postDataPramas.data[0].children[0].parammaps.refuseNumber = '@insertSpotList.refuseNumber'
+      this.postDataPramas.data[0].children[0].parammaps.useNumber = '@insertSpotList.useNumber'
+      this.postDataPramas.data[0].children[0].parammaps.note = '@insertSpotList.note'
+      this.postDataPramas.data[0].children[0].parammaps.providerId = '@insertSpotList.providerId'
+      ExecDataByConfig(this.postDataPramas).then(response => {
+        if (response.msg === 'fail') {
+          this.$notify({
+            title: '出库失败',
+            message: response.data,
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          this.getList()
+          this.dialogFormVisible = false
+          this.$notify({
+            title: '',
+            message: '出库成功',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+      this.requestParam.name = 'okSAOrRefuse'
       console.log(this.requestParam.parammaps)
-      this.requestParam.parammaps['fsion'] = this.listExamine
+      this.requestParam.parammaps['fsion'] = this.listOld
       PostDataByName(this.requestParam).then(response => {
-        // console.log(response)
         if (response.msg === 'fail') {
           this.$notify({
             title: '失败',
@@ -1106,7 +1433,7 @@ export default {
           })
         } else {
           this.getList()
-          this.dialogFormVisibleExamine = false
+          this.dialogFormVisibleOld = false
           this.$notify({
             title: '成功',
             message: '旧品录入成功',
@@ -1115,28 +1442,64 @@ export default {
           })
         }
       })
-    },
-    // 确认领用
-    handleUse(row) {
-      // this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusUse = 'use'
-      this.dialogFormVisibleUse = true
-      this.getdataListParmUse.parammaps.id = row.id
-      GetDataByName(this.getdataListParmUse).then(response => {
-        this.listUse = response.data.list
-        // console.log(response.data.list)
-        if (response.data.total) {
-          this.total = response.data.total
-        }
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 100)
+    }
+  },
+
+  // 确认领用修改状态
+  handleEnableChange(index, row) {
+    this.postDataPramas.common = { 'returnmap': '0' }
+    this.postDataPramas.data = []
+    this.postDataPramas.data[0] = { 'name': 'updateStockUseIsRefuse', 'type': 'e', 'parammaps': {}}
+    this.postDataPramas.data[0].parammaps['isRefuse'] = row.isRefuse
+    this.postDataPramas.data[0].parammaps['id'] = row.id
+    ExecDataByConfig(this.postDataPramas).then(response => {
+      this.$notify({
+        title: '成功',
+        message: '修改成功',
+        type: 'success',
+        duration: 2000
       })
-    },
-    // 确认领用保存
-    updateDataUse() {
-      this.requestParam.name = 'okBigStockUse'
+    })
+  },
+
+  // 确认领用保存
+  updateDataUse() {
+    console.log(this.listUse)
+
+    this.postDataPramas.common = { 'returnmap': '0' }
+    this.postDataPramas.data = []
+
+    this.postDataPramas.data[0] = { 'name': 'insertSpotList', 'resultmaps': { 'list': [] }}
+    this.postDataPramas.data[0].resultmaps.list = this.listUse
+    this.postDataPramas.data[0].children = [] // updateStockAmount
+    this.postDataPramas.data[0].children[0] = { 'name': 'updateStockAmount', 'type': 'e', 'parammaps': { }}
+    this.postDataPramas.data[0].children[0].parammaps.stockNumber = '@insertSpotList.stockNumber'
+    this.postDataPramas.data[0].children[0].parammaps.amount = '@insertSpotList.useNumber'
+    this.postDataPramas.data[0].children[0].parammaps.pastureId = '@insertSpotList.pastureId'
+    this.postDataPramas.data[0].children[0].parammaps.isRefuse = '@insertSpotList.isRefuse'
+    this.postDataPramas.data[0].children[0].parammaps.stockId = '@insertSpotList.stockId'
+
+    ExecDataByConfig(this.postDataPramas).then(response => {
+      if (response.msg === 'fail') {
+        this.$notify({
+          title: '出库失败',
+          message: response.data,
+          type: 'warning',
+          duration: 2000
+        })
+      } else {
+        this.getList()
+        this.dialogFormVisible = false
+        this.$notify({
+          title: '',
+          message: '出库成功',
+          type: 'success',
+          duration: 2000
+        })
+      }
+    })
+
+    /*       this.requestParam.name = 'okBigStockUse'
       console.log(this.requestParam.parammaps)
       this.requestParam.parammaps['fsion'] = this.listUse
       PostDataByName(this.requestParam).then(response => {
@@ -1158,54 +1521,11 @@ export default {
             duration: 2000
           })
         }
-      })
-    },
-    // 旧品录入
-    handleOld(row) {
-      // this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatusOld = 'old'
-      this.dialogFormVisibleOld = true
-      this.getdataListParmOld.parammaps.id = row.id
-      GetDataByName(this.getdataListParmOld).then(response => {
-        this.listOld = response.data.list
-        // console.log(response.data.list)
-        if (response.data.total) {
-          this.total = response.data.total
-        }
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 100)
-      })
-    },
-    // 旧品录入保存
-    updateDataOld() {
-      this.requestParam.name = 'okSAOrRefuse'
-      console.log(this.requestParam.parammaps)
-      this.requestParam.parammaps['fsion'] = this.listOld
-      PostDataByName(this.requestParam).then(response => {
-        // console.log(response)
-        if (response.msg === 'fail') {
-          this.$notify({
-            title: '失败',
-            message: '保存失败-' + response.data,
-            type: 'warning',
-            duration: 2000
-          })
-        } else {
-          this.getList()
-          this.dialogFormVisibleOld = false
-          this.$notify({
-            title: '成功',
-            message: '旧品录入成功',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
-    }
+      }) */
   }
+
 }
+
 </script>
 
 <style lang="scss" scoped>

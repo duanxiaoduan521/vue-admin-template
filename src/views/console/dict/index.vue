@@ -60,6 +60,16 @@
               <span>{{ scope.row.orderby }}</span>
             </template>
           </el-table-column>
+          <!--           <el-table-column label="是否牧场" min-width="150px" header-align="center" align="center">
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.isPasture"
+                :active-value="1"
+                :inactive-value="0"
+                @change="handleEnableChange(scope.$index, scope.row)"
+              />
+            </template>
+          </el-table-column> -->
           <el-table-column label="启用" min-width="150px" header-align="center" align="center">
             <template slot-scope="scope">
               <el-switch
@@ -111,6 +121,12 @@
                 v-model="deptform.orderby"
               />
             </el-form-item>
+            <!--   <el-form-item label="是否牧场" prop="isPasture">
+              <el-input
+                ref="isPasture"
+                v-model="deptform.isPasture"
+              />
+            </el-form-item> -->
             <el-form-item label="启用" prop="enable">
               <el-switch
                 ref="enable"

@@ -136,10 +136,10 @@
             size="mini"
             @click="handleDelete(row)"
           >删除</el-button>
-          <el-button
+          <!-- <el-button
             type="danger"
             size="mini"
-          >启用</el-button>
+          >启用</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -587,7 +587,7 @@ export default {
       })
     },
     handleDelete(row) {
-      MessageBox.confirm('设备名称：' + row.equipmentName, '确认删除？', {
+      MessageBox.confirm('设备名称：' + row.elecName, '确认删除？', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'
